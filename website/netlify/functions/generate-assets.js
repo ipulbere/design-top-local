@@ -13,26 +13,37 @@ const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 // Image Generation Helper
 async function generateImage(prompt) {
     try {
-        // Attempt with Imagen 3.0 (if enabled for API key)
+        // Try Gemini 2.0 Flash (Experimental) which supports image generation
         try {
             const response = await genAI.models.generateContent({
-                model: 'imagen-3.0-generate-001',
-                contents: { parts: [{ text: `A professional stock photo, realistic, high quality: ${prompt}` }] },
+                model: 'gemini-2.0-flash-exp',
+                contents: { parts: [{ text: `Generate a photorealistic image: ${prompt}` }] },
+                config: { responseModalities: ["image"] } // Enforce image output if supported
+            });
+
+            // Check for inline data (standard for Gemini Image gen)
+            if (response.candidates && response.candidates[0]?.content?.parts?.[0]?.inlineData) {
+                return response.candidates[0].content.parts[0].inlineData.data;
+            }
+        } catch (err2) {
+            console.log(`[Asset Gen] Gemini 2.0 Flash failed (${err2.message}), trying User Model...`);
+
+            // Try User's suggested model name 
+            const response = await genAI.models.generateContent({
+                model: 'gemini-2.5-flash-image',
+                contents: { parts: [{ text: prompt }] },
                 config: { imageConfig: { aspectRatio: "4:3" } }
             });
 
-            if (response.candidates && response.candidates[0].content.parts[0].inlineData) {
+            if (response.candidates && response.candidates[0]?.content?.parts?.[0]?.inlineData) {
                 return response.candidates[0].content.parts[0].inlineData.data;
             }
-        } catch (innerErr) {
-            console.log(`[Asset Gen] Imagen 3.0 failed (${innerErr.message}), trying Gemini 2.0 Flash...`);
-            // Fallback or retry logic if other models exist
         }
         return null;
 
     } catch (e) {
         console.warn("[Asset Gen] Image gen failed:", e.message);
-        return null;
+        throw e; // Throw to be caught by the outer loop for error display
     }
 }
 
