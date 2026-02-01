@@ -225,6 +225,10 @@ export const useWebsiteStore = defineStore('website', () => {
         companyInfo.value.customImages[path] = newUrl;
     }
 
+    function approveWebsite() {
+        isApproved.value = true
+    }
+
     function markPaid() {
         isPaid.value = true
     }
