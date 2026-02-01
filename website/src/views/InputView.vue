@@ -58,7 +58,7 @@ async function handleSubmit() {
     })
 
     // Save to DB and get ID
-    const siteId = db.saveSite(store.companyInfo)
+    const siteId = await db.saveSite(store.companyInfo)
     
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 1000))

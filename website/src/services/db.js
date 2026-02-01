@@ -1,73 +1,97 @@
-const DB_KEY = 'saas_websites_db';
-const RETENTION_DAYS = 30;
+
+import { supabase } from './supabase'
+
+const STORAGE_KEY = 'generated_sites';
 
 export const db = {
-    // Save a new site
-    saveSite(data) {
-        const sites = this.getAllSites();
-        const id = (crypto?.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2)).split('-')[0]; // Short random ID
+    // Save to Cloud (Supabase)
+    async saveSite(data) {
+        const id = data.id || Math.random().toString(36).substring(2, 10);
+        const siteData = { ...data, id };
 
-        const newSite = {
-            id,
-            createdAt: new Date().toISOString(),
-            ...data
-        };
-
-        sites[id] = newSite;
-        this.persist(sites);
-        return id;
-    },
-
-    // Update an existing site
-    updateSite(id, data) {
-        const sites = this.getAllSites();
-        if (sites[id]) {
-            sites[id] = { ...sites[id], ...data };
-            this.persist(sites);
-            return true;
-        }
-        return false;
-    },
-
-    // Get a site by ID
-    getSite(id) {
-        this.cleanup(); // Auto-cleanup on access
-        const sites = this.getAllSites();
-        return sites[id] || null;
-    },
-
-    // Internal: Get all
-    getAllSites() {
         try {
-            return JSON.parse(localStorage.getItem(DB_KEY) || '{}');
+            const { error } = await supabase
+                .from('websites')
+                .upsert({
+                    id: id,
+                    data: siteData,
+                    created_at: new Date().toISOString()
+                })
+
+            if (error) throw error;
+
+            // Backup locally
+            this.saveLocal(id, siteData);
+            return id;
         } catch (e) {
-            return {};
+            console.error('Cloud save failed:', e);
+            this.saveLocal(id, siteData);
+            return id;
         }
     },
 
-    // Internal: Save to LS
-    persist(sites) {
-        localStorage.setItem(DB_KEY, JSON.stringify(sites));
+    // Get from Cloud
+    async getSite(id) {
+        try {
+            const { data, error } = await supabase
+                .from('websites')
+                .select('*')
+                .eq('id', id)
+                .single()
+
+            if (error) throw error;
+            if (data) return data.data;
+
+        } catch (e) {
+            console.warn('Cloud fetch failed, trying local:', e);
+        }
+        return this.getLocal(id);
     },
 
-    // Delete old sites
-    cleanup() {
-        const sites = this.getAllSites();
-        const now = new Date();
-        const retentionMs = RETENTION_DAYS * 24 * 60 * 60 * 1000;
+    // Update existing site
+    async updateSite(id, data) {
+        try {
+            // Ensure we are sending a clean JSON object, strip Vue proxies
+            const cleanData = JSON.parse(JSON.stringify(data));
 
-        let changed = false;
+            const { error } = await supabase
+                .from('websites')
+                .update({ data: { ...cleanData, id } })
+                .eq('id', id)
+
+            if (error) throw error;
+
+            this.saveLocal(id, { ...cleanData, id });
+            return { success: true };
+        } catch (e) {
+            console.error('Update failed:', e);
+            return { success: false, error: e };
+        }
+    },
+
+    // Local Storage Helpers
+    saveLocal(id, data) {
+        const sites = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        sites[id] = { ...data, timestamp: Date.now() };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sites));
+    },
+
+    getLocal(id) {
+        const sites = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        return sites[id];
+    },
+
+    cleanup() {
+        const sites = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        const now = Date.now();
+        const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+
         Object.keys(sites).forEach(key => {
-            const site = sites[key];
-            const created = new Date(site.createdAt);
-            if (now - created > retentionMs) {
+            if (now - sites[key].timestamp > thirtyDays) {
                 delete sites[key];
-                changed = true;
             }
         });
 
-        if (changed) {
-            this.persist(sites);
-        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(sites));
     }
-};
+}

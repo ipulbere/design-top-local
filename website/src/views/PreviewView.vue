@@ -9,9 +9,9 @@ const route = useRoute()
 const store = useWebsiteStore()
 
 // Load from DB if ID exists
-onMounted(() => {
+onMounted(async () => {
   if (route.params.id) {
-    const savedSite = db.getSite(route.params.id)
+    const savedSite = await db.getSite(route.params.id)
     if (savedSite) {
       store.updateCompanyInfo(savedSite)
     } else {
@@ -27,6 +27,9 @@ onMounted(() => {
 const isEditing = ref(false)
 
 function toggleEdit() {
+  if (isEditing.value) {
+      saveChanges(); // Save when turning off
+  }
   isEditing.value = !isEditing.value
 }
 
@@ -77,10 +80,27 @@ function openImageUpdate(path) {
     showImageModal.value = true;
 }
 
+const isSaving = ref(false)
+
+async function saveChanges() {
+    if (route.params.id) {
+        isSaving.value = true;
+        const result = await db.updateSite(route.params.id, store.companyInfo);
+        isSaving.value = false;
+        
+        if (!result.success) {
+            console.error("Save failed:", result.error);
+            alert("Error saving changes: " + (result.error?.message || "Unknown error"));
+        }
+    }
+}
+
 function handleImageUpdate() {
    if (!imagePrompt.value) return;
    store.updateImage(pendingImagePath.value, imagePrompt.value);
    showImageModal.value = false;
+   // Small delay to ensure store updates
+   setTimeout(saveChanges, 100);
 }
 
 // Check for success flag on mount
@@ -102,7 +122,10 @@ onMounted(() => {
 const vEditable = {
   mounted: (el, binding) => {
     el.addEventListener('blur', (e) => {
-       if (isEditing.value) store.updateContent(binding.value, e.target.innerText)
+       if (isEditing.value) {
+           store.updateContent(binding.value, e.target.innerText);
+           saveChanges();
+       }
     })
     // Prevent navigating when clicking links in edit mode
     el.addEventListener('click', (e) => {
@@ -126,8 +149,9 @@ const vEditable = {
   <div class="min-h-screen relative pb-20">
     <!-- Toolbar -->
     <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-4 transition-all hover:scale-105">
-      <button @click="toggleEdit" :class="isEditing ? 'bg-yellow-500 text-black' : 'bg-slate-700'" class="px-4 py-1.5 rounded-full font-medium transition-colors text-sm">
-        {{ isEditing ? 'Done Editing' : 'Edit Site' }}
+      <button @click="toggleEdit" :class="isEditing ? 'bg-yellow-500 text-black' : 'bg-slate-700'" class="px-4 py-1.5 rounded-full font-medium transition-colors text-sm flex items-center gap-2">
+        <span v-if="isSaving" class="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full"></span>
+        {{ isSaving ? 'Saving...' : (isEditing ? 'Done Editing' : 'Edit Site') }}
       </button>
       <div class="h-4 w-px bg-slate-600"></div>
       <button @click="handleApprove" class="px-4 py-1.5 bg-green-500 hover:bg-green-600 rounded-full font-bold text-sm shadow-lg shadow-green-500/30 transition-all">

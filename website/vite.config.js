@@ -14,5 +14,5 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
-  base: './', // Ensures assets load correctly on any path/subdomain
+  base: '/', // Ensure absolute path for deep linking support
 })
