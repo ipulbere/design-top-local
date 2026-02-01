@@ -2,7 +2,9 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useWebsiteStore } from '../stores/website'
+
 import { db } from '../services/db'
+import EditorPanel from '../components/EditorPanel.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -55,14 +57,54 @@ const bgColor = store.companyInfo.colors?.bg || 'bg-slate-50'
 
 const originUrl = ref(window.location.origin + '/Successpayment') // Redirect to existing success/payment view for demo purposes
 // Or just window.location.href to stay on page. Let's use the 'Payment/Success' view for a "conversion" effect.
-// Actually checking router... SuccessView is likely /pay or /success.
-// User mentioned "SuccessView.vue" exists.
-// Let's just default to keeping them on the page with a query param?
-// To match the user's "Success" expectation, let's redirect to the origin.
-// Better: simply remove the _next field to let FormSubmit show its generic "Thank you" page which is reliable.
 // But the user specifically asked about "submitting an email".
 // I will set it to the current href.
 const currentUrl = ref(window.location.href);
+
+// State for advanced editor panel
+const showEditorPanel = ref(false)
+
+async function handleShare() {
+    if (navigator.share) {
+        try {
+            // Sharing ONLY url (and title) often forces mobile OS to treat it as a Link Share (Hyperlink)
+            // rather than a Text Share.
+            await navigator.share({
+                title: store.companyInfo.name || 'My Website',
+                url: window.location.href
+            });
+        } catch (err) {
+            console.log('Share dismissed', err);
+        }
+    } else {
+        // Fallback
+        navigator.clipboard.writeText(window.location.href).then(() => {
+            toastMessage.value = 'Link Copied!';
+            toastSubMessage.value = 'Ready to share with the world.';
+            showSuccessToast.value = true;
+            setTimeout(() => { showSuccessToast.value = false }, 3000);
+        });
+    }
+}
+// Toast Message State
+const toastMessage = ref('Message Sent!');
+const toastSubMessage = ref('We will get back to you shortly.');
+
+function handleFormUpdate(updates) {
+    // 1. Save Changes to DB
+    saveChanges();
+    
+    // 2. Scroll to first visual change (Prioritize Services as requested "new box... should appear in line")
+    // If services or styles changed, scrolling to Services section is a safe bet for visual confirmation.
+    const servicesSection = document.getElementById('services');
+    if (servicesSection) {
+        servicesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    // Close panel
+    showEditorPanel.value = false;
+    isEditing.value = false; // Also exit "visual edit" mode to show clean view
+}
 
 // --- Editor Enhancements ---
 const showImageModal = ref(false)
@@ -148,16 +190,38 @@ const vEditable = {
 <template>
   <div class="min-h-screen relative pb-20">
     <!-- Toolbar -->
-    <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 backdrop-blur text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-4 transition-all hover:scale-105">
-      <button @click="toggleEdit" :class="isEditing ? 'bg-yellow-500 text-black' : 'bg-slate-700'" class="px-4 py-1.5 rounded-full font-medium transition-colors text-sm flex items-center gap-2">
-        <span v-if="isSaving" class="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full"></span>
-        {{ isSaving ? 'Saving...' : (isEditing ? 'Done Editing' : 'Edit Site') }}
+    <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 backdrop-blur text-white px-2 py-2 rounded-full shadow-2xl flex items-center gap-2 transition-all hover:scale-105">
+      <button @click="showEditorPanel = true" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+        Edit Design
       </button>
+      
       <div class="h-4 w-px bg-slate-600"></div>
-      <button @click="handleApprove" class="px-4 py-1.5 bg-green-500 hover:bg-green-600 rounded-full font-bold text-sm shadow-lg shadow-green-500/30 transition-all">
+
+      <button @click="toggleEdit" :class="isEditing ? 'bg-yellow-500 text-black' : 'bg-slate-700'" class="px-4 py-2 rounded-full font-medium transition-colors text-sm flex items-center gap-2">
+        <span v-if="isSaving" class="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full"></span>
+        {{ isSaving ? 'Saving...' : (isEditing ? 'Done Visual Edit' : 'Edit Description') }}
+      </button>
+
+      <div class="h-4 w-px bg-slate-600"></div>
+
+      <button @click="handleShare" class="px-4 py-2 bg-indigo-600 hover:bg-slate-700 rounded-full font-bold text-sm shadow-lg transition-all flex items-center gap-2">
+         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+         Share
+      </button>
+
+      <div class="h-4 w-px bg-slate-600"></div>
+      
+      <button @click="handleApprove" class="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-full font-bold text-sm shadow-lg shadow-green-500/30 transition-all">
         Approve
       </button>
     </div>
+
+    <EditorPanel 
+        :show="showEditorPanel" 
+        @close="showEditorPanel = false" 
+        @update="handleFormUpdate"
+    />
 
     <!-- Image Update Modal -->
     <div v-if="showImageModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
@@ -184,8 +248,8 @@ const vEditable = {
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
         </div>
         <div>
-            <h4 class="font-bold">Message Sent!</h4>
-            <p class="text-green-100 text-sm">We will get back to you shortly.</p>
+            <h4 class="font-bold">{{ toastMessage }}</h4>
+            <p class="text-green-100 text-sm">{{ toastSubMessage }}</p>
         </div>
         <button @click="showSuccessToast = false" class="ml-4 opacity-70 hover:opacity-100"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
     </div>

@@ -19,7 +19,9 @@ export const useWebsiteStore = defineStore('website', () => {
         uniforms: false,
         hours: '',
         showBeforeAfter: true,
-        raw_category_data: null
+        showBeforeAfter: true,
+        raw_category_data: null,
+        subdomain: '' // Custom subdomain part
     })
 
     // Content Generation Helper
