@@ -84,7 +84,8 @@ export default async (req, context) => {
 
         // 2. Generate Prompts using Gemini (Text)
         // Use 'gemini-1.5-flash' which is generally available and fast
-        const promptModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // NOTE: Using @google/genai SDK syntax (genAI.models.generateContent) instead of @google/generative-ai (getGenerativeModel)
+
         const promptReq = `
       For a professional website for a "${category}", write 3 distinct, detailed image generation prompts.
       1. Hero: A high-impact, wide shot suitable for a website header.
@@ -99,8 +100,12 @@ export default async (req, context) => {
       }
     `;
 
-        const promptResult = await promptModel.generateContent(promptReq);
-        const promptText = promptResult.response.text().replace(/```json/g, '').replace(/```/g, '').trim();
+        const promptResult = await genAI.models.generateContent({
+            model: "gemini-1.5-flash",
+            contents: promptReq
+        });
+
+        const promptText = (promptResult.text || promptResult.response?.text() || "").replace(/```json/g, '').replace(/```/g, '').trim();
         let prompts;
         try {
             prompts = JSON.parse(promptText);
