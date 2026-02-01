@@ -62,6 +62,10 @@ export default async (req, context) => {
             return new Response(JSON.stringify({ error: 'Category required' }), { status: 400, headers });
         }
 
+        if (!process.env.GEMINI_API_KEY) {
+            throw new Error("Missing GEMINI_API_KEY in Env");
+        }
+
         console.log(`[Asset Gen] Request for category: ${category}`);
 
         // 1. Check Cache (Supabase)
@@ -156,12 +160,14 @@ export default async (req, context) => {
 
     } catch (err) {
         console.error("[Asset Gen] Critical Error:", err);
-        // Return 200 with error info so client can handle it gracefully (e.g. show toast) instead of 500
+        // DEBUG: Expose error in the image text
+        const cleanError = encodeURIComponent((err.message || 'Unknown').substring(0, 30));
+
         return new Response(JSON.stringify({
             error: err.message || 'Unknown Error',
-            hero: `https://placehold.co/1200x800/e0e0e0/333333?text=Error+Gen`,
-            service: `https://placehold.co/800x600/e0e0e0/333333?text=Error+Gen`,
-            gallery: `https://placehold.co/800x600/e0e0e0/333333?text=Error+Gen`
+            hero: `https://placehold.co/1200x800/e0e0e0/333333?text=Err:${cleanError}`,
+            service: `https://placehold.co/800x600/e0e0e0/333333?text=Err:${cleanError}`,
+            gallery: `https://placehold.co/800x600/e0e0e0/333333?text=Err:${cleanError}`
         }), { status: 200, headers });
     }
 };
