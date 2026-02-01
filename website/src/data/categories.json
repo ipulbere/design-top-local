@@ -1,0 +1,442 @@
+[
+  {
+    "Category": "1. Independent consultants",
+    "Website Style": "Clean Minimalist",
+    "Background Colors": "White, Neutral",
+    "Accent Colors": "Blue, Green",
+    "List of Services": "Consulting, Case Studies, Solutions",
+    "Certificates": "Credentials, Partnerships",
+    "Free Offers": "Free Call, White Paper",
+    "Equipment": "Computers, Offices",
+    "Uniforms": "No",
+    "Working Hours": "Flexible, By Appointment",
+    "Before and After Pictures": "Sometimes (Case Studies)",
+    "content": {
+      "hero": {
+        "headline": "Strategic Solutions for Growth",
+        "subheadline": "Expert independent consulting to help you overcome challenges and achieve your business goals.",
+        "cta": "Book Your Strategy Session"
+      },
+      "services": {
+        "title": "Our Expertise",
+        "subtitle": "Tailored strategies designed for your unique challenges."
+      },
+      "trust": {
+        "title": "Why Choose Us",
+        "copy": "Certified professionals with a proven track record of success."
+      },
+      "offer": {
+        "title": "Limited Time Consultation Offer",
+        "text": "Free 15-Minute Strategy Call"
+      },
+      "gallery": {
+        "title": "Case Studies",
+        "subtitle": "Real problems, real solutions."
+      },
+      "contact": {
+        "title": "Ready to Scale?",
+        "subtitle": "Reach out today to discuss your project."
+      }
+    }
+  },
+  {
+    "Category": "2. Business analysts",
+    "Website Style": "Modern Professional",
+    "Background Colors": "White, Light Gray",
+    "Accent Colors": "Blue, Black",
+    "List of Services": "Analysis, Reporting, Optimization",
+    "Certificates": "Certifications, Degrees",
+    "Free Offers": "Free Consultation",
+    "Equipment": "Laptops, Software Tools",
+    "Uniforms": "No",
+    "Working Hours": "Standard Business Hours",
+    "Before and After Pictures": "Rarely",
+    "content": {
+      "hero": {
+        "headline": "Data-Driven Business Intelligence",
+        "subheadline": "Unlock the power of your data with expert analysis and optimization strategies.",
+        "cta": "Start Your Analysis"
+      },
+      "services": {
+        "title": "Analytics Services",
+        "subtitle": "Transforming raw data into actionable insights."
+      },
+      "trust": {
+        "title": "Trusted Experts",
+        "copy": "Certified Business Analysis Professionals (CBAP) at your service."
+      },
+      "offer": {
+        "title": "New Client Special",
+        "text": "Free Initial Data Audit"
+      },
+      "gallery": {
+        "title": "Impact Stories",
+        "subtitle": "See how we've improved efficiency for businesses like yours."
+      },
+      "contact": {
+        "title": "Get Insights Today",
+        "subtitle": "Contact us to schedule a review of your business needs."
+      }
+    }
+  },
+  {
+    "Category": "3. Management advisors",
+    "Website Style": "Corporate Sleek",
+    "Background Colors": "White, Neutral",
+    "Accent Colors": "Red, Blue",
+    "List of Services": "Advisory, Planning, Training",
+    "Certificates": "Credentials, Awards",
+    "Free Offers": "Free Assessment",
+    "Equipment": "Offices, Presentation Tools",
+    "Uniforms": "No",
+    "Working Hours": "By Appointment",
+    "Before and After Pictures": "Sometimes (Success Stories)",
+    "content": {
+      "hero": {
+        "headline": "Leadership & Management Excellence",
+        "subheadline": "Guiding organizations toward sustainable growth and operational success.",
+        "cta": "Schedule an Assessment"
+      },
+      "services": {
+        "title": "Advisory Solutions",
+        "subtitle": "Executive planning and team training for high performance."
+      },
+      "trust": {
+        "title": "Proven Leadership",
+        "copy": "Decades of experience advising top-tier management teams."
+      },
+      "offer": {
+        "title": "Exclusive Offer",
+        "text": "Free Organizational Health Check"
+      },
+      "gallery": {
+        "title": "Success Stories",
+        "subtitle": "Transforming potential into performance."
+      },
+      "contact": {
+        "title": "Lead with Confidence",
+        "subtitle": "Let's discuss your management strategy."
+      }
+    }
+  },
+  {
+    "Category": "9. Plumbers",
+    "Website Style": "Practical Visual",
+    "Background Colors": "White, Blue",
+    "Accent Colors": "Red, Yellow",
+    "List of Services": "Repairs, Installs, Maintenance",
+    "Certificates": "Licenses, Bonds",
+    "Free Offers": "Free Estimate",
+    "Equipment": "Trucks, Tools",
+    "Uniforms": "Yes",
+    "Working Hours": "24/7 Emergency",
+    "Before and After Pictures": "Yes",
+    "content": {
+      "hero": {
+        "headline": "Emergency Plumbing Experts",
+        "subheadline": "Fast, reliable, and licensed plumbing services. We fix leaks, unclog drains, and install systems 24/7.",
+        "cta": "Call for Immediate Service"
+      },
+      "services": {
+        "title": "Plumbing Services",
+        "subtitle": "Complete residential and commercial plumbing solutions."
+      },
+      "trust": {
+        "title": "Licensed & Insured",
+        "copy": "Master Plumbers providing quality workmanship you can trust."
+      },
+      "offer": {
+        "title": "Online Special",
+        "text": "$50 Off Your First Repair"
+      },
+      "gallery": {
+        "title": "Our Projects",
+        "subtitle": "Quality installations and clean repairs."
+      },
+      "contact": {
+        "title": "Need a Plumber?",
+        "subtitle": "Available 24/7 for all your plumbing emergencies."
+      }
+    }
+  },
+  {
+    "Category": "12. Painters",
+    "Website Style": "Vibrant Creative",
+    "Background Colors": "White, Colorful",
+    "Accent Colors": "Various Hues",
+    "List of Services": "Interior, Exterior, Commercial",
+    "Certificates": "Licenses, Awards",
+    "Free Offers": "Free Estimate",
+    "Equipment": "Vans, Ladders, Brushes",
+    "Uniforms": "Yes",
+    "Working Hours": "Mon-Sat",
+    "Before and After Pictures": "Yes",
+    "content": {
+      "hero": {
+        "headline": "Transform Your Space with Color",
+        "subheadline": "Professional interior and exterior painting services that bring your vision to life.",
+        "cta": "Get a Free Paint Quote"
+      },
+      "services": {
+        "title": "Our Services",
+        "subtitle": "Flawless finishes for every surface."
+      },
+      "trust": {
+        "title": "Quality Guaranteed",
+        "copy": "Licensed painters using premium materials for lasting results."
+      },
+      "offer": {
+        "title": "Seasonal Offer",
+        "text": "Free Color Consultation with Booking"
+      },
+      "gallery": {
+        "title": "Recent Makeovers",
+        "subtitle": "See the dramatic difference fresh paint makes."
+      },
+      "contact": {
+        "title": "Ready to Paint?",
+        "subtitle": "Contact us today for a free on-site estimate."
+      }
+    }
+  },
+  {
+    "Category": "14. Roofers",
+    "Website Style": "Durable Practical",
+    "Background Colors": "White, Gray",
+    "Accent Colors": "Blue, Black",
+    "List of Services": "Repairs, Installs, Inspections",
+    "Certificates": "Licenses, Warranties",
+    "Free Offers": "Free Inspection",
+    "Equipment": "Trucks, Ladders",
+    "Uniforms": "Yes",
+    "Working Hours": "Mon-Fri",
+    "Before and After Pictures": "Yes",
+    "content": {
+      "hero": {
+        "headline": "Protect Your Home with Quality Roofing",
+        "subheadline": "Expert roof repairs, replacements, and inspections. Durable solutions for every season.",
+        "cta": "Schedule Free Roof Inspection"
+      },
+      "services": {
+        "title": "Roofing Services",
+        "subtitle": "Keeping your home safe and dry."
+      },
+      "trust": {
+        "title": "Certified Installers",
+        "copy": "manufacturer-certified roofers offering industry-leading warranties."
+      },
+      "offer": {
+        "title": "Storm Damage Special",
+        "text": "Free Comprehensive Roof Audit"
+      },
+      "gallery": {
+        "title": "Our Roof Projects",
+        "subtitle": "Quality craftsmanship from the top down."
+      },
+      "contact": {
+        "title": "Concerned About Your Roof?",
+        "subtitle": "Don't wait for a leak. Call us today."
+      }
+    }
+  },
+  {
+    "Category": "4. Accounting",
+    "Website Style": "Professional Clean",
+    "Background Colors": "White, Blue",
+    "Accent Colors": "Green, Black",
+    "List of Services": "Bookkeeping, Audits, Consulting",
+    "Certificates": "CPA, Licenses",
+    "Free Offers": "Free Quote",
+    "Equipment": "Computers, Software",
+    "Uniforms": "No",
+    "Working Hours": "Mon-Fri 9-5",
+    "Before and After Pictures": "Rarely",
+    "content": {
+      "hero": {
+        "headline": "Precision Accounting for Your Success",
+        "subheadline": "Reliable bookkeeping, auditing, and financial consulting to keep your business on track.",
+        "cta": "Get a Financial Review"
+      },
+      "services": {
+        "title": "Financial Services",
+        "subtitle": "Expert management of your financial health."
+      },
+      "trust": {
+        "title": "Certified CPAs",
+        "copy": "Trust your numbers to licensed professionals."
+      },
+      "offer": {
+        "title": "New Business Offer",
+        "text": "Free Initial Financial Consultation"
+      },
+      "gallery": {
+        "title": "Client Success",
+        "subtitle": "Helping businesses grow through financial clarity."
+      },
+      "contact": {
+        "title": "Secure Your Finances",
+        "subtitle": "Contact us to streamline your accounting today."
+      }
+    }
+  },
+  {
+    "Category": "5. Tax Preparation",
+    "Website Style": "Modern Intuitive",
+    "Background Colors": "White, Neutral",
+    "Accent Colors": "Blue, Orange",
+    "List of Services": "Filing, Planning, Audits",
+    "Certificates": "IRS Certifications",
+    "Free Offers": "Free Review",
+    "Equipment": "Tax Software, Offices",
+    "Uniforms": "No",
+    "Working Hours": "Seasonal Extended",
+    "Before and After Pictures": "No",
+    "content": {
+      "hero": {
+        "headline": "Stress-Free Tax Preparation",
+        "subheadline": "Maximize your refund and minimize your stress with expert tax filing services.",
+        "cta": "Book Your Tax Appt"
+      },
+      "services": {
+        "title": "Tax Services",
+        "subtitle": "Accurate filing and strategic planning."
+      },
+      "trust": {
+        "title": "IRS Certified",
+        "copy": "Up-to-date on all the latest tax codes and credits."
+      },
+      "offer": {
+        "title": "Early Bird Special",
+        "text": "Free Review of Last Year's Return"
+      },
+      "gallery": {
+        "title": "Tax Tips",
+        "subtitle": "Smart strategies for every taxpayer."
+      },
+      "contact": {
+        "title": "Ready to File?",
+        "subtitle": "Schedule your appointment today."
+      }
+    }
+  },
+  {
+    "Category": "6. Bookkeeping",
+    "Website Style": "Simple Functional",
+    "Background Colors": "White, Light",
+    "Accent Colors": "Blue, Green",
+    "List of Services": "Records, Payroll, Reports",
+    "Certificates": "Certifications",
+    "Free Offers": "Free Trial",
+    "Equipment": "Accounting Tools, Desks",
+    "Uniforms": "No",
+    "Working Hours": "Standard Hours",
+    "Before and After Pictures": "No",
+    "content": {
+      "hero": {
+        "headline": "Organized Books, Better Business",
+        "subheadline": "We handle the records and payroll so you can focus on growing your business.",
+        "cta": "Get a Free Quote"
+      },
+      "services": {
+        "title": "Bookkeeping Services",
+        "subtitle": "Keeping your records spotless and up to date."
+      },
+      "trust": {
+        "title": "Dependable Accuracy",
+        "copy": "Certified bookkeepers dedicated to precision."
+      },
+      "offer": {
+        "title": "Special Offer",
+        "text": "First Month of Bookkeeping 50% Off"
+      },
+      "gallery": {
+        "title": "Our Process",
+        "subtitle": "Seamless integration with your workflow."
+      },
+      "contact": {
+        "title": "Simplify Your Books",
+        "subtitle": "Call us to set up your system."
+      }
+    }
+  },
+  {
+    "Category": "7. Design studios",
+    "Website Style": "Creative Asymmetrical",
+    "Background Colors": "White, Vibrant",
+    "Accent Colors": "Bold Colors",
+    "List of Services": "Graphic Design, Branding",
+    "Certificates": "Awards, Portfolios",
+    "Free Offers": "Free Quote",
+    "Equipment": "Computers, Design Software",
+    "Uniforms": "No",
+    "Working Hours": "Flexible",
+    "Before and After Pictures": "Yes (Portfolio)",
+    "content": {
+      "hero": {
+        "headline": "Design That Speaks Volumes",
+        "subheadline": "Creative branding and graphic design solutions that capture your unique identity.",
+        "cta": "View Our Portfolio"
+      },
+      "services": {
+        "title": "Creative Services",
+        "subtitle": "Visual storytelling for modern brands."
+      },
+      "trust": {
+        "title": "Award-Winning",
+        "copy": "Recognized for excellence in design and innovation."
+      },
+      "offer": {
+        "title": "New Brand Package",
+        "text": "Free Logo Concept with Branding Package"
+      },
+      "gallery": {
+        "title": "Our Work",
+        "subtitle": "A showcase of our latest creative projects."
+      },
+      "contact": {
+        "title": "Start Your Project",
+        "subtitle": "Let's create something amazing together."
+      }
+    }
+  },
+  {
+    "Category": "8. Engineering consultants",
+    "Website Style": "Technical Modern",
+    "Background Colors": "White, Gray",
+    "Accent Colors": "Blue, Green",
+    "List of Services": "Consulting, Planning, Design",
+    "Certificates": "Licenses, Degrees",
+    "Free Offers": "Free Consultation",
+    "Equipment": "CAD Software, Offices",
+    "Uniforms": "No",
+    "Working Hours": "Mon-Fri",
+    "Before and After Pictures": "Yes (Projects)",
+    "content": {
+      "hero": {
+        "headline": "Engineering Excellence & Innovation",
+        "subheadline": "Comprehensive consulting, planning, and design for complex engineering challenges.",
+        "cta": "Discuss Your Project"
+      },
+      "services": {
+        "title": "Engineering Solutions",
+        "subtitle": "Technical expertise for structural and systems design."
+      },
+      "trust": {
+        "title": "Licensed P.E.",
+        "copy": "Professional Engineers committed to safety and quality."
+      },
+      "offer": {
+        "title": "Project Init",
+        "text": "Free Initial Feasibility Consultation"
+      },
+      "gallery": {
+        "title": "Project Showcase",
+        "subtitle": "Engineering feats and successful implementations."
+      },
+      "contact": {
+        "title": "Partner With Us",
+        "subtitle": "Reach out for expert engineering advice."
+      }
+    }
+  }
+]
