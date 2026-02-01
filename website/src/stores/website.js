@@ -59,8 +59,10 @@ export const useWebsiteStore = defineStore('website', () => {
     // Helper to get service specific images for the gallery loop
     function getServiceImage(service, type) {
         const key = `${service}_${type}`;
-        if (companyInfo.value.customImages && companyInfo.value.customImages[key]) {
-            return companyInfo.value.customImages[key];
+        if (companyInfo.value.customImages) {
+            if (companyInfo.value.customImages[key]) return companyInfo.value.customImages[key];
+            // Fallback to global AI generated asset if available
+            if (companyInfo.value.customImages[type]) return companyInfo.value.customImages[type];
         }
         return getPlaceholder(type, service);
     }
@@ -126,6 +128,48 @@ export const useWebsiteStore = defineStore('website', () => {
     const isPaid = ref(false)
 
     // Actions
+    async function fetchAssets(category) {
+        if (!category) return;
+
+        // Don't re-fetch if we already have assets for this exact category in this session
+        // (Optional optimization logic)
+
+        try {
+            console.log(`[Store] Fetching assets for ${category}...`);
+            const response = await fetch('/.netlify/functions/generate-assets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category })
+            });
+
+            if (!response.ok) throw new Error('Asset generation failed');
+
+            const assets = await response.json();
+            console.log(`[Store] Received assets:`, assets);
+
+            // Update customImages with the new assets
+            // Only update if we don't have better ones (preserving user edits?) 
+            // For now, we overwrite or merge.
+
+            companyInfo.value.customImages = {
+                ...companyInfo.value.customImages,
+                hero: assets.hero,
+                equipment: assets.hero, // Fallback reuse for equip if needed
+                ['Box 1_services']: assets.service, // Map to service boxes maybe?
+                ['Box 2_services']: assets.service,
+                ['Box 3_services']: assets.service,
+                before: assets.gallery,
+                after: assets.gallery // Using same/similar for now or could expand
+            };
+
+            // Update specific "assets" map if needed, but our 'assets' computed property 
+            // relies on 'customImages', so this should trigger reactivity.
+
+        } catch (err) {
+            console.error('[Store] Fetch Asset Error:', err);
+        }
+    }
+
     function updateCompanyInfo(info) {
         // Extract city for generation
         const city = info.address ? info.address.split(',')[1] || 'Your Area' : 'Your Area';
@@ -138,12 +182,20 @@ export const useWebsiteStore = defineStore('website', () => {
             content = generateContent(info.category, info.name, city);
         }
 
+        // Detect if category changed to trigger asset fetch
+        const oldCat = companyInfo.value.category;
+        const newCat = info.category || oldCat;
+
         companyInfo.value = { ...companyInfo.value, ...info, content }
         isGenerated.value = true
-    }
 
-    function approveWebsite() {
-        isApproved.value = true
+        if (newCat && newCat !== oldCat) {
+            // Fetch in background
+            fetchAssets(newCat);
+        } else if (newCat && !companyInfo.value.customImages?.hero) {
+            // Fetch if we have no images yet
+            fetchAssets(newCat);
+        }
     }
 
     function updateContent(path, value) {
@@ -171,10 +223,6 @@ export const useWebsiteStore = defineStore('website', () => {
         const newUrl = `https://placehold.co/800x600/2563eb/ffffff?text=${encodeURIComponent(prompt)}`;
 
         companyInfo.value.customImages[path] = newUrl;
-    }
-
-    function approveWebsite() {
-        isApproved.value = true
     }
 
     function markPaid() {

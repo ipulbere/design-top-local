@@ -320,8 +320,10 @@ const vEditable = {
             <h2 v-editable="'content.services.title'" class="text-3xl md:text-4xl font-bold mb-4">{{ store.companyInfo.content?.services?.title || 'List of Services' }}</h2>
             <p v-editable="'content.services.subtitle'" class="text-slate-500 text-lg">{{ store.companyInfo.content?.services?.subtitle || 'Comprehensive solutions tailored to your needs.' }}</p>
           </div>
-          <div class="grid md:grid-cols-3 gap-8">
-            <div v-for="(service, index) in store.companyInfo.services || ['Service 1', 'Service 2', 'Service 3']" :key="index" class="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all duration-300 group">
+          <!-- SYMMETRIC LAYOUT: Use Flex wrap center instead of Grid -->
+          <div class="flex flex-wrap justify-center gap-8">
+            <div v-for="(service, index) in store.companyInfo.services || ['Service 1', 'Service 2', 'Service 3']" :key="index" 
+                 class="w-full md:w-[calc(33.333%-2rem)] max-w-md p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-lg transition-all duration-300 group flex flex-col items-center text-center">
               <div class="w-12 h-12 rounded-xl bg-white shadow-sm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                  <svg :class="themeColor" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
               </div>

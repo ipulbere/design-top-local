@@ -101,7 +101,7 @@ const styles = [...new Set(categoriesData.map(c => c['Website Style']))];
           
           <!-- Header -->
           <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
-              <h2 class="text-xl font-bold text-slate-900">Edit Website</h2>
+              <h2 class="text-xl font-bold text-slate-900">Edit Website design</h2>
               <button @click="$emit('close')" class="p-2 hover:bg-slate-200 rounded-full transition">
                   <svg class="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               </button>
@@ -125,8 +125,8 @@ const styles = [...new Set(categoriesData.map(c => c['Website Style']))];
                           .top-local.net
                           <div class="group relative">
                               <span class="cursor-help text-xs bg-blue-200 rounded-full w-4 h-4 flex items-center justify-center">i</span>
-                              <div class="absolute bottom-full right-0 w-48 p-2 bg-slate-800 text-white text-xs rounded shadow-xl hidden group-hover:block mb-2 z-10">
-                                  Use .top-local.net for free. Upgrade for custom .com domains.
+                              <div class="absolute bottom-full right-0 w-64 p-3 bg-slate-800 text-white text-xs rounded shadow-xl hidden group-hover:block mb-2 z-10 font-normal leading-relaxed">
+                                  Domain <b>{{ domainPreview }}</b> is free to use. Domain names like <b>yourcompany.com</b> comes with upgrade, and available anytime later.
                               </div>
                           </div>
                       </span>
@@ -146,7 +146,7 @@ const styles = [...new Set(categoriesData.map(c => c['Website Style']))];
               <div>
                   <label class="block text-sm font-medium text-slate-700 mb-1">Services <span class="text-xs text-slate-400">(Comma separated)</span></label>
                   <textarea v-model="form.services" rows="4" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none" placeholder="Service 1, Service 2..."></textarea>
-                  <p class="text-xs text-slate-500 mt-1">Updates the "Services" section instantly.</p>
+                  <p class="text-xs text-slate-500 mt-1">Add, remove comma separated services your company provides. Add description if needed.</p>
               </div>
 
               <!-- 7. Free Offers -->
