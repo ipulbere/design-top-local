@@ -87,25 +87,25 @@ export default async (req, context) => {
             console.log("[Asset Gen] No API Key found, using default generic prompts.");
         }
 
-        // 3. Construct Pollinations.ai URLs
-        // Pollinations generates images on the fly via URL. 
-        // We append a random seed to ensure uniqueness per generation if we wanted, 
-        // but here we want consistency for the category, so we don't random seed beyond the prompt.
-        // We add 'nologo=true' and 'private=true' to attempt cleaner images.
+        // 3. Construct LoremFlickr URLs (Reliable, no API key, real photos)
+        // Format: https://loremflickr.com/{width}/{height}/{keywords}
 
-        const generateUrl = (prompt, width, height) => {
-            return `https://image.pollinations.ai/prompt/${cleanPrompt(prompt)}?width=${width}&height=${height}&nologo=true&model=flux`;
+        const generateUrl = (keywords, width, height) => {
+            // Clean keywords to comma separated
+            const minimalKeywords = keywords.split(' ').slice(0, 2).join(',');
+            const random = Math.floor(Math.random() * 1000);
+            return `https://loremflickr.com/${width}/${height}/${encodeURIComponent(minimalKeywords)}?random=${random}`;
         };
 
         const finalAssets = {
-            hero: generateUrl(prompts.hero + ", photorealistic, 4k, website header", 1200, 800),
-            service: generateUrl(prompts.service + ", photorealistic, professional", 800, 600),
-            gallery: generateUrl(prompts.gallery + ", photorealistic, high detail", 800, 600),
+            hero: generateUrl(`${category},business,work`, 1200, 800),
+            service: generateUrl(`${category},worker,tool`, 800, 600),
+            gallery: generateUrl(`${category},project,result`, 800, 600),
             meta: prompts
         };
 
         // 4. Save to Supabase (Cache the URLs)
-        // Pollinations URLs are permanent-ish (generated on fly), so caching them is fine.
+        // LoremFlickr URLs are dynamic, but caching the generated URLs is fine for consistency.
         await supabase.from('category_assets').insert([{ category, assets: finalAssets }]);
 
         return new Response(JSON.stringify(finalAssets), { headers });
