@@ -91,21 +91,29 @@ export default async (req, context) => {
         // Format: https://loremflickr.com/{width}/{height}/{keywords}
 
         const generateUrl = (keywords, width, height) => {
-            // Clean keywords to comma separated
+            // Clean keywords to comma separated. Add "business" to avoid cats/random stuff.
             const minimalKeywords = keywords.split(' ').slice(0, 2).join(',');
-            const random = Math.floor(Math.random() * 1000);
-            return `https://loremflickr.com/${width}/${height}/${encodeURIComponent(minimalKeywords)}?random=${random}`;
+            const random = Math.floor(Math.random() * 10000);
+            return `https://loremflickr.com/${width}/${height}/work,${encodeURIComponent(minimalKeywords)}?random=${random}`;
         };
 
         const finalAssets = {
-            hero: generateUrl(`${category},business,work`, 1200, 800),
-            service: generateUrl(`${category},worker,tool`, 800, 600),
-            gallery: generateUrl(`${category},project,result`, 800, 600),
+            hero: generateUrl(`${category} professional`, 1200, 800),
+            service: generateUrl(`${category} job`, 800, 600),
+            gallery: generateUrl(`${category} result`, 800, 600),
+            team: generateUrl(`${category} team professional`, 800, 600),
+            service1: generateUrl(`${category} detail`, 600, 400),
+            service2: generateUrl(`${category} equipment`, 600, 400),
+            service3: generateUrl(`${category} working`, 600, 400),
             meta: prompts
         };
 
         // 4. Save to Supabase (Cache the URLs)
-        // LoremFlickr URLs are dynamic, but caching the generated URLs is fine for consistency.
+        // Check if we need to update or insert
+        // For simplicity in this serverless function, we'll try to update existing if possible or just insert
+        // The unique constraint on 'category' might fail an insert, so let's delete first (simplest cache invalidation) or use upsert
+
+        await supabase.from('category_assets').delete().eq('category', category);
         await supabase.from('category_assets').insert([{ category, assets: finalAssets }]);
 
         return new Response(JSON.stringify(finalAssets), { headers });
