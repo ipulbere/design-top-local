@@ -51,30 +51,41 @@ export default async (req, context) => {
 
         // 2. Generate Prompts via Gemini (Text is reliable)
         // We keep this to get specific, creative visual descriptions
-        const promptReq = `
-      Write 3 distinct, detailed visual descriptions for AI image generation for a "${category}" website.
-      1. Hero: Wide shot, professional, welcoming, high quality.
-      2. Service: Close up action shot, detailed, professional.
-      3. Gallery: A before/after style or finished project result, clean.
-      
-      Return ONLY valid JSON:
-      { "hero": "...", "service": "...", "gallery": "..." }
-    `;
-
-        // Use standard Flash model for text
-        const promptResult = await genAI.models.generateContent({
-            model: "gemini-1.5-flash",
-            contents: promptReq
-        });
-
-        const text = (promptResult.text || promptResult.response?.text() || "{}").replace(/```json/g, '').replace(/```/g, '').trim();
+        // Fallback defaults in case Gemini fails
         let prompts = {
-            hero: `${category} professional workspace modern`,
-            service: `${category} service action closeup`,
-            gallery: `${category} project result high quality`
+            hero: `${category} professional workspace modern photorealistic`,
+            service: `${category} service action closeup professional`,
+            gallery: `${category} project construction result high quality`
         };
 
-        try { prompts = JSON.parse(text); } catch (e) { console.warn("JSON Parse fail, using defaults"); }
+        // Try to enhance with Gemini, but don't crash if it fails (e.g. missing key)
+        if (process.env.GEMINI_API_KEY) {
+            try {
+                const promptReq = `
+              Write 3 distinct, detailed visual descriptions for AI image generation for a "${category}" website.
+              1. Hero: Wide shot, professional, welcoming, high quality.
+              2. Service: Close up action shot, detailed, professional.
+              3. Gallery: A before/after style or finished project result, clean.
+              
+              Return ONLY valid JSON:
+              { "hero": "...", "service": "...", "gallery": "..." }
+            `;
+
+                const promptResult = await genAI.models.generateContent({
+                    model: "gemini-1.5-flash",
+                    contents: promptReq
+                });
+
+                const text = (promptResult.text || promptResult.response?.text() || "{}").replace(/```json/g, '').replace(/```/g, '').trim();
+                const json = JSON.parse(text);
+                if (json.hero) prompts = json;
+
+            } catch (e) {
+                console.warn("[Asset Gen] Prompt enhancement failed (using defaults):", e.message);
+            }
+        } else {
+            console.log("[Asset Gen] No API Key found, using default generic prompts.");
+        }
 
         // 3. Construct Pollinations.ai URLs
         // Pollinations generates images on the fly via URL. 
@@ -101,12 +112,13 @@ export default async (req, context) => {
 
     } catch (err) {
         console.error("[Asset Gen] Critical:", err);
+        const cleanError = encodeURIComponent((err.message || 'Unknown').substring(0, 30));
         return new Response(JSON.stringify({
             error: err.message,
             // Fallback to static placeholders if even this fails
-            hero: `https://placehold.co/1200x800?text=Error`,
-            service: `https://placehold.co/800x600?text=Error`,
-            gallery: `https://placehold.co/800x600?text=Error`
+            hero: `https://placehold.co/1200x800?text=Err:${cleanError}`,
+            service: `https://placehold.co/800x600?text=Err:${cleanError}`,
+            gallery: `https://placehold.co/800x600?text=Err:${cleanError}`
         }), { status: 200, headers });
     }
 };
