@@ -13,37 +13,24 @@ const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 // Image Generation Helper
 async function generateImage(prompt) {
     try {
-        // Try Gemini 2.0 Flash (Experimental) which supports image generation
-        try {
-            const response = await genAI.models.generateContent({
-                model: 'gemini-2.0-flash-exp',
-                contents: { parts: [{ text: `Generate a photorealistic image: ${prompt}` }] },
-                config: { responseModalities: ["image"] } // Enforce image output if supported
-            });
+        // Standard Imagen 3.0 Model for AI Studio
+        const response = await genAI.models.generateContent({
+            model: 'imagen-3.0-generate-001',
+            contents: { parts: [{ text: prompt }] },
+            config: { imageConfig: { aspectRatio: "4:3" } }
+        });
 
-            // Check for inline data (standard for Gemini Image gen)
-            if (response.candidates && response.candidates[0]?.content?.parts?.[0]?.inlineData) {
-                return response.candidates[0].content.parts[0].inlineData.data;
-            }
-        } catch (err2) {
-            console.log(`[Asset Gen] Gemini 2.0 Flash failed (${err2.message}), trying User Model...`);
-
-            // Try User's suggested model name 
-            const response = await genAI.models.generateContent({
-                model: 'gemini-2.5-flash-image',
-                contents: { parts: [{ text: prompt }] },
-                config: { imageConfig: { aspectRatio: "4:3" } }
-            });
-
-            if (response.candidates && response.candidates[0]?.content?.parts?.[0]?.inlineData) {
-                return response.candidates[0].content.parts[0].inlineData.data;
-            }
+        if (response.candidates && response.candidates[0]?.content?.parts?.[0]?.inlineData) {
+            return response.candidates[0].content.parts[0].inlineData.data;
         }
         return null;
-
-    } catch (e) {
-        console.warn("[Asset Gen] Image gen failed:", e.message);
-        throw e; // Throw to be caught by the outer loop for error display
+    } catch (err) {
+        console.warn(`[Asset Gen] Image Gen Failed: ${err.message}`);
+        // We do NOT re-throw here so the main loop can continue with placeholders if one image fails
+        // But we attach the error to the first failure if needed, or just return null to trigger placeholder
+        // To show error in placeholder, we could throw, or return a special error string?
+        // Let's throw so the debug mode shows it.
+        throw err;
     }
 }
 
