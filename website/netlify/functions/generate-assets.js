@@ -42,7 +42,24 @@ export default async (req, context) => {
             .eq('category', category)
             .single();
 
+        // 1a. Smart Cache Validation
+        let isValidCache = false;
         if (cached?.assets) {
+            const assetStr = JSON.stringify(cached.assets);
+            // We want to force regen if:
+            // 1. It uses Pollinations (old provider)
+            // 2. It has an "Error" placeholder
+            // 3. It is MISSING the new 'team' key we just added
+            if (!assetStr.includes('pollinations.ai') &&
+                !assetStr.includes('Err:') &&
+                cached.assets.team) {
+                isValidCache = true;
+            } else {
+                console.log(`[Asset Gen] Invalidating old cache for ${category} (Upgrade needed)`);
+            }
+        }
+
+        if (isValidCache) {
             console.log(`[Asset Gen] Cache Hit: ${category}`);
             return new Response(JSON.stringify(cached.assets), { headers });
         }
