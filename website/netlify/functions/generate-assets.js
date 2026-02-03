@@ -184,42 +184,46 @@ export default async (req, context) => {
         // For now, sequencial or Promise.all.
         // Let's do Promise.all but handle failures.
 
-        // Run generations (Sequential with Delay to avoid Rate Limits - 429)
-        const allKeys = Object.entries(assetsToGen);
+        // Run generations (Batched 2 at a time to balance Speed vs Rate Limits)
+        // 1 at a time = Too slow (Timeouts)
+        // 4 at a time = Rate Limit (429)
+        // 2 at a time = Sweet spot (~15s total)
 
-        // Helper delay
+        const allKeys = Object.entries(assetsToGen);
+        const chunkSize = 2;
         const delay = ms => new Promise(res => setTimeout(res, ms));
 
-        for (const [key, promptText] of allKeys) {
-            let buffer;
-            try {
-                // Try Vertex
-                // USE 16:9 FOR HERO AND TEAM
-                const ratio = (key === 'hero' || key === 'team') ? '16:9' : '1:1';
-                buffer = await generateImage(promptText, ratio);
+        for (let i = 0; i < allKeys.length; i += chunkSize) {
+            const chunk = allKeys.slice(i, i + chunkSize);
 
-                // Add delay after success to be nice to API
-                await delay(1000);
+            await Promise.all(chunk.map(async ([key, promptText]) => {
+                let buffer;
+                try {
+                    // Try Vertex
+                    // USE 16:9 FOR HERO AND TEAM
+                    const ratio = (key === 'hero' || key === 'team') ? '16:9' : '1:1';
+                    buffer = await generateImage(promptText, ratio);
+                } catch (err) {
+                    console.warn(`[Asset Gen] Vertex failed for ${key}:`, err.message);
+                    // Show error in placeholder
+                    const cleanErr = err.message.replace(/[^a-zA-Z0-9 \(\)\:]/g, '').substring(0, 30);
+                    resultAssets[key] = `https://placehold.co/800x600?text=Error:+${encodeURIComponent(cleanErr)}`;
+                    return; // Skip upload
+                }
 
-            } catch (err) {
-                console.warn(`[Asset Gen] Vertex failed for ${key}:`, err.message);
-                // Show error in placeholder
-                // "Vertex API Error (429): ..."
-                // Encode and truncate longer string
-                const cleanErr = err.message.replace(/[^a-zA-Z0-9 \(\)\:]/g, '').substring(0, 30);
-                resultAssets[key] = `https://placehold.co/800x600?text=Error:+${encodeURIComponent(cleanErr)}`;
-                continue; // Skip upload if gen failed
-            }
+                try {
+                    const filename = `${category}-${key}-${Date.now()}.png`;
+                    const url = await uploadToSupabase(buffer, category, filename);
+                    resultAssets[key] = url;
+                } catch (uploadErr) {
+                    console.warn(`[Asset Gen] Upload failed for ${key}, using Base64:`, uploadErr.message);
+                    const base64 = buffer.toString('base64');
+                    resultAssets[key] = `data:image/png;base64,${base64}`;
+                }
+            }));
 
-            try {
-                const filename = `${category}-${key}-${Date.now()}.png`;
-                const url = await uploadToSupabase(buffer, category, filename);
-                resultAssets[key] = url;
-            } catch (uploadErr) {
-                console.warn(`[Asset Gen] Upload failed for ${key}, using Base64:`, uploadErr.message);
-                const base64 = buffer.toString('base64');
-                resultAssets[key] = `data:image/png;base64,${base64}`;
-            }
+            // Small delay between chunks to be safe
+            if (i + chunkSize < allKeys.length) await delay(500);
         }
 
         // Save to DB
