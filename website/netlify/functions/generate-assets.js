@@ -9,11 +9,83 @@ const supabase = createClient(
 
 const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// Image Generation Helper (Adapted from User's Logic)
-// Helper to clean prompts for URL
-function cleanPrompt(text) {
-    return encodeURIComponent(text.replace(/[^a-zA-Z0-9, ]/g, '').substring(0, 300));
+// Constants
+const STORAGE_BUCKET = 'generated-images';
+
+// Helper: Upload Buffer to Supabase
+async function uploadToSupabase(buffer, folder, filename) {
+    const filePath = `${folder}/${filename}`;
+
+    const { data, error } = await supabase
+        .storage
+        .from(STORAGE_BUCKET)
+        .upload(filePath, buffer, {
+            contentType: 'image/png',
+            upsert: true
+        });
+
+    if (error) throw error;
+
+    // Get Public URL
+    const { data: { publicUrl } } = supabase
+        .storage
+        .from(STORAGE_BUCKET)
+        .getPublicUrl(filePath);
+
+    return publicUrl;
 }
+
+// Helper: Generate Image with Vertex AI (Imagen 4)
+async function generateImage(prompt, aspectRatio = "1:1") {
+    const PROJECT_ID = "gen-lang-client-0423877717";
+    const LOCATION = "us-central1";
+    // Switched to Imagen 3.0 (Stable) as 4.0 Preview is ignoring aspect ratio
+    const MODEL_ID = "imagen-3.0-generate-001";
+    const API_KEY = process.env.GEMINI_API_KEY;
+
+    const URL = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL_ID}:predict?key=${API_KEY}`;
+
+    const body = {
+        instances: [
+            { prompt: prompt }
+        ],
+        parameters: {
+            sampleCount: 1,
+            aspectRatio: aspectRatio
+        }
+    };
+
+    try {
+        console.log(`[Asset Gen] Calling Vertex AI: ${MODEL_ID} [${aspectRatio}]`);
+        const response = await fetch(URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            const errText = await response.text();
+            throw new Error(`Vertex API Error (${response.status}): ${errText}`);
+        }
+
+        const data = await response.json();
+
+        // Extract Base64
+        // Format: { predictions: [ { bytesBase64Encoded: "..." } ] }
+        if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
+            return Buffer.from(data.predictions[0].bytesBase64Encoded, 'base64');
+        }
+
+        throw new Error("No image data found in Vertex response: " + JSON.stringify(data).substring(0, 100));
+
+    } catch (e) {
+        console.error("Vertex Generation Error:", e.message);
+        throw e;
+    }
+}
+
+// Helper: Fallback to LoremFlickr - REMOVED
+// function getFallbackImage(prompt, width = 1200, height = 800) { ... }
 
 export default async (req, context) => {
     const headers = {
@@ -25,125 +97,141 @@ export default async (req, context) => {
     if (req.method === 'OPTIONS') return new Response('ok', { headers });
 
     try {
-        let category;
+        let body;
         try {
-            const body = await req.json();
-            category = body.category;
+            body = await req.json();
         } catch (e) {
-            return new Response(JSON.stringify({ error: 'Invalid JSON body' }), { status: 400, headers });
+            return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400, headers });
         }
 
+        const { category, prompt, mode } = body;
+
+        console.log(`[Asset Gen] Request: Mode=${mode}, Category=${category}`);
+
+        // MODE 1: Single Image Generation (for Generator Tool)
+        if (mode === 'single') {
+            if (!prompt) return new Response(JSON.stringify({ error: 'Prompt required' }), { status: 400, headers });
+
+            let buffer;
+            try {
+                // Generates Buffer (or throws)
+                buffer = await generateImage(prompt);
+            } catch (err) {
+                // Generation failed - return strict error
+                return new Response(JSON.stringify({
+                    error: "Generation Failed: " + err.message,
+                    details: err.stack
+                }), { status: 500, headers });
+            }
+
+            try {
+                const timestamp = Date.now();
+                const filename = `gen-${timestamp}.png`;
+                const publicUrl = await uploadToSupabase(buffer, 'manual', filename);
+                return new Response(JSON.stringify({ url: publicUrl, prompt }), { headers });
+
+            } catch (uploadErr) {
+                console.warn("[Asset Gen] Upload failed, returning Base64 fallback:", uploadErr.message);
+
+                // Fallback: Return Base64 directly
+                const base64 = buffer.toString('base64');
+                const dataUrl = `data:image/png;base64,${base64}`;
+
+                return new Response(JSON.stringify({
+                    url: dataUrl,
+                    prompt: prompt,
+                    note: "Storage failed, returning direct image"
+                }), { headers });
+            }
+        }
+
+        // MODE 2: Category Assets (for Website Builder)
         if (!category) return new Response(JSON.stringify({ error: 'Category required' }), { status: 400, headers });
 
-        // 1. Check Cache
+        // Check Cache first
         const { data: cached } = await supabase
             .from('category_assets')
             .select('assets')
             .eq('category', category)
             .single();
 
-        // 1a. Smart Cache Validation
-        let isValidCache = false;
-        if (cached?.assets) {
-            const assetStr = JSON.stringify(cached.assets);
-            // We want to force regen if:
-            // 1. It uses Pollinations (old provider)
-            // 2. It has an "Error" placeholder
-            // 3. It is MISSING the new 'team' key we just added
-            if (!assetStr.includes('pollinations.ai') &&
-                !assetStr.includes('Err:') &&
-                cached.assets.team) {
-                isValidCache = true;
-            } else {
-                console.log(`[Asset Gen] Invalidating old cache for ${category} (Upgrade needed)`);
-            }
-        }
-
-        if (isValidCache) {
+        if (cached?.assets && !cached.assets.hero.includes('placehold.co')) {
             console.log(`[Asset Gen] Cache Hit: ${category}`);
             return new Response(JSON.stringify(cached.assets), { headers });
         }
 
-        console.log(`[Asset Gen] Generating for: ${category}`);
+        // Generate Assets (Parallel)
+        // We define the needed assets
+        // Generate Assets (Parallel)
+        const assetsToGen = {
+            hero: `A professional website stock photo: A friendly professional ${category} professional in a clean blue uniform smiling while holding ${category} tool, standing in a bright modern ${category} workplace, focusing on trust and reliability, 16:9 wide aspect ratio`,
+            team: `${category} team group photo, professional, smiling, office environment, 16:9 wide aspect ratio`,
 
-        // 2. Generate Prompts via Gemini (Text is reliable)
-        // We keep this to get specific, creative visual descriptions
-        // Fallback defaults in case Gemini fails
-        let prompts = {
-            hero: `${category} professional workspace modern photorealistic`,
-            service: `${category} service action closeup professional`,
-            gallery: `${category} project construction result high quality`
+            // Generate diversity for service/gallery slots (assuming 3 for now)
+            service_0: `${category} service action closeup, professional details, style A`,
+            service_1: `${category} service action, different angle, style B`,
+            service_2: `${category} service equipment or interaction, style C`,
+
+            gallery_0: `${category} project result, high quality photo, finished work, example A`,
+            gallery_1: `${category} project transformation, stunning result, example B`,
+            gallery_2: `${category} project details, professional quality, example C`
         };
 
-        // Try to enhance with Gemini, but don't crash if it fails (e.g. missing key)
-        if (process.env.GEMINI_API_KEY) {
+        const resultAssets = {};
+
+        // Run generations
+        // Warning: Parallel limit might be needed for rate limits. 
+        // For now, sequencial or Promise.all.
+        // Let's do Promise.all but handle failures.
+
+        // Run generations (Sequential with Delay to avoid Rate Limits - 429)
+        const allKeys = Object.entries(assetsToGen);
+
+        // Helper delay
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+
+        for (const [key, promptText] of allKeys) {
+            let buffer;
             try {
-                const promptReq = `
-              Write 3 distinct, detailed visual descriptions for AI image generation for a "${category}" website.
-              1. Hero: Wide shot, professional, welcoming, high quality.
-              2. Service: Close up action shot, detailed, professional.
-              3. Gallery: A before/after style or finished project result, clean.
-              
-              Return ONLY valid JSON:
-              { "hero": "...", "service": "...", "gallery": "..." }
-            `;
+                // Try Vertex
+                // USE 16:9 FOR HERO AND TEAM
+                const ratio = (key === 'hero' || key === 'team') ? '16:9' : '1:1';
+                buffer = await generateImage(promptText, ratio);
 
-                const promptResult = await genAI.models.generateContent({
-                    model: "gemini-1.5-flash",
-                    contents: promptReq
-                });
+                // Add delay after success to be nice to API
+                await delay(1000);
 
-                const text = (promptResult.text || promptResult.response?.text() || "{}").replace(/```json/g, '').replace(/```/g, '').trim();
-                const json = JSON.parse(text);
-                if (json.hero) prompts = json;
-
-            } catch (e) {
-                console.warn("[Asset Gen] Prompt enhancement failed (using defaults):", e.message);
+            } catch (err) {
+                console.warn(`[Asset Gen] Vertex failed for ${key}:`, err.message);
+                // Show error in placeholder
+                // "Vertex API Error (429): ..."
+                // Encode and truncate longer string
+                const cleanErr = err.message.replace(/[^a-zA-Z0-9 \(\)\:]/g, '').substring(0, 30);
+                resultAssets[key] = `https://placehold.co/800x600?text=Error:+${encodeURIComponent(cleanErr)}`;
+                continue; // Skip upload if gen failed
             }
-        } else {
-            console.log("[Asset Gen] No API Key found, using default generic prompts.");
+
+            try {
+                const filename = `${category}-${key}-${Date.now()}.png`;
+                const url = await uploadToSupabase(buffer, category, filename);
+                resultAssets[key] = url;
+            } catch (uploadErr) {
+                console.warn(`[Asset Gen] Upload failed for ${key}, using Base64:`, uploadErr.message);
+                const base64 = buffer.toString('base64');
+                resultAssets[key] = `data:image/png;base64,${base64}`;
+            }
         }
 
-        // 3. Construct LoremFlickr URLs (Reliable, no API key, real photos)
-        // Format: https://loremflickr.com/{width}/{height}/{keywords}
+        // Save to DB
+        await supabase.from('category_assets').delete().eq('category', category); // Clean old
+        await supabase.from('category_assets').upsert([{ category, assets: resultAssets }]);
 
-        const generateUrl = (keywords, width, height) => {
-            // Clean keywords to comma separated. Add "business" to avoid cats/random stuff.
-            const minimalKeywords = keywords.split(' ').slice(0, 2).join(',');
-            const random = Math.floor(Math.random() * 10000);
-            return `https://loremflickr.com/${width}/${height}/work,${encodeURIComponent(minimalKeywords)}?random=${random}`;
-        };
-
-        const finalAssets = {
-            hero: generateUrl(`${category} professional`, 1200, 800),
-            service: generateUrl(`${category} job`, 800, 600),
-            gallery: generateUrl(`${category} result`, 800, 600),
-            team: generateUrl(`${category} team professional`, 800, 600),
-            service1: generateUrl(`${category} detail`, 600, 400),
-            service2: generateUrl(`${category} equipment`, 600, 400),
-            service3: generateUrl(`${category} working`, 600, 400),
-            meta: prompts
-        };
-
-        // 4. Save to Supabase (Cache the URLs)
-        // Check if we need to update or insert
-        // For simplicity in this serverless function, we'll try to update existing if possible or just insert
-        // The unique constraint on 'category' might fail an insert, so let's delete first (simplest cache invalidation) or use upsert
-
-        await supabase.from('category_assets').delete().eq('category', category);
-        await supabase.from('category_assets').insert([{ category, assets: finalAssets }]);
-
-        return new Response(JSON.stringify(finalAssets), { headers });
+        return new Response(JSON.stringify(resultAssets), { headers });
 
     } catch (err) {
         console.error("[Asset Gen] Critical:", err);
-        const cleanError = encodeURIComponent((err.message || 'Unknown').substring(0, 30));
         return new Response(JSON.stringify({
-            error: err.message,
-            // Fallback to static placeholders if even this fails
-            hero: `https://placehold.co/1200x800?text=Err:${cleanError}`,
-            service: `https://placehold.co/800x600?text=Err:${cleanError}`,
-            gallery: `https://placehold.co/800x600?text=Err:${cleanError}`
-        }), { status: 200, headers });
+            error: err.message
+        }), { status: 500, headers });
     }
 };

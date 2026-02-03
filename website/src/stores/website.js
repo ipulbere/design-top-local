@@ -148,22 +148,38 @@ export const useWebsiteStore = defineStore('website', () => {
             console.log(`[Store] Received assets:`, assets);
 
             // Update customImages with the new assets
-            // Only update if we don't have better ones (preserving user edits?) 
-            // For now, we overwrite or merge.
+            const newImages = { ...companyInfo.value.customImages };
 
-            companyInfo.value.customImages = {
-                ...companyInfo.value.customImages,
-                hero: assets.hero,
-                equipment: assets.hero, // Fallback reuse for equip if needed
-                ['Box 1_services']: assets.service, // Map to service boxes maybe?
-                ['Box 2_services']: assets.service,
-                ['Box 3_services']: assets.service,
-                before: assets.gallery,
-                after: assets.gallery // Using same/similar for now or could expand
-            };
+            // 1. Core Assets
+            newImages.hero = assets.hero;
+            newImages.team = assets.team;
+            newImages.equipment = assets.service_2; // Use one of the service images for equipment fallback
 
-            // Update specific "assets" map if needed, but our 'assets' computed property 
-            // relies on 'customImages', so this should trigger reactivity.
+            // 2. Map Service & Gallery Images to Services
+            const services = companyInfo.value.services || ['Service 1', 'Service 2', 'Service 3'];
+
+            services.forEach((service, index) => {
+                // Service Icons/Images (if used)
+                // Note: The view might not use service images yet, but we map them just in case.
+
+                // Gallery (Before/After) - We use the gallery assets
+                // We map 'before' to the gallery image. 
+                // We'll reuse the SAME image for 'after' for now (simulated transformation) 
+                // OR use the service image for 'after' to show difference? 
+                // Let's use gallery_X for before, and service_X for after to ensure they look different.
+
+                const galAsset = assets[`gallery_${index}`] || assets.gallery_0;
+                const svcAsset = assets[`service_${index}`] || assets.service_0;
+
+                newImages[`${service}_before`] = galAsset;
+                newImages[`${service}_after`] = svcAsset;
+            });
+
+            // Global fallback for 'before'/'after' if accessed directly
+            newImages.before = assets.gallery_0;
+            newImages.after = assets.service_0;
+
+            companyInfo.value.customImages = newImages;
 
         } catch (err) {
             console.error('[Store] Fetch Asset Error:', err);

@@ -4,10 +4,16 @@ import PreviewView from '../views/PreviewView.vue'
 import PaymentView from '../views/PaymentView.vue'
 import SuccessView from '../views/SuccessView.vue'
 import LanderView from '../views/LanderView.vue'
+import ImageGeneratorView from '../views/ImageGeneratorView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
+        {
+            path: '/image-generator',
+            name: 'image-generator',
+            component: ImageGeneratorView
+        },
         {
             path: '/',
             name: 'home',
