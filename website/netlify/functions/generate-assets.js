@@ -35,52 +35,59 @@ async function uploadToSupabase(buffer, folder, filename) {
     return publicUrl;
 }
 
-// Helper: Generate Image with Vertex AI (Imagen 4)
+// Helper: Generate Image with Gemini 2.5 Flash (AI Studio SDK)
 async function generateImage(prompt, aspectRatio = "1:1") {
-    const PROJECT_ID = "gen-lang-client-0423877717";
-    const LOCATION = "us-central1";
-    // Switched to Imagen 3.0 (Stable) as 4.0 Preview is ignoring aspect ratio
-    const MODEL_ID = "imagen-3.0-generate-001";
-    const API_KEY = process.env.GEMINI_API_KEY;
-
-    const URL = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL_ID}:predict?key=${API_KEY}`;
-
-    const body = {
-        instances: [
-            { prompt: prompt }
-        ],
-        parameters: {
-            sampleCount: 1,
-            aspectRatio: aspectRatio
-        }
-    };
+    // Gemini 2.5 Flash Image Model
+    const MODEL_ID = "gemini-2.5-flash-image";
 
     try {
-        console.log(`[Asset Gen] Calling Vertex AI: ${MODEL_ID} [${aspectRatio}]`);
-        const response = await fetch(URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
+        console.log(`[Asset Gen] Calling Gemini (AI Studio): ${MODEL_ID} [${aspectRatio}]`);
+
+        // Initialize AI Client with API_KEY (AI Studio)
+        // Note: Global genAI instance might be using GEMINI_API_KEY. 
+        // We ensure we use the client configured with API_KEY if needed, 
+        // but user said "Use process.env.API_KEY".
+        // Let's create a local client or ensure global uses correct key.
+        // The global `genAI` at top of file uses `process.env.GEMINI_API_KEY`.
+        // Let's create a specific client for this function or update global if possible.
+        // User requested: const getAiClient = () => { return new GoogleGenAI({ apiKey: process.env.API_KEY }); };
+
+        const aiClient = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+        // Call Gemini API
+        const response = await aiClient.models.generateContent({
+            model: MODEL_ID,
+            contents: {
+                parts: [
+                    { text: `A professional website stock photo: ${prompt}` }
+                ]
+            },
+            config: {
+                // For Gemini 2.5 Flash Image via AI Studio SDK
+                imageGenerationConfig: {
+                    aspectRatio: aspectRatio,
+                    sampleCount: 1
+                }
+            }
         });
 
-        if (!response.ok) {
-            const errText = await response.text();
-            throw new Error(`Vertex API Error (${response.status}): ${errText}`);
+        // Extract Base64 from candidates
+        // SDK Response structure
+        const candidates = response.candidates;
+        if (candidates && candidates.length > 0) {
+            for (const part of candidates[0].content.parts) {
+                if (part.inlineData && part.inlineData.data) {
+                    return Buffer.from(part.inlineData.data, 'base64');
+                }
+            }
         }
 
-        const data = await response.json();
-
-        // Extract Base64
-        // Format: { predictions: [ { bytesBase64Encoded: "..." } ] }
-        if (data.predictions && data.predictions[0] && data.predictions[0].bytesBase64Encoded) {
-            return Buffer.from(data.predictions[0].bytesBase64Encoded, 'base64');
-        }
-
-        throw new Error("No image data found in Vertex response: " + JSON.stringify(data).substring(0, 100));
+        throw new Error("No image data found in Gemini response: " + JSON.stringify(response));
 
     } catch (e) {
-        console.error("Vertex Generation Error:", e.message);
-        throw e;
+        console.error("Gemini Generation Error:", e);
+        const msg = e.response ? JSON.stringify(e.response) : e.message;
+        throw new Error(msg);
     }
 }
 
@@ -119,8 +126,7 @@ export default async (req, context) => {
             } catch (err) {
                 // Generation failed - return strict error
                 return new Response(JSON.stringify({
-                    error: "Generation Failed: " + err.message,
-                    details: err.stack
+                    error: "Generation Failed: " + err.message
                 }), { status: 500, headers });
             }
 
