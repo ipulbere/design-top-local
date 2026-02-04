@@ -16,6 +16,10 @@ onMounted(async () => {
     const savedSite = await db.getSite(route.params.id)
     if (savedSite) {
       store.updateCompanyInfo(savedSite)
+      // If the saved site doesn't have an AI template yet (legacy or fresh create), fetch it now
+      if (!store.companyInfo.rawHTML && store.companyInfo.category) {
+         store.fetchTemplate(store.companyInfo.category);
+      }
     } else {
       // Site not found or expired
       alert('Site not found or expired (30-day limit)')
@@ -23,8 +27,19 @@ onMounted(async () => {
     }
   } else if (!store.companyInfo.name || store.companyInfo.name === 'Your Company') {
       router.push('/')
+  } else {
+      // New site (from InputView), fetching AI template if not present
+      if (!store.companyInfo.rawHTML && store.companyInfo.category) {
+          store.fetchTemplate(store.companyInfo.category);
+      }
   }
 })
+
+// Watch for category changes to re-fetch
+import { watch } from 'vue'
+watch(() => store.companyInfo.category, (newCat) => {
+    if (newCat) store.fetchTemplate(newCat);
+});
 
 const isEditing = ref(false)
 
@@ -255,9 +270,26 @@ const vEditable = {
     </div>
 
     <!-- Generated Website Container -->
+    <!-- Generated Website Container -->
     <div class="bg-white font-sans text-slate-900">
       
-      <!-- 1. Navbar (Standard) -->
+      <!-- LOADING STATE -->
+      <div v-if="store.companyInfo.templateSource === 'loading'" class="min-h-screen flex flex-col items-center justify-center p-8 bg-slate-50">
+          <div class="animate-spin w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full mb-6"></div>
+          <h2 class="text-2xl font-bold text-slate-800">Designing Your Unique Site...</h2>
+          <p class="text-slate-500 mt-2">Our AI is crafting a bespoke template for {{ store.companyInfo.category }}.</p>
+      </div>
+
+      <!-- DYNAMIC AI TEMPLATE -->
+      <div v-else-if="store.companyInfo.rawHTML" 
+           v-html="store.companyInfo.rawHTML"
+           class="dynamic-template-wrapper"
+      ></div>
+
+      <!-- FALLBACK: STATIC TEMPLATE (Previous Implementation) -->
+      <div v-else>
+      
+       <!-- 1. Navbar (Standard) -->
       <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-100">
         <div class="container mx-auto px-6 h-20 flex justify-between items-center">
           <div class="flex items-center gap-3">
@@ -529,6 +561,7 @@ const vEditable = {
            &copy; {{ new Date().getFullYear() }} {{ store.companyInfo.name }}. Built with WebCraft SaaS.
          </div>
        </footer>
+      </div>
 
     </div>
   </div>

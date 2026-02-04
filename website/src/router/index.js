@@ -5,6 +5,7 @@ import PaymentView from '../views/PaymentView.vue'
 import SuccessView from '../views/SuccessView.vue'
 import LanderView from '../views/LanderView.vue'
 import ImageGeneratorView from '../views/ImageGeneratorView.vue'
+import TemplateGeneratorView from '../views/TemplateGeneratorView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,6 +14,11 @@ const router = createRouter({
             path: '/image-generator',
             name: 'image-generator',
             component: ImageGeneratorView
+        },
+        {
+            path: '/template-generator',
+            name: 'template-generator',
+            component: TemplateGeneratorView
         },
         {
             path: '/',

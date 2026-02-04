@@ -21,7 +21,9 @@ export const useWebsiteStore = defineStore('website', () => {
         showBeforeAfter: true,
         showBeforeAfter: true,
         raw_category_data: null,
-        subdomain: '' // Custom subdomain part
+        subdomain: '', // Custom subdomain part
+        rawHTML: null, // Dynamic AI Template
+        templateSource: 'default' // 'default' or 'ai'
     })
 
     // Content Generation Helper
@@ -249,6 +251,69 @@ export const useWebsiteStore = defineStore('website', () => {
         isPaid.value = true
     }
 
+    // Dynamic Template Actions
+    async function fetchTemplate(category) {
+        if (!category) return;
+
+        // Reset to ensure we don't show old template while loading
+        companyInfo.value.rawHTML = null;
+        companyInfo.value.templateSource = 'loading';
+
+        try {
+            console.log(`[Store] Fetching template for ${category}...`);
+            const response = await fetch('/.netlify/functions/generate-template', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ category })
+            });
+
+            if (!response.ok) throw new Error('Template generation failed');
+
+            const data = await response.json();
+            console.log(`[Store] Received template from ${data.source}`);
+
+            // Parse and Hydrate
+            companyInfo.value.rawHTML = processTemplate(data.html, category);
+            companyInfo.value.templateSource = 'ai';
+
+        } catch (err) {
+            console.error('[Store] Template Error:', err);
+            companyInfo.value.templateSource = 'default'; // Fallback
+        }
+    }
+
+    // Process raw HTML: Replace placeholders with Real Image requests (or placeholders for now)
+    function processTemplate(html, category) {
+        let processed = html;
+
+        // Regex to find [DESC_PHOTO: ...]
+        // Syntax: src="[DESC_PHOTO: description]"
+        // We replace it with a placeholder URL that includes the description for the Asset Generator to pick up later (or now).
+        // For immediate visual consistency, we can use placehold.co or trigger an asset fetch.
+
+        const regex = /\[DESC_PHOTO:\s*(.*?)\]/g;
+
+        processed = processed.replace(regex, (match, description) => {
+            // Logic:
+            // 1. We could trigger a precise asset generation here.
+            // 2. For now, return a placeholder URL that LOOKS like a real image request
+            //    so the UI renders something.
+            //    We can store these descriptions to request "Real" images in the background.
+
+            console.log(`[Template] Found Image Requirement: ${description}`);
+
+            // Unique ID for this image slot based on description hash or simple random
+            // In a real app, we'd map this to the 'assets' object.
+
+            return `https://placehold.co/800x600/e2e8f0/1e293b?text=${encodeURIComponent(description.substring(0, 20) + '...')}`;
+        });
+
+        // Also simple text hydration? (Optional, if AI logic inserts [COMPANY_NAME] tags)
+        // processed = processed.replace(/\[COMPANY_NAME\]/g, companyInfo.value.name);
+
+        return processed;
+    }
+
     return {
         companyInfo,
         assets,
@@ -262,6 +327,8 @@ export const useWebsiteStore = defineStore('website', () => {
         offer,
         getServiceImage,
         updateContent,
-        updateImage
+        updateContent,
+        updateImage,
+        fetchTemplate
     }
 })
