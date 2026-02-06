@@ -1,45 +1,10 @@
 const { createClient } = require('@supabase/supabase-js');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // Initialize Clients
 const supabase = createClient(
     process.env.VITE_SUPABASE_URL,
     process.env.VITE_SUPABASE_ANON_KEY
 );
-
-// Constants
-const STORAGE_BUCKET = 'generated-images';
-
-// Helper: Upload Buffer to Supabase
-async function uploadToSupabase(buffer, folder, filename) {
-    // Sanitize folder/filename
-    const safeFolder = folder.replace(/[^a-zA-Z0-9-_]/g, '_');
-    const safeFilename = filename.replace(/[^a-zA-Z0-9-_]/g, '_');
-    const filePath = `${safeFolder}/${safeFilename}.png`;
-
-    console.log(`[Asset Gen] Uploading to ${filePath}...`);
-
-    const { data, error } = await supabase
-        .storage
-        .from(STORAGE_BUCKET)
-        .upload(filePath, buffer, {
-            contentType: 'image/png',
-            upsert: true // Replace if exists
-        });
-
-    if (error) {
-        console.error('[Asset Gen] Upload Error:', error);
-        throw error;
-    }
-
-    // Get Public URL
-    const { data: { publicUrl } } = supabase
-        .storage
-        .from(STORAGE_BUCKET)
-        .getPublicUrl(filePath);
-
-    return publicUrl;
-}
 
 exports.handler = async (event, context) => {
     const headers = {
@@ -60,106 +25,72 @@ exports.handler = async (event, context) => {
             return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }), headers };
         }
 
-        const { category, prompt, mode, section } = body;
+        const { category } = body;
 
-        console.log(`[Asset Gen] Request: Mode=${mode}, Category=${category}`);
+        console.log(`[Asset Fetch] Request for Category=${category}`);
 
-        // Priority: API_KEY > GEMINI_API_KEY
-        const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
-        if (!apiKey) return { statusCode: 500, body: JSON.stringify({ error: "API Key Config Missing" }), headers };
+        if (!category) return { statusCode: 400, body: JSON.stringify({ error: 'Category required' }), headers };
 
-        const genAI = new GoogleGenerativeAI(apiKey);
+        // Query Supabase for assets
+        const { data, error } = await supabase
+            .from('category_assets')
+            .select('identifier, type, image_data')
+            .eq('category', category);
 
-        // Switch to the requested model
-        const TARGET_MODEL = "gemini-2.5-flash-image";
+        if (error) {
+            console.error('[Asset Fetch] DB Error:', error);
+            throw error;
+        }
 
-        console.log(`[Asset Gen] Generating with prompt: ${prompt.substring(0, 50)}... using ${TARGET_MODEL}`);
-
-        // Logic: Try SDK first. If it fails (which it might for new models or if they require specific REST format), fallback to REST.
-        try {
-            const model = genAI.getGenerativeModel({ model: TARGET_MODEL });
-
-            // Standard generation call
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
-
-            console.log("SDK Generation attempt complete. Candidates:", response.candidates?.length);
-
-            // Attempt to retrieve image data from standard candidates structure used by some variants
-            // If this is a pure text response (error message disguised as text), we'll throw.
-            // Most Gemini image models return inline data or we need to handle it.
-
-            // If the SDK did not return valid image data here, we force fallback.
-            // For now, assuming if we get here without error, we *might* have success, 
-            // but we need to extract the image. 
-            // Since we can't easily debug the exact shape returned by *this specific new model* in SDK,
-            // we will proceed to the fallback which we KNOW works for the `predict` endpoint style if SDK fails.
-
-            // Force fallback for now unless we are 100% sure of the SDK method for 2.5-flash-image
-            throw new Error("Proceeding to REST fallback for explicit image data retrieval");
-
-        } catch (sdkError) {
-            console.log(`SDK/Model fallback triggers for ${TARGET_MODEL}. Reason: ${sdkError.message}`);
-
-            // REST Fallback
-            const cleanPrompt = prompt.replace(/"/g, '');
-            const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${TARGET_MODEL}:predict?key=${apiKey}`;
-
-            const imgReq = {
-                instances: [
-                    { prompt: cleanPrompt }
-                ],
-                parameters: {
-                    sampleCount: 1,
-                    aspectRatio: "16:9"
-                }
-            };
-
-            const imgRes = await fetch(apiEndpoint, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(imgReq)
-            });
-
-            if (!imgRes.ok) {
-                const txt = await imgRes.text();
-                throw new Error(`Gemini API Error: ${imgRes.status} ${txt}`);
-            }
-
-            const imgData = await imgRes.json();
-
-            if (!imgData.predictions || !imgData.predictions[0]) {
-                console.error("No predictions in:", JSON.stringify(imgData));
-                throw new Error("No image predictions returned");
-            }
-
-            const base64Image = imgData.predictions[0].bytesBase64Encoded;
-            const buffer = Buffer.from(base64Image, 'base64');
-
-            // Upload
-            const fileName = section ? section : `gen_${Date.now()}`;
-
-            let publicUrl;
-            try {
-                publicUrl = await uploadToSupabase(buffer, category, fileName);
-            } catch (uploadErr) {
-                console.error("[Asset Gen] Supabase Upload Failed (Network Issue?):", uploadErr.message);
-                // Fallback: Return Base64 Data URI directly
-                publicUrl = `data:image/png;base64,${base64Image}`;
-            }
-
+        if (!data || data.length === 0) {
+            console.warn(`[Asset Fetch] No assets found for ${category}`);
+            // Return empty object or specific error? 
+            // Let's return empty, frontend handles fallbacks.
             return {
                 statusCode: 200,
-                body: JSON.stringify({
-                    message: "Image Generated",
-                    url: publicUrl
-                }),
+                body: JSON.stringify({}),
                 headers
             };
         }
 
+        console.log(`[Asset Fetch] Found ${data.length} assets for ${category}`);
+
+        // Map Assets to Frontend Keys
+        const assets = {};
+
+        // Asset counters for multiple items of same type
+        let serviceCount = 0;
+        let galleryCount = 0;
+
+        data.forEach(item => {
+            const type = item.type?.toLowerCase() || '';
+            const imageData = item.image_data; // Should be base64 data URI
+
+            if (type.includes('hero')) {
+                assets.hero = imageData;
+            } else if (type.includes('team')) {
+                assets.team = imageData;
+            } else if (type.includes('finished product')) {
+                assets[`service_${serviceCount}`] = imageData;
+                serviceCount++;
+            } else if (type.includes('before') || type.includes('after')) {
+                // For now, map both before/after types to gallery slots
+                assets[`gallery_${galleryCount}`] = imageData;
+                galleryCount++;
+            }
+        });
+
+        // Ensure at least one service/gallery if available to avoid undefined on frontend if logic expects specific indices
+        // ( Frontend should handle undefined checks )
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(assets),
+            headers
+        };
+
     } catch (err) {
-        console.error("[Asset Gen] Critical:", err);
-        return { statusCode: 500, body: JSON.stringify({ error: err.message, details: err.toString() }), headers };
+        console.error("[Asset Fetch] Critical:", err);
+        return { statusCode: 500, body: JSON.stringify({ error: err.message }), headers };
     }
 };

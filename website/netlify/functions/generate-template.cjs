@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
         // Fetch ALL templates for this category (to pick one randomly)
         const { data, error } = await supabase
             .from('category_templates')
-            .select('html_content')
+            .select('html')
             .eq('category', category);
 
         if (error) {
@@ -50,7 +50,7 @@ exports.handler = async (event, context) => {
 
         return {
             statusCode: 200,
-            body: JSON.stringify({ html: selectedTemplate.html_content, source: 'database' }),
+            body: JSON.stringify({ html: selectedTemplate.html, source: 'database' }),
             headers
         };
 

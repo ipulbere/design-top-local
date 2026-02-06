@@ -7,14 +7,24 @@ const loading = ref(false)
 const generatedHtml = ref('')
 const error = ref('')
 
-// Form Data - Defaulted to user request for verification
-const formData = ref({
-    companyName: 'Carlos Professional Painter',
-    phone: '7735074333',
-    address: '4911 W Roosevelt Rd, Cicero, IL 60804',
-    category: 'Painters', 
-    email: '',
-    description: ''
+// Use Store for Data
+import { useWebsiteStore } from '../stores/website'
+import { useRoute } from 'vue-router'
+import { onMounted } from 'vue'
+
+const store = useWebsiteStore()
+const route = useRoute()
+
+// Form Data - Sync with Store
+const formData = computed(() => {
+    return {
+        companyName: store.companyInfo.name || '',
+        phone: store.companyInfo.phone || '',
+        address: store.companyInfo.address || '',
+        category: store.companyInfo.category || '',
+        email: store.companyInfo.email || '',
+        description: store.companyInfo.description || ''
+    }
 })
 
 const categories = categoriesData.map(c => c.Category)

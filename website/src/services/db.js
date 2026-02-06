@@ -7,7 +7,22 @@ export const db = {
     // Save to Cloud (Supabase)
     async saveSite(data) {
         const id = data.id || Math.random().toString(36).substring(2, 10);
-        const siteData = { ...data, id };
+
+        // CLEANUP: Strip large Base64 images before saving to DB. 
+        // We rely on the app to re-fetch assets based on category logic if they are missing.
+        const cleanData = { ...data };
+        if (cleanData.customImages) {
+            const cleanImages = {};
+            for (const [key, val] of Object.entries(cleanData.customImages)) {
+                // Keep only non-base64 URLs (e.g. http://...)
+                if (val && typeof val === 'string' && !val.startsWith('data:')) {
+                    cleanImages[key] = val;
+                }
+            }
+            cleanData.customImages = cleanImages;
+        }
+
+        const siteData = { ...cleanData, id };
 
         try {
             const { error } = await supabase
@@ -52,7 +67,18 @@ export const db = {
     async updateSite(id, data) {
         try {
             // Ensure we are sending a clean JSON object, strip Vue proxies
-            const cleanData = JSON.parse(JSON.stringify(data));
+            let cleanData = JSON.parse(JSON.stringify(data));
+
+            // CLEANUP: Strip Base64 here too
+            if (cleanData.customImages) {
+                const cleanImages = {};
+                for (const [key, val] of Object.entries(cleanData.customImages)) {
+                    if (val && typeof val === 'string' && !val.startsWith('data:')) {
+                        cleanImages[key] = val;
+                    }
+                }
+                cleanData.customImages = cleanImages;
+            }
 
             const { error } = await supabase
                 .from('websites')
@@ -103,20 +129,40 @@ export const db = {
     // Local Storage Helpers
     saveLocal(id, data) {
         try {
+            // Optimization: Filter out large data URIs (images) to prevent LocalStorage quota limit
             const sites = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-            sites[id] = { ...data, timestamp: Date.now() };
+
+            // Create a lightweight copy
+            const dataToSave = { ...data };
+            if (dataToSave.customImages) {
+                // Determine if we should strip. If images are URLs (http), keep them. If data:image, strip.
+                // For simplicity/safety with the new Base64 approach, we generally strip them 
+                // and rely on re-fetching or the Cloud (Supabase) source.
+                // We'll keep the object but empty it.
+                dataToSave.customImages = {};
+            }
+
+            // Also check for 'assets' key from saveAssets
+            if (dataToSave.assets) {
+                // If this is an asset chunk, it's definitely too big. 
+                // We likely shouldn't be saving asset chunks to LS at all.
+                console.log(`Skipping LS save for large asset chunk: ${id}`);
+                return;
+            }
+
+            sites[id] = { ...dataToSave, timestamp: Date.now() };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(sites));
         } catch (e) {
             if (e.name === 'QuotaExceededError' || e.code === 22) {
-                console.warn('LocalStorage full, cleaning up old sites...');
+                console.warn('LocalStorage full even with stripped images, cleaning up old sites...');
 
-                // Reload current state (in case parsed variable was huge)
+                // Reload current state
                 let sites = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
 
                 // Sort by timestamp
                 const sortedKeys = Object.keys(sites).sort((a, b) => sites[a].timestamp - sites[b].timestamp);
 
-                // Remove oldest items until we fit or run out
+                // Remove oldest items
                 let saved = false;
                 while (sortedKeys.length > 0) {
                     const oldest = sortedKeys.shift();
@@ -125,7 +171,11 @@ export const db = {
 
                     try {
                         // Try adding new one
-                        sites[id] = { ...data, timestamp: Date.now() };
+                        sites[id] = { ...data, timestamp: Date.now() }; // Note: variable scope issue here if I used 'dataToSave' above? 
+                        // Wait, I should use dataToSave here too.
+                        // Correcting logic on fly: use dataToSave.
+                        sites[id] = { ...dataToSave, timestamp: Date.now() };
+
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(sites));
                         saved = true;
                         break;
@@ -135,9 +185,7 @@ export const db = {
                 }
 
                 if (!saved) {
-                    console.error('LocalStorage completely full even after cleanup. Site too large?');
-                    // OPTIONAL: Save without images as last resort?
-                    // sites[id] = { ...data, customImages: {}, timestamp: Date.now() };
+                    console.error('LocalStorage completely full even after cleanup.');
                 }
             } else {
                 console.error('LocalStorage error:', e);

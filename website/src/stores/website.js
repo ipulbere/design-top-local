@@ -155,31 +155,29 @@ export const useWebsiteStore = defineStore('website', () => {
             // 1. Core Assets
             newImages.hero = assets.hero;
             newImages.team = assets.team;
-            newImages.equipment = assets.service_2; // Use one of the service images for equipment fallback
 
-            // 2. Map Service & Gallery Images to Services
+            // 2. Map Service Images
+            // The DB returns service_0, service_1 etc.
+            // We map them to specific service keys if needed, or just store them.
+            // For now, we'll assign them to service_before/after for the demo loop.
+
             const services = companyInfo.value.services || ['Service 1', 'Service 2', 'Service 3'];
 
             services.forEach((service, index) => {
-                // Service Icons/Images (if used)
-                // Note: The view might not use service images yet, but we map them just in case.
+                // Use service_X from DB or fallback to service_0
+                // Use gallery_X from DB or fallback to gallery_0
 
-                // Gallery (Before/After) - We use the gallery assets
-                // We map 'before' to the gallery image. 
-                // We'll reuse the SAME image for 'after' for now (simulated transformation) 
-                // OR use the service image for 'after' to show difference? 
-                // Let's use gallery_X for before, and service_X for after to ensure they look different.
+                const svcAsset = assets[`service_${index}`] || assets[`service_0`];
+                const galAsset = assets[`gallery_${index}`] || assets[`gallery_0`];
 
-                const galAsset = assets[`gallery_${index}`] || assets.gallery_0;
-                const svcAsset = assets[`service_${index}`] || assets.service_0;
-
-                newImages[`${service}_before`] = galAsset;
-                newImages[`${service}_after`] = svcAsset;
+                if (svcAsset) newImages[`${service}_after`] = svcAsset;
+                if (galAsset) newImages[`${service}_before`] = galAsset;
             });
 
-            // Global fallback for 'before'/'after' if accessed directly
-            newImages.before = assets.gallery_0;
-            newImages.after = assets.service_0;
+            // Global fallback
+            if (assets.gallery_0) newImages.before = assets.gallery_0;
+            if (assets.service_0) newImages.after = assets.service_0;
+            if (assets.service_0) newImages.equipment = assets.service_0; // Fallback for equipment if no specific equipment asset
 
             companyInfo.value.customImages = newImages;
 
@@ -204,12 +202,21 @@ export const useWebsiteStore = defineStore('website', () => {
         const oldCat = companyInfo.value.category;
         const newCat = info.category || oldCat;
 
+        // Reset assets if category changes to prevent stale images
+        if (newCat && oldCat && newCat !== oldCat) {
+            console.log(`[Store] Category changed from ${oldCat} to ${newCat}. Clearing stale assets.`);
+            companyInfo.value.customImages = {};
+            companyInfo.value.rawHTML = null;
+        }
+
         companyInfo.value = { ...companyInfo.value, ...info, content }
         isGenerated.value = true
 
         if (newCat && newCat !== oldCat) {
             // Fetch in background
             fetchAssets(newCat);
+            fetchTemplate(newCat);
+        } else if (newCat && !companyInfo.value.customImages?.hero) {
         } else if (newCat && !companyInfo.value.customImages?.hero) {
             // Fetch if we have no images yet
             fetchAssets(newCat);
