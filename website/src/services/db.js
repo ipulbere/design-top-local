@@ -162,5 +162,60 @@ export const db = {
         });
 
         localStorage.setItem(STORAGE_KEY, JSON.stringify(sites));
+    },
+
+    // --- Website Builder Methods ---
+
+    /**
+     * Fetch a random template for the given category
+     * @param {string} category 
+     */
+    async getTemplate(category) {
+        try {
+            // Fetch all templates for this category
+            const { data, error } = await supabase
+                .from('category_templates')
+                .select('*')
+                .eq('category', category)
+
+            if (error) {
+                console.error('Error fetching templates:', error)
+                throw error
+            }
+
+            if (!data || data.length === 0) {
+                throw new Error(`No templates found for category: ${category}`)
+            }
+
+            // Pick a random one
+            const randomIndex = Math.floor(Math.random() * data.length)
+            return data[randomIndex]
+        } catch (e) {
+            console.error('getTemplate failed:', e)
+            throw e
+        }
+    },
+
+    /**
+     * Fetch all image assets for the given category
+     * @param {string} category 
+     */
+    async getCategoryAssets(category) {
+        try {
+            const { data, error } = await supabase
+                .from('category_assets')
+                .select('*')
+                .eq('category', category)
+
+            if (error) {
+                console.error('Error fetching assets:', error)
+                throw error
+            }
+
+            return data || []
+        } catch (e) {
+            console.error('getCategoryAssets failed:', e)
+            throw e
+        }
     }
 }

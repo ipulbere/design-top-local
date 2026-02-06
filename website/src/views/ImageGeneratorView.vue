@@ -17,7 +17,7 @@ const categoryName = computed(() => {
 
 // Dynamic prompts based on category
 const prompts = computed(() => {
-    const cat = categoryName.value.toLowerCase()
+    const cat = categoryName.value // This is already cleaned of numbers
     if (!cat) return {}
     
     // Default style from data or generic fallback
@@ -25,8 +25,10 @@ const prompts = computed(() => {
     const colors = currentCategoryData.value['Background Colors'] || 'neutral'
 
     return {
-        // Simple keywords for LoremFlickr
-        hero: `${cat},professional,business`,
+        // Updated Hero Prompt Template per user request
+        hero: `A professional website stock photo: A friendly ${cat} professional in a clean blue uniform smiling while holding a ${cat} tool, standing in a bright modern ${cat} location, focusing on trust and reliability`,
+        
+        // Simple keywords for others (or update if user provides templates for these too)
         services: `${cat},service,work,tools`,
         team: `${cat},worker,team,professional`,
         gallery: `${cat},project,construction,renovation`
@@ -144,7 +146,7 @@ async function saveAllToDb() {
         />
 
         <!-- Global Actions -->
-        <div class="fixed bottom-8 right-8 z-50">
+        <div class="fixed bottom-8 right-8 z-50 flex gap-4">
             <button 
                 @click="saveAllToDb" 
                 :disabled="isSaving"

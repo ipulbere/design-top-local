@@ -21,6 +21,11 @@ const router = createRouter({
             component: TemplateGeneratorView
         },
         {
+            path: '/builder',
+            name: 'builder',
+            component: () => import('../views/WebsiteBuilderView.vue')
+        },
+        {
             path: '/',
             name: 'home',
             component: InputView

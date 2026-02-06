@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
   title: String,
@@ -20,6 +20,11 @@ const userPrompt = ref(props.basePrompt)
 const generatedImages = ref([])
 const isGenerating = ref(false)
 const errorMsg = ref('')
+
+// Watch for prop changes to update the prompt box
+watch(() => props.basePrompt, (newVal) => {
+    userPrompt.value = newVal
+})
 
 // Generate via Backend (Gemini)
 async function generate() {

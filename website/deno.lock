@@ -11,10 +11,11 @@
   "workspace": {
     "packageJson": {
       "dependencies": [
-        "npm:@google/genai@^1.39.0",
+        "npm:@google/generative-ai@~0.24.1",
         "npm:@supabase/supabase-js@^2.93.3",
         "npm:@vitejs/plugin-vue@^6.0.3",
         "npm:autoprefixer@^10.4.24",
+        "npm:dotenv@^17.2.3",
         "npm:netlify-cli@^23.14.0",
         "npm:pinia@^3.0.4",
         "npm:postcss@^8.5.6",
