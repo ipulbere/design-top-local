@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import { db } from '../services/db'
 import categoriesData from '../data/categories.json'
+import { GeminiService } from '../services/GeminiService'
+import { ImageService } from '../services/ImageService'
 
 const loading = ref(false)
 const generatedHtml = ref('')
@@ -30,154 +32,109 @@ const formData = computed(() => {
 const categories = categoriesData.map(c => c.Category)
 
 // Generate Function
+// Generate Function
 async function generateWebsite() {
     loading.value = true
     error.value = ''
     generatedHtml.value = ''
     
     try {
-        const { category: rawCategory, companyName, phone, address, email, description } = formData.value
+        const { category: selectedCategoryName, companyName, phone, address, email, description } = formData.value
         
-        // CLEAN: Remove "12. " prefix if present to match DB "Painters"
-        const category = rawCategory.replace(/^\d+\.\s+/, '')
+        console.log('Selected Category:', selectedCategoryName)
+
+        // 1. Find Category Data
+        const categoryData = categoriesData.find(c => c.Category === selectedCategoryName)
+        if (!categoryData) throw new Error(`Category data not found for: ${selectedCategoryName}`)
+
+        // 2. Fetch Images (Parallel with HTML generation if possible, but sequential is safer for now)
+        // Clean category name for image service (e.g. "44. Windows" -> "windows")
+        const cleanCategoryName = selectedCategoryName.replace(/^\d+\.\s+/, '').toLowerCase()
+        console.log('Fetching images for:', cleanCategoryName)
         
-        console.log('Original Category:', rawCategory, '-> Cleaned:', category)
+        // We'll run them in parallel for speed
+        const [images, rawHtml] = await Promise.all([
+            ImageService.getCategoryImages(cleanCategoryName),
+            GeminiService.generateWebsiteHtml(categoryData, formData.value)
+        ])
 
-        // 1. Fetch Template
-        console.log('Fetching template for:', category)
-        const template = await db.getTemplate(category)
-        if (!template) throw new Error(`No templates found for category: ${category}`)
-        
-        console.log('Template fetched:', template.template_number)
+        console.log('Images fetched:', images)
+        console.log('Raw HTML generated type:', typeof rawHtml)
+        console.log('Raw HTML generated length:', rawHtml ? rawHtml.length : 0)
+        console.log('Raw HTML snippet:', rawHtml ? rawHtml.substring(0, 100) : 'EMPTY')
 
-        // 2. Fetch Assets
-        console.log('Fetching assets for:', category)
-        const assets = await db.getCategoryAssets(category)
-        console.log('Assets found:', assets.length)
-
-        // 3. Injection Logic
-        let html = template.html
-
-        // CLEANING: The DB might contain conversational text from LLM generation.
-        // We attempt to find the start of the HTML document.
-        const docTypeIndex = html.indexOf('<!DOCTYPE html>')
-        const htmlTagIndex = html.indexOf('<html')
-
-        if (docTypeIndex !== -1) {
-            html = html.substring(docTypeIndex)
-        } else if (htmlTagIndex !== -1) {
-            html = html.substring(htmlTagIndex)
-        }
-        
-        // Also try to trim the end if there is text after </html>
-        const htmlEndTag = '</html>'
-        const endTagIndex = html.lastIndexOf(htmlEndTag)
-        if (endTagIndex !== -1) {
-            html = html.substring(0, endTagIndex + htmlEndTag.length)
+        if (!rawHtml) {
+            throw new Error('Gemini returned empty HTML')
         }
 
-        // A. Parse and Inject Assets via DOM
-        const parser = new DOMParser()
-        const doc = parser.parseFromString(html, 'text/html')
-        const images = doc.querySelectorAll('img')
+        // 3. Verify and Fix HTML
+        console.log('Verifying HTML...')
+        let html = await GeminiService.verifyAndFixWebsite(rawHtml)
+
+        // 4. Inject Images
+        // Parse HTML to find placeholders
+        // Placeholders: [DESC_PHOTO: Type]
+        // Types: Hero, Team, BeforeAndAfter, HappyCustomer
         
-        // Helper: Normalize string for keyword matching
-        const normalize = (s) => s ? s.toLowerCase().replace(/[^a-z0-9]/g, '') : ''
-
-        // Create a pool of available assets
-        const assetPool = [...assets]
-
-        images.forEach(img => {
-            const src = img.getAttribute('src') || ''
-            const alt = img.getAttribute('alt') || ''
-            const className = img.className || ''
+        Object.keys(images).forEach(sectionKey => {
+            const sectionImages = images[sectionKey]
+            const isArray = Array.isArray(sectionImages)
             
-            // Skip if already Base64
-            if (src.startsWith('data:')) return
+            // Normalize key for matching (e.g., "hero" -> "Hero")
+            // The placeholder uses PascalCase or specific keys.
+            // Let's map our service keys to placeholder keys.
+            // Service keys come from filenames: windows_Hero_1 -> "hero"
+            // Placeholder: [DESC_PHOTO: Hero]
+            
+            let placeholderKey = ''
+            if (sectionKey === 'hero') placeholderKey = 'Hero'
+            else if (sectionKey === 'team') placeholderKey = 'Team'
+            else if (sectionKey === 'before_and_after') placeholderKey = 'BeforeAndAfter'
+            else if (sectionKey === 'happy_customer') placeholderKey = 'HappyCustomer'
+            else placeholderKey = sectionKey // Fallback
 
-            let foundAssetIndex = -1
+            if (!placeholderKey) return
 
-            // 1. Exact Identifier Match (The user requirement)
-            foundAssetIndex = assetPool.findIndex(a => a.identifier === src)
-
-            // 2. Keyword Match (Strongest Fallback)
-            // Check src, alt, AND class for keywords matching the asset type or identifier
-            if (foundAssetIndex === -1) {
-                foundAssetIndex = assetPool.findIndex(a => {
-                    const typeKeywords = normalize(a.type)
-                    const idKeywords = normalize(a.identifier)
-                    
-                    // Combine all potential indicators from the HTML tag
-                    const tagKeywords = normalize(src + alt + className)
-                    
-                    // Logic: Does the tag contain the asset type? 
-                    // e.g. alt="Painters Team" contains "team" -> matches asset type "team"
-                    const typeMatch = a.type && tagKeywords.includes(normalize(a.type))
-                    
-                    // Special case for "Hero" - commonly in header classes
-                    const heroMatch = tagKeywords.includes('hero') && typeKeywords.includes('hero')
-                    
-                    return typeMatch || heroMatch
+            // Construct regex for this placeholder
+            // <img ... alt="[DESC_PHOTO: Hero]" ...>
+            // exact string match for alt is safer if we parse DOM, but regex replace is faster/easier for simple text
+            // prompting ensured <img alt="[DESC_PHOTO: Type]">
+            
+            // We need to handle the "2 images" case for BeforeAndAfter
+            if (isArray && sectionImages.length > 0) {
+                // Replace sequentially
+                sectionImages.forEach(imgUrl => {
+                     // Replace the first occurrence found
+                     html = html.replace(`[DESC_PHOTO: ${placeholderKey}]`, imgUrl)
                 })
-            }
-
-            // 3. Round Robin / Greedy Fallback
-            // If we still haven't found a match, look for ANY asset of a broadly matching category
-            // or just take the next one.
-            if (foundAssetIndex === -1 && assetPool.length > 0) {
-                // Try to find one that hasn't been used yet?
-                // For now, just take zero index
-                foundAssetIndex = 0
-            }
-
-            // Apply Replacement
-            if (foundAssetIndex !== -1) {
-                const asset = assetPool[foundAssetIndex]
-                img.src = asset.image_data
-                
-                // Optional: Update alt text to match verified asset?
-                // img.alt = asset.description || asset.type
-
-                // Remove used asset from pool to avoid duplicates
-                assetPool.splice(foundAssetIndex, 1)
+            } else if (!isArray && sectionImages) {
+                // Replace all occurrences (should be 1)
+                html = html.split(`[DESC_PHOTO: ${placeholderKey}]`).join(sectionImages)
             }
         })
 
-        // Re-serialize
-        html = doc.documentElement.innerHTML
-        // DOMParser wraps in <html><body>...</body></html>. We might want just the content if the template was partial.
-        // But assuming full page template:
-        html = `<!DOCTYPE html>\n<html>${html}</html>`
-
-
-        // B. Inject Company Info
-        // We assume some standard placeholders might be in the template, 
-        // OR we just assume the template has specific ID's we might want to target?
-        // The user request said: "Make the link to the images... replace the above listed company details"
-        // Since I don't know the EXACT placeholders in the HTML (e.g. {{Name}} or id="company-name"),
-        // I will attempt standard mustache-style replacements AND some common ID/Class replacements if possible.
-        // For now, doing simple string replacement based on likely placeholders.
+        // Cleanup: If any placeholders remain (e.g. we didn't have images), replace with a fallback or empty?
+        // For now, let's leave them or replace with a generic placeholder if possible.
+        // Or assume the user provided valid data.
         
-        const replacements = {
-            '{{CompanyName}}': companyName,
-            '{{Phone}}': phone,
-            '{{Address}}': address,
-            '{{Category}}': category,
-            '[Company Name]': companyName,
-            '[Phone Number]': phone,
-            '[Address]': address,
-            'Company Name': companyName, // Risky but possible placeholder
-        }
+        // If "before_and_after" was requested but we only have "happy_customer" (based on logic in Service)
+        // accepted prompt logic: "If 'Before and After Pictures': has anything else than Yes - Supabese will have a happy customer picture"
+        // In that case, the Prompt would have generated [DESC_PHOTO: HappyCustomer].
+        // And ImageService would have returned 'happy_customer' key.
+        // So the loop above handles it naturally if keys match.
 
-        Object.entries(replacements).forEach(([key, value]) => {
-            const regex = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')
-            html = html.replace(regex, value)
-        })
-        
-        // C. Accent Color Injection (if needed)
-        if (template.accent_color) {
-            // Simple replace if there's a placeholder, or just CSS variable injection could be done here
-            // html = html.replace('{{AccentColor}}', template.accent_color)
+        // 5. Final Polish: Force-inject Dependencies (Failsafe)
+        if (!html.includes('cdn.tailwindcss.com')) {
+            const headEnd = html.indexOf('</head>')
+            const tailwindScript = `<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">`
+            if (headEnd !== -1) {
+                html = html.substring(0, headEnd) + tailwindScript + html.substring(headEnd)
+            } else {
+                // If no head, prepend to body or generic
+                html = tailwindScript + html
+            }
         }
 
         generatedHtml.value = html

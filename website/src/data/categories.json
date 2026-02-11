@@ -10,34 +10,7 @@
     "Equipment": "Computers, Offices",
     "Uniforms": "No",
     "Working Hours": "Flexible, By Appointment",
-    "Before and After Pictures": "Sometimes (Case Studies)",
-    "content": {
-      "hero": {
-        "headline": "Strategic Solutions for Growth",
-        "subheadline": "Expert independent consulting to help you overcome challenges and achieve your business goals.",
-        "cta": "Book Your Strategy Session"
-      },
-      "services": {
-        "title": "Our Expertise",
-        "subtitle": "Tailored strategies designed for your unique challenges."
-      },
-      "trust": {
-        "title": "Why Choose Us",
-        "copy": "Certified professionals with a proven track record of success."
-      },
-      "offer": {
-        "title": "Limited Time Consultation Offer",
-        "text": "Free 15-Minute Strategy Call"
-      },
-      "gallery": {
-        "title": "Case Studies",
-        "subtitle": "Real problems, real solutions."
-      },
-      "contact": {
-        "title": "Ready to Scale?",
-        "subtitle": "Reach out today to discuss your project."
-      }
-    }
+    "Before and After Pictures": "Sometimes (Case Studies)"
   },
   {
     "Category": "2. Business analysts",
@@ -50,34 +23,7 @@
     "Equipment": "Laptops, Software Tools",
     "Uniforms": "No",
     "Working Hours": "Standard Business Hours",
-    "Before and After Pictures": "Rarely",
-    "content": {
-      "hero": {
-        "headline": "Data-Driven Business Intelligence",
-        "subheadline": "Unlock the power of your data with expert analysis and optimization strategies.",
-        "cta": "Start Your Analysis"
-      },
-      "services": {
-        "title": "Analytics Services",
-        "subtitle": "Transforming raw data into actionable insights."
-      },
-      "trust": {
-        "title": "Trusted Experts",
-        "copy": "Certified Business Analysis Professionals (CBAP) at your service."
-      },
-      "offer": {
-        "title": "New Client Special",
-        "text": "Free Initial Data Audit"
-      },
-      "gallery": {
-        "title": "Impact Stories",
-        "subtitle": "See how we've improved efficiency for businesses like yours."
-      },
-      "contact": {
-        "title": "Get Insights Today",
-        "subtitle": "Contact us to schedule a review of your business needs."
-      }
-    }
+    "Before and After Pictures": "Rarely"
   },
   {
     "Category": "3. Management advisors",
@@ -90,34 +36,7 @@
     "Equipment": "Offices, Presentation Tools",
     "Uniforms": "No",
     "Working Hours": "By Appointment",
-    "Before and After Pictures": "Sometimes (Success Stories)",
-    "content": {
-      "hero": {
-        "headline": "Leadership & Management Excellence",
-        "subheadline": "Guiding organizations toward sustainable growth and operational success.",
-        "cta": "Schedule an Assessment"
-      },
-      "services": {
-        "title": "Advisory Solutions",
-        "subtitle": "Executive planning and team training for high performance."
-      },
-      "trust": {
-        "title": "Proven Leadership",
-        "copy": "Decades of experience advising top-tier management teams."
-      },
-      "offer": {
-        "title": "Exclusive Offer",
-        "text": "Free Organizational Health Check"
-      },
-      "gallery": {
-        "title": "Success Stories",
-        "subtitle": "Transforming potential into performance."
-      },
-      "contact": {
-        "title": "Lead with Confidence",
-        "subtitle": "Let's discuss your management strategy."
-      }
-    }
+    "Before and After Pictures": "Sometimes (Success Stories)"
   },
   {
     "Category": "4. Accounting",
@@ -130,34 +49,7 @@
     "Equipment": "Computers, Software",
     "Uniforms": "No",
     "Working Hours": "Mon-Fri 9-5",
-    "Before and After Pictures": "Rarely",
-    "content": {
-      "hero": {
-        "headline": "Precision Accounting for Your Success",
-        "subheadline": "Reliable bookkeeping, auditing, and financial consulting to keep your business on track.",
-        "cta": "Get a Financial Review"
-      },
-      "services": {
-        "title": "Financial Services",
-        "subtitle": "Expert management of your financial health."
-      },
-      "trust": {
-        "title": "Certified CPAs",
-        "copy": "Trust your numbers to licensed professionals."
-      },
-      "offer": {
-        "title": "New Business Offer",
-        "text": "Free Initial Financial Consultation"
-      },
-      "gallery": {
-        "title": "Client Success",
-        "subtitle": "Helping businesses grow through financial clarity."
-      },
-      "contact": {
-        "title": "Secure Your Finances",
-        "subtitle": "Contact us to streamline your accounting today."
-      }
-    }
+    "Before and After Pictures": "Rarely"
   },
   {
     "Category": "5. Tax Preparation",
@@ -170,34 +62,7 @@
     "Equipment": "Tax Software, Offices",
     "Uniforms": "No",
     "Working Hours": "Seasonal Extended",
-    "Before and After Pictures": "No",
-    "content": {
-      "hero": {
-        "headline": "Stress-Free Tax Preparation",
-        "subheadline": "Maximize your refund and minimize your stress with expert tax filing services.",
-        "cta": "Book Your Tax Appt"
-      },
-      "services": {
-        "title": "Tax Services",
-        "subtitle": "Accurate filing and strategic planning."
-      },
-      "trust": {
-        "title": "IRS Certified",
-        "copy": "Up-to-date on all the latest tax codes and credits."
-      },
-      "offer": {
-        "title": "Early Bird Special",
-        "text": "Free Review of Last Year's Return"
-      },
-      "gallery": {
-        "title": "Tax Tips",
-        "subtitle": "Smart strategies for every taxpayer."
-      },
-      "contact": {
-        "title": "Ready to File?",
-        "subtitle": "Schedule your appointment today."
-      }
-    }
+    "Before and After Pictures": "No"
   },
   {
     "Category": "6. Bookkeeping",
@@ -210,34 +75,7 @@
     "Equipment": "Accounting Tools, Desks",
     "Uniforms": "No",
     "Working Hours": "Standard Hours",
-    "Before and After Pictures": "No",
-    "content": {
-      "hero": {
-        "headline": "Organized Books, Better Business",
-        "subheadline": "We handle the records and payroll so you can focus on growing your business.",
-        "cta": "Get a Free Quote"
-      },
-      "services": {
-        "title": "Bookkeeping Services",
-        "subtitle": "Keeping your records spotless and up to date."
-      },
-      "trust": {
-        "title": "Dependable Accuracy",
-        "copy": "Certified bookkeepers dedicated to precision."
-      },
-      "offer": {
-        "title": "Special Offer",
-        "text": "First Month of Bookkeeping 50% Off"
-      },
-      "gallery": {
-        "title": "Our Process",
-        "subtitle": "Seamless integration with your workflow."
-      },
-      "contact": {
-        "title": "Simplify Your Books",
-        "subtitle": "Call us to set up your system."
-      }
-    }
+    "Before and After Pictures": "No"
   },
   {
     "Category": "7. Design studios",
@@ -250,34 +88,7 @@
     "Equipment": "Computers, Design Software",
     "Uniforms": "No",
     "Working Hours": "Flexible",
-    "Before and After Pictures": "Yes (Portfolio)",
-    "content": {
-      "hero": {
-        "headline": "Design That Speaks Volumes",
-        "subheadline": "Creative branding and graphic design solutions that capture your unique identity.",
-        "cta": "View Our Portfolio"
-      },
-      "services": {
-        "title": "Creative Services",
-        "subtitle": "Visual storytelling for modern brands."
-      },
-      "trust": {
-        "title": "Award-Winning",
-        "copy": "Recognized for excellence in design and innovation."
-      },
-      "offer": {
-        "title": "New Brand Package",
-        "text": "Free Logo Concept with Branding Package"
-      },
-      "gallery": {
-        "title": "Our Work",
-        "subtitle": "A showcase of our latest creative projects."
-      },
-      "contact": {
-        "title": "Start Your Project",
-        "subtitle": "Let's create something amazing together."
-      }
-    }
+    "Before and After Pictures": "Yes (Portfolio)"
   },
   {
     "Category": "8. Engineering consultants",
@@ -290,34 +101,7 @@
     "Equipment": "CAD Software, Offices",
     "Uniforms": "No",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Yes (Projects)",
-    "content": {
-      "hero": {
-        "headline": "Engineering Excellence & Innovation",
-        "subheadline": "Comprehensive consulting, planning, and design for complex engineering challenges.",
-        "cta": "Discuss Your Project"
-      },
-      "services": {
-        "title": "Engineering Solutions",
-        "subtitle": "Technical expertise for structural and systems design."
-      },
-      "trust": {
-        "title": "Licensed P.E.",
-        "copy": "Professional Engineers committed to safety and quality."
-      },
-      "offer": {
-        "title": "Project Init",
-        "text": "Free Initial Feasibility Consultation"
-      },
-      "gallery": {
-        "title": "Project Showcase",
-        "subtitle": "Engineering feats and successful implementations."
-      },
-      "contact": {
-        "title": "Partner With Us",
-        "subtitle": "Reach out for expert engineering advice."
-      }
-    }
+    "Before and After Pictures": "Yes (Projects)"
   },
   {
     "Category": "9. Plumbers",
@@ -330,34 +114,7 @@
     "Equipment": "Trucks, Tools",
     "Uniforms": "Yes",
     "Working Hours": "24/7 Emergency",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Emergency Plumbing Experts",
-        "subheadline": "Fast, reliable, and licensed plumbing services. We fix leaks, unclog drains, and install systems 24/7.",
-        "cta": "Call for Immediate Service"
-      },
-      "services": {
-        "title": "Plumbing Services",
-        "subtitle": "Complete residential and commercial plumbing solutions."
-      },
-      "trust": {
-        "title": "Licensed & Insured",
-        "copy": "Master Plumbers providing quality workmanship you can trust."
-      },
-      "offer": {
-        "title": "Online Special",
-        "text": "$50 Off Your First Repair"
-      },
-      "gallery": {
-        "title": "Our Projects",
-        "subtitle": "Quality installations and clean repairs."
-      },
-      "contact": {
-        "title": "Need a Plumber?",
-        "subtitle": "Available 24/7 for all your plumbing emergencies."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "10. Electrician",
@@ -370,34 +127,7 @@
     "Equipment": "Vans, Electrical Tools",
     "Uniforms": "Yes",
     "Working Hours": "Emergency Available",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Expert Electrical Solutions",
-        "subheadline": "Licensed electricians ensuring safety and power for your home.",
-        "cta": "Get a Free Quote"
-      },
-      "services": {
-        "title": "Our Services",
-        "subtitle": "Wiring, panel upgrades, and emergency repairs."
-      },
-      "trust": {
-        "title": "Safety First",
-        "copy": "Fully licensed and insured professionals you can trust."
-      },
-      "offer": {
-        "title": "New Customer Special",
-        "text": "$25 Off Your First Service Call"
-      },
-      "gallery": {
-        "title": "Our Projects",
-        "subtitle": "Quality electrical work done right."
-      },
-      "contact": {
-        "title": "Need an Electrician?",
-        "subtitle": "Call us for safe, reliable service."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "11. Electrical services",
@@ -410,34 +140,7 @@
     "Equipment": "Pickup Trucks, Meters",
     "Uniforms": "Yes",
     "Working Hours": "Standard + Emergency",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Reliable Electrical Services",
-        "subheadline": "Commercial and residential electrical maintenance and inspections.",
-        "cta": "Schedule Inspection"
-      },
-      "services": {
-        "title": "Comprehensive Care",
-        "subtitle": "From simple outlets to complex rewiring."
-      },
-      "trust": {
-        "title": "Certified Experts",
-        "copy": "Meeting all local codes and safety standards."
-      },
-      "offer": {
-        "title": "Safety Check",
-        "text": "Free Home Safety Inspection"
-      },
-      "gallery": {
-        "title": "Recent Work",
-        "subtitle": "Powering homes and businesses."
-      },
-      "contact": {
-        "title": "Power Up",
-        "subtitle": "Contact us for all your electrical needs."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "12. Painters",
@@ -450,34 +153,7 @@
     "Equipment": "Vans, Ladders, Brushes",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sat",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Transform Your Home with Color",
-        "subheadline": "Professional interior and exterior painting that lasts.",
-        "cta": "Get a Free Estimate"
-      },
-      "services": {
-        "title": "Painting Services",
-        "subtitle": "Flawless finishes for walls, cabinets, and exteriors."
-      },
-      "trust": {
-        "title": "Detail Oriented",
-        "copy": "Clean, precise, and respectful of your space."
-      },
-      "offer": {
-        "title": "Spring Special",
-        "text": "10% Off Exterior Painting"
-      },
-      "gallery": {
-        "title": "Before & After",
-        "subtitle": "See the difference a coat of paint makes."
-      },
-      "contact": {
-        "title": "Ready for a Change?",
-        "subtitle": "Book your color consultation today."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "13. HVAC installers, contractors",
@@ -490,34 +166,7 @@
     "Equipment": "Trucks, HVAC Tools",
     "Uniforms": "Yes",
     "Working Hours": "24/7",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Comfort All Year Round",
-        "subheadline": "Expert heating and cooling installation and repair.",
-        "cta": "Fix My AC"
-      },
-      "services": {
-        "title": "HVAC Solutions",
-        "subtitle": "Furnaces, Air Conditioners, and Ductwork."
-      },
-      "trust": {
-        "title": "Certified Techs",
-        "copy": "EPA certified technicians for efficient systems."
-      },
-      "offer": {
-        "title": "Tune-Up Special",
-        "text": "$89 System Tune-Up"
-      },
-      "gallery": {
-        "title": "Installations",
-        "subtitle": "Clean and efficient HVAC setups."
-      },
-      "contact": {
-        "title": "Too Hot or Cold?",
-        "subtitle": "We are available 24/7 for emergencies."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "14. Roofers",
@@ -530,34 +179,7 @@
     "Equipment": "Trucks, Ladders",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Protect Your Home with Quality Roofing",
-        "subheadline": "Expert roof repairs, replacements, and inspections. Durable solutions for every season.",
-        "cta": "Schedule Free Roof Inspection"
-      },
-      "services": {
-        "title": "Roofing Services",
-        "subtitle": "Keeping your home safe and dry."
-      },
-      "trust": {
-        "title": "Certified Installers",
-        "copy": "manufacturer-certified roofers offering industry-leading warranties."
-      },
-      "offer": {
-        "title": "Storm Damage Special",
-        "text": "Free Comprehensive Roof Audit"
-      },
-      "gallery": {
-        "title": "Our Roof Projects",
-        "subtitle": "Quality craftsmanship from the top down."
-      },
-      "contact": {
-        "title": "Concerned About Your Roof?",
-        "subtitle": "Don't wait for a leak. Call us today."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "15. Residential remodelers",
@@ -570,34 +192,7 @@
     "Equipment": "Vans, Tools",
     "Uniforms": "Yes",
     "Working Hours": "Project-Based",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Love Your Home Again",
-        "subheadline": "Full-service remodeling for kitchens, bathrooms, and basements.",
-        "cta": "Start Your Remodel"
-      },
-      "services": {
-        "title": "Design & Build",
-        "subtitle": "Turning your vision into reality."
-      },
-      "trust": {
-        "title": "Master Craftsmen",
-        "copy": "Quality materials and superior workmanship."
-      },
-      "offer": {
-        "title": "Design Offer",
-        "text": "Free 3D Design Rendering"
-      },
-      "gallery": {
-        "title": "Transformations",
-        "subtitle": "Stunning kitchen and bath makeovers."
-      },
-      "contact": {
-        "title": "Dream Big",
-        "subtitle": "Let's discuss your renovation project."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "16. Builders",
@@ -610,34 +205,7 @@
     "Equipment": "Trucks, Heavy Equipment",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Building Your Future",
-        "subheadline": "Custom home building and major structural additions.",
-        "cta": "View Floorplans"
-      },
-      "services": {
-        "title": "Construction Services",
-        "subtitle": "From foundation to finish, we build it all."
-      },
-      "trust": {
-        "title": "Solid Reputation",
-        "copy": "On time, on budget, and built to last."
-      },
-      "offer": {
-        "title": "Consultation",
-        "text": "Free Site Evaluation"
-      },
-      "gallery": {
-        "title": "Custom Homes",
-        "subtitle": "Browse our portfolio of custom builds."
-      },
-      "contact": {
-        "title": "Start Building",
-        "subtitle": "Schedule a meeting with our architect."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "17. Local moving services",
@@ -650,34 +218,7 @@
     "Equipment": "Trucks, Dollies",
     "Uniforms": "Yes",
     "Working Hours": "Flexible",
-    "Before and After Pictures": "Sometimes",
-    "content": {
-      "hero": {
-        "headline": "Stress-Free Moving Day",
-        "subheadline": "Professional movers handling your belongings with care.",
-        "cta": "Get a Moving Quote"
-      },
-      "services": {
-        "title": "Moving Services",
-        "subtitle": "Packing, loading, transport, and storage."
-      },
-      "trust": {
-        "title": "Insured & Bonded",
-        "copy": "Your items are safe in our hands."
-      },
-      "offer": {
-        "title": "Moving Supply Offer",
-        "text": "Free Boxes with Full Move"
-      },
-      "gallery": {
-        "title": "On the Move",
-        "subtitle": "Efficient packing and safe transport."
-      },
-      "contact": {
-        "title": "Ready to Move?",
-        "subtitle": "Reserve your truck today."
-      }
-    }
+    "Before and After Pictures": "Sometimes"
   },
   {
     "Category": "18. Dentist offices",
@@ -690,34 +231,7 @@
     "Equipment": "Dental Chairs, X-Rays",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Fri 8-5",
-    "Before and After Pictures": "Yes (Teeth)",
-    "content": {
-      "hero": {
-        "headline": "Dentist offices Services",
-        "subheadline": "Professional dentist offices provided by experts.",
-        "cta": "Contact Us Today"
-      },
-      "services": {
-        "title": "Our Services",
-        "subtitle": "We specialize in Checkups, Cleanings, Procedures."
-      },
-      "trust": {
-        "title": "Why Choose Us",
-        "copy": "Experienced and reliable dentist offices professionals."
-      },
-      "offer": {
-        "title": "Special Offer",
-        "text": "Free Consultation"
-      },
-      "gallery": {
-        "title": "Our Work",
-        "subtitle": "See what we can do for you."
-      },
-      "contact": {
-        "title": "Get In Touch",
-        "subtitle": "Ready to start? Call us now."
-      }
-    }
+    "Before and After Pictures": "Yes (Teeth)"
   },
   {
     "Category": "19. Physical therapy clinics",
@@ -730,34 +244,7 @@
     "Equipment": "Therapy Equipment, Gym",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Restore Your Mobility",
-        "subheadline": "Personalized physical therapy to get you back to life.",
-        "cta": "Book Assessment"
-      },
-      "services": {
-        "title": "Rehabilitation",
-        "subtitle": "Sports injury, post-op, and chronic pain relief."
-      },
-      "trust": {
-        "title": "Licensed Therapists",
-        "copy": "Evidence-based treatments for faster recovery."
-      },
-      "offer": {
-        "title": "New Patient",
-        "text": "Free Initial Injury Screening"
-      },
-      "gallery": {
-        "title": "Recovery Center",
-        "subtitle": "State-of-the-art equipment and care."
-      },
-      "contact": {
-        "title": "Pain Free",
-        "subtitle": "Schedule your appointment now."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "20. Optometry practices",
@@ -770,34 +257,7 @@
     "Equipment": "Exam Rooms, Lenses",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sat",
-    "Before and After Pictures": "Sometimes",
-    "content": {
-      "hero": {
-        "headline": "See the World Clearly",
-        "subheadline": "Comprehensive eye exams and stylish eyewear.",
-        "cta": "Schedule Eye Exam"
-      },
-      "services": {
-        "title": "Vision Care",
-        "subtitle": "Exams, contact lenses, and glasses."
-      },
-      "trust": {
-        "title": "Eye Health Experts",
-        "copy": "Advanced technology for early detection."
-      },
-      "offer": {
-        "title": "Eyewear Offer",
-        "text": "Buy One Get One 50% Off Frames"
-      },
-      "gallery": {
-        "title": "Optical Shop",
-        "subtitle": "Fashionable frames for every face."
-      },
-      "contact": {
-        "title": "Vision Check",
-        "subtitle": "Book your annual eye exam today."
-      }
-    }
+    "Before and After Pictures": "Sometimes"
   },
   {
     "Category": "21. Social workers",
@@ -810,34 +270,7 @@
     "Equipment": "Offices, Computers",
     "Uniforms": "No",
     "Working Hours": "By Appointment",
-    "Before and After Pictures": "Rarely",
-    "content": {
-      "hero": {
-        "headline": "Support & Guidance",
-        "subheadline": "Professional social work services connecting you to resources.",
-        "cta": "Find Support"
-      },
-      "services": {
-        "title": "Community Services",
-        "subtitle": "Counseling, advocacy, and case management."
-      },
-      "trust": {
-        "title": "Compassionate Care",
-        "copy": "Dedicated to improving well-being."
-      },
-      "offer": {
-        "title": "Consultation",
-        "text": "Free Confidential Intake"
-      },
-      "gallery": {
-        "title": "Community",
-        "subtitle": "Helping individuals and families thrive."
-      },
-      "contact": {
-        "title": "Reach Out",
-        "subtitle": "We are here to help."
-      }
-    }
+    "Before and After Pictures": "Rarely"
   },
   {
     "Category": "22. Family counselors",
@@ -850,34 +283,7 @@
     "Equipment": "Counseling Rooms",
     "Uniforms": "No",
     "Working Hours": "Flexible",
-    "Before and After Pictures": "No",
-    "content": {
-      "hero": {
-        "headline": "Restoring Family Harmony",
-        "subheadline": "Compassionate counseling for couples, families, and individuals.",
-        "cta": "Book a Session"
-      },
-      "services": {
-        "title": "Therapy Services",
-        "subtitle": "Conflict resolution, communication, and support."
-      },
-      "trust": {
-        "title": "Licensed Counselors",
-        "copy": "A safe space to heal and grow."
-      },
-      "offer": {
-        "title": "First Session",
-        "text": "Free 15-Minute Phone Consult"
-      },
-      "gallery": {
-        "title": "Our Office",
-        "subtitle": "A calming environment for healing."
-      },
-      "contact": {
-        "title": "Let's Talk",
-        "subtitle": "Schedule an appointment today."
-      }
-    }
+    "Before and After Pictures": "No"
   },
   {
     "Category": "23. Child day-care services",
@@ -890,34 +296,7 @@
     "Equipment": "Play Areas, Toys",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Fri 7-6",
-    "Before and After Pictures": "No",
-    "content": {
-      "hero": {
-        "headline": "Where Learning is Fun",
-        "subheadline": "Safe, nurturing, and educational child care.",
-        "cta": "Schedule a Tour"
-      },
-      "services": {
-        "title": "Early Education",
-        "subtitle": "Infant care, preschool, and after-school programs."
-      },
-      "trust": {
-        "title": "Qualified Staff",
-        "copy": "CPR certified and background checked caregivers."
-      },
-      "offer": {
-        "title": "Enrollment",
-        "text": "Waived Registration Fee"
-      },
-      "gallery": {
-        "title": "Happy Kids",
-        "subtitle": "Play, learn, and grow with us."
-      },
-      "contact": {
-        "title": "Join Our Family",
-        "subtitle": "Contact us for availability."
-      }
-    }
+    "Before and After Pictures": "No"
   },
   {
     "Category": "24. Hair salons",
@@ -930,34 +309,7 @@
     "Equipment": "Chairs, Products",
     "Uniforms": "Yes",
     "Working Hours": "Tue-Sat",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Love Your Hair",
-        "subheadline": "Expert cutting, coloring, and styling for a new you.",
-        "cta": "Book Appointment"
-      },
-      "services": {
-        "title": "Salon Services",
-        "subtitle": "Balayage, precision cuts, and treatments."
-      },
-      "trust": {
-        "title": "Master Stylists",
-        "copy": "Keeping up with the latest trends and techniques."
-      },
-      "offer": {
-        "title": "New Client",
-        "text": "20% Off Your First Cut & Color"
-      },
-      "gallery": {
-        "title": "Style Lookbook",
-        "subtitle": "Beautiful transformations."
-      },
-      "contact": {
-        "title": "Get Styled",
-        "subtitle": "Call to book your chair."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "25. Barber shops",
@@ -970,34 +322,7 @@
     "Equipment": "Chairs, Clippers",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sat",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Classic Cuts & Shaves",
-        "subheadline": "Traditional barbering for the modern gentleman.",
-        "cta": "Book a Cut"
-      },
-      "services": {
-        "title": "Grooming",
-        "subtitle": "Fade cuts, hot towel shaves, and beard trims."
-      },
-      "trust": {
-        "title": "Skilled Barbers",
-        "copy": "Precision cuts with attention to detail."
-      },
-      "offer": {
-        "title": "Combo Special",
-        "text": "$5 Off Haircut & Beard Trim"
-      },
-      "gallery": {
-        "title": "Fresh Cuts",
-        "subtitle": "Sharp looks for sharp men."
-      },
-      "contact": {
-        "title": "Walk-Ins Welcome",
-        "subtitle": "Visit us or book online."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "26. Nail salons",
@@ -1010,34 +335,7 @@
     "Equipment": "Stations, Polish",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sun",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Polished to Perfection",
-        "subheadline": "Relaxing manicures, pedicures, and nail art.",
-        "cta": "Book Mani-Pedi"
-      },
-      "services": {
-        "title": "Nail Care",
-        "subtitle": "Gel, acrylic, dip powder, and spa pedicures."
-      },
-      "trust": {
-        "title": "Clean & Safe",
-        "copy": "Hospital-grade sterilization for your safety."
-      },
-      "offer": {
-        "title": "Spa Day",
-        "text": "Free Design with Full Set"
-      },
-      "gallery": {
-        "title": "Nail Art",
-        "subtitle": "Creative designs for every occasion."
-      },
-      "contact": {
-        "title": "Pamper Yourself",
-        "subtitle": "Call to make an appointment."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "27. Independent fitness trainers",
@@ -1050,34 +348,7 @@
     "Equipment": "Gym Equipment, Mats",
     "Uniforms": "Yes",
     "Working Hours": "Flexible",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Achieve Your Fitness Goals",
-        "subheadline": "Personalized training programs to build strength and health.",
-        "cta": "Start Training"
-      },
-      "services": {
-        "title": "Fitness Coaching",
-        "subtitle": "Weight loss, muscle building, and nutrition."
-      },
-      "trust": {
-        "title": "Certified Trainer",
-        "copy": "Motivation and expertise to get results."
-      },
-      "offer": {
-        "title": "Intro Session",
-        "text": "Free Fitness Assessment"
-      },
-      "gallery": {
-        "title": "Client Success",
-        "subtitle": "Real results from real people."
-      },
-      "contact": {
-        "title": "Get Fit",
-        "subtitle": "Sign up for your first session."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "28. Automotive repair shops",
@@ -1090,34 +361,7 @@
     "Equipment": "Lifts, Tools, Bays",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sat",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Keep Your Car Running Smoothly",
-        "subheadline": "Trusted auto repair and maintenance for all makes and models.",
-        "cta": "Book Service"
-      },
-      "services": {
-        "title": "Auto Repair",
-        "subtitle": "Brakes, oil changes, engine diagnostics."
-      },
-      "trust": {
-        "title": "ASE Certified",
-        "copy": "Honest mechanics and quality parts."
-      },
-      "offer": {
-        "title": "Oil Change",
-        "text": "$10 Off Synthetic Oil Change"
-      },
-      "gallery": {
-        "title": "In the Shop",
-        "subtitle": "Expert care for your vehicle."
-      },
-      "contact": {
-        "title": "Car Trouble?",
-        "subtitle": "Bring it in for a checkup."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "29. Equipment repair",
@@ -1130,34 +374,7 @@
     "Equipment": "Tools, Workshops",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "We Fix It Fast",
-        "subheadline": "Reliable repair for industrial and small equipment.",
-        "cta": "Get a Quote"
-      },
-      "services": {
-        "title": "Repair Services",
-        "subtitle": "Diagnostics, part replacement, and maintenance."
-      },
-      "trust": {
-        "title": "Experienced Techs",
-        "copy": "Minimizing downtime with quick repairs."
-      },
-      "offer": {
-        "title": "Service Offer",
-        "text": "Free Diagnostic with Repair"
-      },
-      "gallery": {
-        "title": "Repairs",
-        "subtitle": "Restoring equipment to peak performance."
-      },
-      "contact": {
-        "title": "Broken Gear?",
-        "subtitle": "Contact us for a repair estimate."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "30. Appliance repair",
@@ -1170,34 +387,7 @@
     "Equipment": "Vans, Parts",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sat",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Appliance Rescue",
-        "subheadline": "Fast repairs for washers, dryers, fridges, and ovens.",
-        "cta": "Schedule Repair"
-      },
-      "services": {
-        "title": "Home Appliance Repair",
-        "subtitle": "We fix all major brands and models."
-      },
-      "trust": {
-        "title": "Local Experts",
-        "copy": "Background checked technicians."
-      },
-      "offer": {
-        "title": "Online Coupon",
-        "text": "$20 Off Service Call"
-      },
-      "gallery": {
-        "title": "Fixed Fast",
-        "subtitle": "Don't let a broken appliance stop you."
-      },
-      "contact": {
-        "title": "Need Help?",
-        "subtitle": "Call for same-day service."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "31. Pet Grooming",
@@ -1210,34 +400,7 @@
     "Equipment": "Tables, Dryers",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sat",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Pamper Your Pet",
-        "subheadline": "Gentle grooming for dogs and cats of all breeds.",
-        "cta": "Book Grooming"
-      },
-      "services": {
-        "title": "Pet Spa",
-        "subtitle": "Baths, haircuts, nail trims, and ear cleaning."
-      },
-      "trust": {
-        "title": "Animal Lovers",
-        "copy": "Treating your furry friends like family."
-      },
-      "offer": {
-        "title": "New Pup",
-        "text": "Half Price Nail Grind with Groom"
-      },
-      "gallery": {
-        "title": "Before & After",
-        "subtitle": "Fluffy, clean, and happy pets."
-      },
-      "contact": {
-        "title": "Make an Appointment",
-        "subtitle": "Your pet deserves a spa day."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "32. Pet boarding",
@@ -1250,34 +413,7 @@
     "Equipment": "Kennels, Yards",
     "Uniforms": "Yes",
     "Working Hours": "24/7",
-    "Before and After Pictures": "Sometimes",
-    "content": {
-      "hero": {
-        "headline": "Your Pet's Vacation Home",
-        "subheadline": "Safe and fun boarding while you are away.",
-        "cta": "Check Availability"
-      },
-      "services": {
-        "title": "Boarding Services",
-        "subtitle": "Overnight stays, daycare, and playtime."
-      },
-      "trust": {
-        "title": "Supervised Care",
-        "copy": "24/7 care ensuring safety and happiness."
-      },
-      "offer": {
-        "title": "First Stay",
-        "text": "Free Bath with 3+ Night Stay"
-      },
-      "gallery": {
-        "title": "Happy Campers",
-        "subtitle": "See where your pet will play."
-      },
-      "contact": {
-        "title": "Book a Stay",
-        "subtitle": "Reserve your spot today."
-      }
-    }
+    "Before and After Pictures": "Sometimes"
   },
   {
     "Category": "33. Pet training services",
@@ -1290,34 +426,7 @@
     "Equipment": "Leashes, Treats",
     "Uniforms": "Yes",
     "Working Hours": "Flexible",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Well Behaved Pets",
-        "subheadline": "Positive reinforcement training for puppies and dogs.",
-        "cta": "Start Training"
-      },
-      "services": {
-        "title": "Dog Training",
-        "subtitle": "Obedience, behavioral modification, and puppy classes."
-      },
-      "trust": {
-        "title": "Certified Trainers",
-        "copy": "Proven methods for lasting results."
-      },
-      "offer": {
-        "title": "Evaluation",
-        "text": "Free 30-min Behavior Consult"
-      },
-      "gallery": {
-        "title": "Top Dogs",
-        "subtitle": "From unruly to obedient."
-      },
-      "contact": {
-        "title": "Need Help?",
-        "subtitle": "Sign up for a class now."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "34. Security systems installation",
@@ -1330,34 +439,7 @@
     "Equipment": "Tools, Cameras",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Protect What Matters",
-        "subheadline": "Advanced security systems for home and business.",
-        "cta": "Free Security Audit"
-      },
-      "services": {
-        "title": "Security Solutions",
-        "subtitle": "Cameras, alarms, and smart home integration."
-      },
-      "trust": {
-        "title": "Security Experts",
-        "copy": "Professional installation and 24/7 monitoring."
-      },
-      "offer": {
-        "title": "New System",
-        "text": "Free Video Doorbell with Install"
-      },
-      "gallery": {
-        "title": "Secure Homes",
-        "subtitle": "Peace of mind through technology."
-      },
-      "contact": {
-        "title": "Get Secured",
-        "subtitle": "Contact us for a quote."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "35. Real estate agent",
@@ -1370,34 +452,7 @@
     "Equipment": "Computers, Signs",
     "Uniforms": "No",
     "Working Hours": "Flexible",
-    "Before and After Pictures": "Yes (Properties)",
-    "content": {
-      "hero": {
-        "headline": "Find Your Dream Home",
-        "subheadline": "Expert guidance for buying and selling real estate.",
-        "cta": "View Listings"
-      },
-      "services": {
-        "title": "Real Estate Services",
-        "subtitle": "Market analysis, listing marketing, and buyer representation."
-      },
-      "trust": {
-        "title": "Top Realtor",
-        "copy": "Negotiating the best deal for you."
-      },
-      "offer": {
-        "title": "Sellers",
-        "text": "Free Comparative Market Analysis"
-      },
-      "gallery": {
-        "title": "Sold",
-        "subtitle": "Helping families find their perfect home."
-      },
-      "contact": {
-        "title": "Ready to Move?",
-        "subtitle": "Call to start your search."
-      }
-    }
+    "Before and After Pictures": "Yes (Properties)"
   },
   {
     "Category": "36. Dry cleaning",
@@ -1410,34 +465,7 @@
     "Equipment": "Machines, Hangers",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sat",
-    "Before and After Pictures": "Sometimes",
-    "content": {
-      "hero": {
-        "headline": "Fabric Care Experts",
-        "subheadline": "Professional dry cleaning and laundry services.",
-        "cta": "Schedule Pickup"
-      },
-      "services": {
-        "title": "Garment Care",
-        "subtitle": "Dry cleaning, wash & fold, and alterations."
-      },
-      "trust": {
-        "title": "Quality Clean",
-        "copy": "Gentle on fabrics, tough on stains."
-      },
-      "offer": {
-        "title": "New Customer",
-        "text": "20% Off Your First Order"
-      },
-      "gallery": {
-        "title": "Fresh & Clean",
-        "subtitle": "Looking your best starts here."
-      },
-      "contact": {
-        "title": "Laundry Day?",
-        "subtitle": "Visit us or schedule a pickup."
-      }
-    }
+    "Before and After Pictures": "Sometimes"
   },
   {
     "Category": "37. Cleaning",
@@ -1450,34 +478,7 @@
     "Equipment": "Vacuums, Supplies",
     "Uniforms": "Yes",
     "Working Hours": "Flexible",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Spotless Home, Happy Life",
-        "subheadline": "Reliable residential and commercial cleaning services.",
-        "cta": "Get a Clean Quote"
-      },
-      "services": {
-        "title": "Cleaning Services",
-        "subtitle": "Regular cleaning, deep cleans, and move-in/out."
-      },
-      "trust": {
-        "title": "Trusted Cleaners",
-        "copy": "Thorough, vetted, and consistent."
-      },
-      "offer": {
-        "title": "Spring Clean",
-        "text": "$30 Off First Deep Clean"
-      },
-      "gallery": {
-        "title": "Sparkling Results",
-        "subtitle": "We don't cut corners, we clean them."
-      },
-      "contact": {
-        "title": "Need a Cleaner?",
-        "subtitle": "Book your service today."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "38. Graphic design",
@@ -1490,34 +491,7 @@
     "Equipment": "Computers, Software",
     "Uniforms": "No",
     "Working Hours": "Flexible",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Visuals That Connect",
-        "subheadline": "Impactful graphic design for your brand.",
-        "cta": "View Portfolio"
-      },
-      "services": {
-        "title": "Design Services",
-        "subtitle": "Logos, marketing materials, and brand identity."
-      },
-      "trust": {
-        "title": "Creative Pros",
-        "copy": "Designing with strategy and purpose."
-      },
-      "offer": {
-        "title": "Branding",
-        "text": "Free Business Card Design with Logo"
-      },
-      "gallery": {
-        "title": "Our Portfolio",
-        "subtitle": "Creative solutions for business growth."
-      },
-      "contact": {
-        "title": "Start Organizing",
-        "subtitle": "Let's create something beautiful."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "39. T shirt design",
@@ -1530,34 +504,7 @@
     "Equipment": "Printers, Shirts",
     "Uniforms": "No",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Wear Your Brand",
-        "subheadline": "Custom t-shirt design and printing.",
-        "cta": "Start Designing"
-      },
-      "services": {
-        "title": "Custom Apparel",
-        "subtitle": "Screen printing, embroidery, and design."
-      },
-      "trust": {
-        "title": "Quality Prints",
-        "copy": "Durable prints on comfortable fabrics."
-      },
-      "offer": {
-        "title": "Bulk Order",
-        "text": "Free Setup on Orders over 50"
-      },
-      "gallery": {
-        "title": "Design Gallery",
-        "subtitle": "Merch that people love to wear."
-      },
-      "contact": {
-        "title": "Need Shirts?",
-        "subtitle": "Get a quote for your order."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "40. Air conditioning",
@@ -1570,34 +517,7 @@
     "Equipment": "Trucks, Units",
     "Uniforms": "Yes",
     "Working Hours": "24/7",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Stay Cool",
-        "subheadline": "Expert air conditioning installation and repair.",
-        "cta": "Fix My AC"
-      },
-      "services": {
-        "title": "AC Services",
-        "subtitle": "Central air, ductless splits, and maintenance."
-      },
-      "trust": {
-        "title": "Cooling Experts",
-        "copy": "Keeping you comfortable when it counts."
-      },
-      "offer": {
-        "title": "Summer Special",
-        "text": "Free Thermostat with New Install"
-      },
-      "gallery": {
-        "title": "Cool Comfort",
-        "subtitle": "Efficient cooling solutions."
-      },
-      "contact": {
-        "title": "Hot House?",
-        "subtitle": "Call for immediate service."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "41. Pest control",
@@ -1610,34 +530,7 @@
     "Equipment": "Trucks, Sprayers",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sat",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Pest Free Living",
-        "subheadline": "Safe and effective pest control solutions.",
-        "cta": "Get Inspection"
-      },
-      "services": {
-        "title": "Extermination",
-        "subtitle": "Ants, rodents, termites, and bugs."
-      },
-      "trust": {
-        "title": "Safety Focused",
-        "copy": "Pet and family safe treatments available."
-      },
-      "offer": {
-        "title": "Initial Service",
-        "text": "$50 Off Your First Treatment"
-      },
-      "gallery": {
-        "title": "Pest Solutions",
-        "subtitle": "Reclaiming your home from pests."
-      },
-      "contact": {
-        "title": "Bug Problem?",
-        "subtitle": "Call us to exterminate them."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "42. Pool cleaning",
@@ -1650,34 +543,7 @@
     "Equipment": "Nets, Chemicals",
     "Uniforms": "Yes",
     "Working Hours": "Seasonal",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Crystal Clear Water",
-        "subheadline": "Professional pool cleaning and maintenance.",
-        "cta": "Start Service"
-      },
-      "services": {
-        "title": "Pool Care",
-        "subtitle": "Weekly cleaning, chemical balancing, and opening/closing."
-      },
-      "trust": {
-        "title": "Reliable Service",
-        "copy": "Consistency you can count on."
-      },
-      "offer": {
-        "title": "New Pool Owner",
-        "text": "First Month 50% Off"
-      },
-      "gallery": {
-        "title": "Sparkling Pools",
-        "subtitle": "Enjoy your pool, let us do the work."
-      },
-      "contact": {
-        "title": "Dirty Pool?",
-        "subtitle": "Schedule your cleaning."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "43. Glass",
@@ -1690,34 +556,7 @@
     "Equipment": "Trucks, Glass Tools",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Glass Repair & Install",
-        "subheadline": "Windows, showers, and custom glass solutions.",
-        "cta": "Get Estimate"
-      },
-      "services": {
-        "title": "Glass Services",
-        "subtitle": "Residential and commercial glass replacement."
-      },
-      "trust": {
-        "title": "Glazing Experts",
-        "copy": "Precision cutting and installation."
-      },
-      "offer": {
-        "title": "Shower Door",
-        "text": "Free Coating with Frameless Shower"
-      },
-      "gallery": {
-        "title": "Clear Views",
-        "subtitle": "Beautiful glass work."
-      },
-      "contact": {
-        "title": "Broken Glass?",
-        "subtitle": "Call for quick replacement."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "44. Windows",
@@ -1730,34 +569,7 @@
     "Equipment": "Vans, Window Frames",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Energy Efficient Windows",
-        "subheadline": "Upgrade your home with new windows.",
-        "cta": "Get Pricing"
-      },
-      "services": {
-        "title": "Window Installation",
-        "subtitle": "Vinyl, wood, and fiberglass replacement windows."
-      },
-      "trust": {
-        "title": "Window Pros",
-        "copy": "Reducing energy bills and improving curb appeal."
-      },
-      "offer": {
-        "title": "Whole House",
-        "text": "Buy 5 Get 1 Free"
-      },
-      "gallery": {
-        "title": "New Windows",
-        "subtitle": "Brighten up your home."
-      },
-      "contact": {
-        "title": "Drafty Windows?",
-        "subtitle": "Schedule a free measurement."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "45. Landscaping",
@@ -1770,34 +582,7 @@
     "Equipment": "Trucks, Mowers",
     "Uniforms": "Yes",
     "Working Hours": "Mon-Sat",
-    "Before and After Pictures": "Yes",
-    "content": {
-      "hero": {
-        "headline": "Your Outdoor Oasis",
-        "subheadline": "Landscape design, installation, and maintenance.",
-        "cta": "Design My Yard"
-      },
-      "services": {
-        "title": "Lawn & Garden",
-        "subtitle": "Mowing, planting, hardscapes, and lighting."
-      },
-      "trust": {
-        "title": "Green Thumbs",
-        "copy": "Creating beautiful outdoor living spaces."
-      },
-      "offer": {
-        "title": "Spring Cleanup",
-        "text": "10% Off Seasonal Cleanup"
-      },
-      "gallery": {
-        "title": "Landscapes",
-        "subtitle": "Gardens, patios, and green lawns."
-      },
-      "contact": {
-        "title": "Curb Appeal",
-        "subtitle": "Get a quote for your project."
-      }
-    }
+    "Before and After Pictures": "Yes"
   },
   {
     "Category": "46. Social services",
@@ -1810,33 +595,6 @@
     "Equipment": "Offices, Computers",
     "Uniforms": "No",
     "Working Hours": "Mon-Fri",
-    "Before and After Pictures": "Rarely",
-    "content": {
-      "hero": {
-        "headline": "Community Support",
-        "subheadline": "Connecting people with the resources they need.",
-        "cta": "Get Help"
-      },
-      "services": {
-        "title": "Programs",
-        "subtitle": "Housing assistance, food programs, and counseling."
-      },
-      "trust": {
-        "title": "Dedicated Team",
-        "copy": "Improving lives in our community."
-      },
-      "offer": {
-        "title": "Assistance",
-        "text": "Free Resource Consultation"
-      },
-      "gallery": {
-        "title": "Our Impact",
-        "subtitle": "Making a difference every day."
-      },
-      "contact": {
-        "title": "Need Assistance?",
-        "subtitle": "Contact an intake specialist."
-      }
-    }
+    "Before and After Pictures": "Rarely"
   }
 ]

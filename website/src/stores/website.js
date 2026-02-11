@@ -1,7 +1,130 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { GeminiService } from '../services/GeminiService'
+import { ImageService } from '../services/ImageService'
+import categoriesData from '../data/categories.json'
 
 export const useWebsiteStore = defineStore('website', () => {
+
+    // ... (keep existing state) ...
+
+    // Dynamic Template Actions
+    async function fetchTemplate(categoryName) {
+        if (!categoryName) return;
+
+        // Reset to ensure we don't show old template while loading
+        companyInfo.value.rawHTML = null;
+        companyInfo.value.templateSource = 'loading';
+
+        try {
+            console.log(`[Store] Generating template for ${categoryName}...`);
+
+            // 1. Get Category Data
+            // 1. Get Category Data
+            // The categoryName passed in is often stripped of "1. " (e.g. "Management advisors")
+            // But the JSON has "3. Management advisors".
+            // We need to find valid data. matching either exact or suffix.
+
+            const categoryData = categoriesData.find(c => {
+                // Check exact match
+                if (c.Category === categoryName) return true;
+                // Check if JSON entry key (without number) matches our categoryName
+                const cleanKey = c.Category.replace(/^\d+\.\s+/, '');
+                return cleanKey === categoryName;
+            });
+
+            if (!categoryData) {
+                console.error('Available Categories:', categoriesData.map(c => c.Category));
+                throw new Error(`Category data not found for: ${categoryName}`);
+            }
+
+            // 2. Prepare Data for Gemini
+            // Ensure we have current form data in the structure Gemini expects
+            const formData = {
+                companyName: companyInfo.value.name,
+                phone: companyInfo.value.phone,
+                address: companyInfo.value.address,
+                email: companyInfo.value.email,
+                description: companyInfo.value.description,
+                category: categoryName
+            };
+
+            // 3. Fetch Images & HTML in Parallel
+            const cleanCategoryName = categoryName.replace(/^\d+\.\s+/, '').toLowerCase();
+
+            const [images, rawHtml] = await Promise.all([
+                ImageService.getCategoryImages(cleanCategoryName),
+                GeminiService.generateWebsiteHtml(categoryData, formData)
+            ]);
+
+            // 4. Verify Syntax
+            console.log('[Store] Verifying HTML...');
+            let html = await GeminiService.verifyAndFixWebsite(rawHtml);
+
+            // 5. Inject Images
+            // 5. Inject Images
+            Object.keys(images).forEach(sectionKey => {
+                const sectionImages = images[sectionKey];
+                const isArray = Array.isArray(sectionImages);
+
+                let placeholderKey = '';
+                if (sectionKey === 'hero') placeholderKey = 'Hero';
+                else if (sectionKey === 'team' || sectionKey === 'team_at_work') placeholderKey = 'Team';
+                else if (sectionKey === 'before_and_after') placeholderKey = 'BeforeAndAfter';
+                else if (sectionKey === 'happy_customer') placeholderKey = 'HappyCustomer';
+                else placeholderKey = sectionKey;
+
+                if (!placeholderKey) return;
+
+                if (isArray && sectionImages.length > 0) {
+                    sectionImages.forEach(imgUrl => {
+                        html = html.replace(`[DESC_PHOTO: ${placeholderKey}]`, imgUrl);
+                    });
+                } else if (!isArray && sectionImages) {
+                    html = html.split(`[DESC_PHOTO: ${placeholderKey}]`).join(sectionImages);
+                }
+            });
+
+            // 5b. Specific Fallback for Team if not found in Supabase
+            // If we didn't find a 'team' key in the images object, or it was empty involved above.
+            // We check if the placeholder still exists.
+            if (html.includes('[DESC_PHOTO: Team]')) {
+                console.warn('[Store] Team image not found in Supabase. Using generic fallback.');
+                // Use a high-quality generic team meeting image from Unsplash or Placehold
+                const genericTeam = "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80";
+                html = html.split('[DESC_PHOTO: Team]').join(genericTeam);
+            }
+
+            // 6. Force Styling Injection (Failsafe)
+            if (!html.includes('cdn.tailwindcss.com')) {
+                const headEnd = html.indexOf('</head>');
+                const tailwindScript = `<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">`;
+                if (headEnd !== -1) {
+                    html = html.substring(0, headEnd) + tailwindScript + html.substring(headEnd);
+                } else {
+                    html = tailwindScript + html;
+                }
+            }
+
+            // 7. Update State
+            companyInfo.value.rawHTML = html;
+            companyInfo.value.templateSource = 'ai';
+            console.log('[Store] Template generated successfully.');
+
+        } catch (err) {
+            console.error('[Store] Template Generation Error:', err);
+            // FAIL LOUDLY: Do not fallback.
+            companyInfo.value.rawHTML = `<div style="color:red; padding:20px; text-align:center;">
+                <h1>Generation Failed</h1>
+                <p>${err.message}</p>
+                <button onclick="window.location.reload()">Retry</button>
+            </div>`;
+            companyInfo.value.templateSource = 'error';
+            // throw err; // Optional: if we want to catch it in the component
+        }
+    }
 
     // Input Data
     const companyInfo = ref({
@@ -131,6 +254,9 @@ export const useWebsiteStore = defineStore('website', () => {
 
     // Actions
     async function fetchAssets(category) {
+        // LEGACY: Disabled in favor of ImageService.js
+        console.log('[Store] fetchAssets disabled. Using ImageService instead.');
+        /*
         if (!category) return;
 
         // Don't re-fetch if we already have assets for this exact category in this session
@@ -184,6 +310,7 @@ export const useWebsiteStore = defineStore('website', () => {
         } catch (err) {
             console.error('[Store] Fetch Asset Error:', err);
         }
+        */
     }
 
     function updateCompanyInfo(info) {
@@ -258,36 +385,7 @@ export const useWebsiteStore = defineStore('website', () => {
         isPaid.value = true
     }
 
-    // Dynamic Template Actions
-    async function fetchTemplate(category) {
-        if (!category) return;
-
-        // Reset to ensure we don't show old template while loading
-        companyInfo.value.rawHTML = null;
-        companyInfo.value.templateSource = 'loading';
-
-        try {
-            console.log(`[Store] Fetching template for ${category}...`);
-            const response = await fetch('/.netlify/functions/generate-template', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ category })
-            });
-
-            if (!response.ok) throw new Error('Template generation failed');
-
-            const data = await response.json();
-            console.log(`[Store] Received template from ${data.source}`);
-
-            // Parse and Hydrate
-            companyInfo.value.rawHTML = processTemplate(data.html, category);
-            companyInfo.value.templateSource = 'ai';
-
-        } catch (err) {
-            console.error('[Store] Template Error:', err);
-            companyInfo.value.templateSource = 'default'; // Fallback
-        }
-    }
+    // Legacy fetchTemplate was here. Using the one defined at the top.
 
     // Process raw HTML: Replace placeholders with Real Image requests (or placeholders for now)
     function processTemplate(html, category) {
