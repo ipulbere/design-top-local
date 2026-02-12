@@ -54,10 +54,14 @@ async function handleSubmit() {
       showBeforeAfter: selectedCat['Before and After Pictures'] !== 'No',
       
       // Pass enriched content
+      // Pass enriched content
       content: selectedCat.content
-    })
+    }, true) // Pass true to skip auto-generation (we will await it manually below)
 
-    // Save to DB and get ID
+    // Explicitly generate and AWAIT the template
+    await store.fetchTemplate(selectedCat.Category.replace(/^\d+\.\s+/, ''));
+
+    // Save to DB and get ID (now includes rawHTML)
     const siteId = await db.saveSite(store.companyInfo)
     
     // Simulate network delay

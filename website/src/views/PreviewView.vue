@@ -12,20 +12,25 @@ const store = useWebsiteStore()
 
 // Load from DB if ID exists
 onMounted(async () => {
-  if (route.params.id) {
-    const savedSite = await db.getSite(route.params.id)
-    if (savedSite) {
-      store.updateCompanyInfo(savedSite)
-      // If the saved site doesn't have an AI template yet (legacy or fresh create), fetch it now
-      if (!store.companyInfo.rawHTML && store.companyInfo.category) {
-         store.fetchTemplate(store.companyInfo.category);
+  // ULTRA-STRICT PERSISTENCE CHECK
+  if (window.location.pathname.startsWith('/site/')) {
+      const id = route.params.id || window.location.pathname.split('/site/')[1];
+      
+      if (id) {
+          const savedSite = await db.getSite(id);
+          if (savedSite) {
+              store.updateCompanyInfo(savedSite, true);
+          } else {
+              notFound.value = true;
+          }
+      } else {
+          notFound.value = true;
       }
-    } else {
-      // Site not found or expired
-      alert('Site not found or expired (30-day limit)')
-      router.push('/')
-    }
-  } else if (!store.companyInfo.name || store.companyInfo.name === 'Your Company') {
+      return;
+  }
+
+  // LOGIC FOR NEW SITES (via /preview)
+  if (!store.companyInfo.name || store.companyInfo.name === 'Your Company') {
       router.push('/')
   } else {
       // New site (from InputView), fetching AI template if not present
@@ -35,13 +40,13 @@ onMounted(async () => {
   }
 })
 
-// Watch for category changes to re-fetch
-import { watch } from 'vue'
-watch(() => store.companyInfo.category, (newCat) => {
-    if (newCat) store.fetchTemplate(newCat);
-});
+// Watcher removed to prevent auto-regeneration on load. 
+// Initial generation is handled by onMounted checks.
+
+
 
 const isEditing = ref(false)
+const notFound = ref(false)
 
 function toggleEdit() {
   if (isEditing.value) {
@@ -200,6 +205,41 @@ const vEditable = {
   }
 }
 
+// Computed HTML with injected functionality
+import { computed } from 'vue'
+
+const processedHTML = computed(() => {
+    let html = store.companyInfo.rawHTML || '';
+    if (!html) return '';
+
+    // 1. Inject FormTarget to break out of iframe
+    if (html.includes('<form')) {
+        // Add target="_top" if not present
+        if (!html.includes('target=')) {
+            html = html.replace('<form', '<form target="_top"');
+        }
+    }
+
+    // 2. Inject FormSubmit configuration
+    if (html.includes('</form>')) {
+        console.log('[Preview] Injecting FormSubmit hidden fields...');
+        const currentPath = window.location.origin + window.location.pathname;
+        const nextUrl = `${currentPath}?success=true`;
+        
+        const hiddenFields = `
+            <input type="hidden" name="_next" value="${nextUrl}">
+            <input type="hidden" name="_subject" value="New Lead from Website (${store.companyInfo.name || 'Client'})">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="text" name="_honey" style="display:none">
+        `;
+        
+        html = html.replace('</form>', `${hiddenFields}</form>`);
+    } else {
+        console.warn('[Preview] </form> tag not found. FormSubmit injection failed.');
+    }
+
+    return html;
+});
 </script>
 
 <template>
@@ -283,9 +323,9 @@ const vEditable = {
       <!-- DYNAMIC AI TEMPLATE -->
       <iframe 
            v-else-if="store.companyInfo.rawHTML" 
-           :srcdoc="store.companyInfo.rawHTML"
+           :srcdoc="processedHTML"
            class="w-full h-screen border-0 dynamic-template-frame"
-           sandbox="allow-scripts allow-same-origin allow-modals"
+           sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-top-navigation allow-popups"
            title="Website Preview"
       ></iframe>
 
@@ -294,6 +334,17 @@ const vEditable = {
           <h2 class="text-2xl font-bold text-red-600 mb-4">Generation Failed</h2>
           <div v-html="store.companyInfo.rawHTML" class="text-center text-red-800"></div>
           <button @click="router.go(0)" class="mt-6 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Try Again</button>
+      </div>
+
+      <!-- NOT FOUND STATE -->
+      <div v-else-if="notFound" class="min-h-screen flex flex-col items-center justify-center p-8 bg-slate-50 text-center">
+          <h2 class="text-3xl font-bold text-slate-900 mb-4">Website Not Found</h2>
+          <p class="text-slate-600 mb-8 max-w-md">The website you are looking for does not exist or has expired.</p>
+          
+          <a href="https://design.top-local.net" class="px-8 py-3 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition shadow-lg">
+              Create a New Website
+          </a>
+          <p class="mt-4 text-sm text-slate-400">Powered by design.top-local.net</p>
       </div>
 
       <!-- NO CONTENT STATE (Fallback removed as requested) -->

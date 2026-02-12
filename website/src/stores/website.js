@@ -308,12 +308,11 @@ export const useWebsiteStore = defineStore('website', () => {
             companyInfo.value.customImages = newImages;
 
         } catch (err) {
-            console.error('[Store] Fetch Asset Error:', err);
         }
         */
     }
 
-    function updateCompanyInfo(info) {
+    function updateCompanyInfo(info, fromDB = false) {
         // Extract city for generation
         const city = info.address ? info.address.split(',')[1] || 'Your Area' : 'Your Area';
 
@@ -330,7 +329,8 @@ export const useWebsiteStore = defineStore('website', () => {
         const newCat = info.category || oldCat;
 
         // Reset assets if category changes to prevent stale images
-        if (newCat && oldCat && newCat !== oldCat) {
+        // Only do this if NOT loading from DB (DB matches exact state)
+        if (!fromDB && newCat && oldCat && newCat !== oldCat) {
             console.log(`[Store] Category changed from ${oldCat} to ${newCat}. Clearing stale assets.`);
             companyInfo.value.customImages = {};
             companyInfo.value.rawHTML = null;
@@ -339,14 +339,22 @@ export const useWebsiteStore = defineStore('website', () => {
         companyInfo.value = { ...companyInfo.value, ...info, content }
         isGenerated.value = true
 
-        if (newCat && newCat !== oldCat) {
-            // Fetch in background
-            fetchAssets(newCat);
-            fetchTemplate(newCat);
-        } else if (newCat && !companyInfo.value.customImages?.hero) {
-        } else if (newCat && !companyInfo.value.customImages?.hero) {
-            // Fetch if we have no images yet
-            fetchAssets(newCat);
+        // GENERATION TRIGGER LOGIC
+        // We only trigger auto-generation if this is a user-interaction update,
+        // NOT a database load.
+        if (!fromDB) {
+            if (newCat && newCat !== oldCat) {
+                // Fetch in background
+                fetchAssets(newCat);
+
+                // Only fetch template if we DON'T have rawHTML in the incoming info
+                if (!info.rawHTML) {
+                    fetchTemplate(newCat);
+                }
+            } else if (newCat && !companyInfo.value.customImages?.hero) {
+                // Fetch if we have no images yet
+                fetchAssets(newCat);
+            }
         }
     }
 

@@ -1,8 +1,10 @@
 
 import { supabase } from './supabase'
+import categoryImages from '../data/category-images.json'
 
 const BUCKET_NAME = 'category-pictures'
-const CDN_URL = `https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/${BUCKET_NAME}/`
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
+const CDN_URL = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET_NAME}/`
 
 export const ImageService = {
     /**
@@ -33,28 +35,19 @@ export const ImageService = {
             // It seems they are all in the root of the bucket? OR strict folder?
             // "https://.../category-pictures/windows_Hero_1.jpg" implies they are at the root of the bucket.
 
-            const { data, error } = await supabase
-                .storage
-                .from(BUCKET_NAME)
-                .list('', {
-                    limit: 1000, // Fetch enough to cover all
-                    offset: 0,
-                    sortBy: { column: 'name', order: 'asc' },
-                })
-
-            if (error) {
-                console.error('Error listing images:', error)
-                throw error
-            }
+            // 1. List all files from local JSON (source of truth)
+            // matching the category prefix
+            const data = categoryImages;
+            const error = null; // No network error possible here
 
             // 2. Filter and Parse
-            const relevantFiles = data.filter(file =>
-                file.name.toLowerCase().startsWith(normalizedCategory + '_')
+            const relevantFiles = data.filter(filename =>
+                filename.toLowerCase().startsWith(normalizedCategory + '_')
             )
 
             const groupedImages = {}
 
-            relevantFiles.forEach(file => {
+            relevantFiles.forEach(filename => {
                 // filename: category_section_number.jpg
                 // e.g. windows_Hero_1.jpg
                 // e.g. hvac_installers_contractors_Hero_2.jpg
@@ -62,7 +55,7 @@ export const ImageService = {
                 // 1. Remove the category prefix (already normalized and matched)
                 // We matched with startsWith(normalizedCategory + '_'), so we can safely slice it off.
                 // +1 for the underscore.
-                const nameWithoutCategory = file.name.substring(normalizedCategory.length + 1);
+                const nameWithoutCategory = filename.substring(normalizedCategory.length + 1);
                 // e.g. "Hero_2.jpg"
 
                 // 2. Split the rest to get section and number
@@ -83,9 +76,9 @@ export const ImageService = {
                 }
 
                 groupedImages[section].push({
-                    name: file.name,
+                    name: filename,
                     number: number,
-                    url: CDN_URL + file.name
+                    url: CDN_URL + filename
                 })
             })
 

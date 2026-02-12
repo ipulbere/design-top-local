@@ -52,6 +52,9 @@ export const GeminiService = {
             `;
         } // User rule: ONE happy customer picture if not Before/After
 
+        const currentYear = new Date().getFullYear();
+        const city = formData.address ? formData.address.split(',')[1] || 'Your Area' : 'Your Area';
+
         const prompt = `
         You are an elite Web Designer and Lead Architect.
         Your task is to generate a **PREMIUM**, **MODERN**, and **Pixel-Perfect** single-page website.
@@ -69,6 +72,16 @@ export const GeminiService = {
         - ONLY use these exact tags where appropriate:
         ${imageInstructions}
 
+        **CRITICAL REQUIREMENT 3: FUNCTIONALITY & ACCURACY**
+        - **Copyright**: You MUST use the current year: "© ${currentYear} ${formData.companyName}".
+        - **Contact Form**: You MUST include a functional contact form using FormSubmit.
+          - Action: "https://formsubmit.co/${formData.email || 'yourname@email.com'}"
+          - Method: "POST"
+          - Inputs: Name, Email, Phone, Message.
+          - Button: "Send Message" type="submit".
+        - **Location**: You MUST mention "${city}" and surrounding areas in the Hero, Services, and Footer text to improve local SEO perception.
+        - **Links**: Ensure Navigation links (Services, About, Contact) work by adding id="services", id="about", id="contact" to the respective sections.
+
         **Business Details:**
         - Name: "${formData.companyName || 'Business Name'}"
         - Category: "${Category}"
@@ -79,14 +92,15 @@ export const GeminiService = {
         - Description: "${formData.description || 'We provide professional services.'}"
         
         **Structure:**
-        1. **Header**: Sticky nav with Logo and Book/Call CTA.
-        2. **Hero Section**: Full width, impactful headline, subheadline, CTA, and the **[DESC_PHOTO: Hero]** image.
-        3. **Features/Services**: Grid layout with icons (SVG) + titles + descriptions.
-        4. **About/Team**: Text on one side, **[DESC_PHOTO: Team]** image on the other.
+        1. **Header**: Sticky nav with Logo and Book/Call CTA. Internal links to #services, #about, #contact.
+        2. **Hero Section**: Full width, impactful headline (mentioning ${city}), subheadline, CTA, and the **[DESC_PHOTO: Hero]** image.
+        3. **Features/Services** (id="services"): Grid layout with icons (SVG) + titles + descriptions.
+        4. **About/Team** (id="about"): Text about serving ${city}, **[DESC_PHOTO: Team]** image.
         5. **Start/Result Section**: 
            ${hasBeforeAfter ? 'Showcase "Our Work" with **[DESC_PHOTO: BeforeAndAfter]** images.' : 'Showcase "Happy Clients" with **[DESC_PHOTO: HappyCustomer]** image.'}
-        6. **Footer**: Logo, links, copyright.
-
+        6. **Contact Section** (id="contact"): The FormSubmit form and business info.
+        7. **Footer**: Logo, internal links, "© ${currentYear} ${formData.companyName} - Serving ${city}".
+        
         **Output Format:**
         - Return ONLY the raw valid HTML5 code.
         - Start with <!DOCTYPE html>.

@@ -16,8 +16,8 @@ export default defineConfig({
   },
   base: '/', // Ensure absolute path for deep linking support
   server: {
-    host: true, // Listen on all local IPs (0.0.0.0)
-    port: 5173,
-    strictPort: false,
+    host: true,
+    port: 8888,
+    strictPort: true, // Fail if port is busy instead of auto-incrementing
   }
 })

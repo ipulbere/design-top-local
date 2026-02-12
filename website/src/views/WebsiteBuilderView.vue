@@ -11,11 +11,12 @@ const error = ref('')
 
 // Use Store for Data
 import { useWebsiteStore } from '../stores/website'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 
 const store = useWebsiteStore()
 const route = useRoute()
+const router = useRouter()
 
 // Form Data - Sync with Store
 const formData = computed(() => {
@@ -138,6 +139,29 @@ async function generateWebsite() {
         }
 
         generatedHtml.value = html
+        
+        // 6. SAVE AND PERSIST
+        // Save the generated site to Supabase so it has a permanent ID
+        console.log('Saving generated website...')
+        
+        // Update store with new HTML first
+        store.companyInfo.rawHTML = html;
+        store.companyInfo.templateSource = 'ai';
+        
+        // Save to DB
+        const savedId = await db.saveSite(store.companyInfo);
+        
+        if (savedId) {
+            console.log('Website saved with ID:', savedId);
+            // Redirect to the persistent URL
+            // Usage: window.location.href or router.push
+            // We use router to keep it SPA, but the user requested "if he will put in the url... website generation is sending request... this is wrong"
+            // So we redirect to the unique URL.
+            router.push(`/site/${savedId}`);
+        } else {
+            console.error('Failed to save website ID');
+            // Fallback: just show it (already set generatedHtml)
+        }
         
     } catch (e) {
         console.error('Generation Error:', e)
