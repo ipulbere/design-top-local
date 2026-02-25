@@ -1,4 +1,5 @@
 const FUNCTION_URL = '/.netlify/functions/netlify-api';
+console.log('[NetlifyService] RELOADED_V2');
 
 export const NetlifyService = {
     /**

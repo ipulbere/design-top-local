@@ -1,16 +1,11 @@
 // Node 18+ has global fetch available natively.
 
 exports.handler = async (event, context) => {
-    // CORS Headers for preflight and actual requests
+    // Netlify Functions handle CORS automatically in local development.
+    // If we add them manually, they might duplicate (e.g., '*, *').
     const headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-action, x-site-id, x-deploy-id, x-subdomain',
-        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS'
+        'Content-Type': 'application/json'
     };
-
-    if (event.httpMethod === 'OPTIONS') {
-        return { statusCode: 200, headers, body: '' };
-    }
 
     const action = event.headers['x-action'];
     const NETLIFY_TOKEN = process.env.VITE_NETLIFY_TOKEN;
