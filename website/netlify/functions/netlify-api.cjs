@@ -42,14 +42,20 @@ exports.handler = async (event, context) => {
 
             console.log(`[Function] Uploading ZIP to site: ${siteId}`);
 
-            // Netlify API accepts raw binary ZIP in the body
+            // Netlify Functions often base64-encode binary request bodies.
+            const zipBuffer = event.isBase64Encoded
+                ? Buffer.from(event.body, 'base64')
+                : Buffer.from(event.body);
+
+            console.log(`[Function] Buffered ZIP size: ${zipBuffer.length} bytes`);
+
             const response = await fetch(`${API_BASE}/sites/${siteId}/deploys?async=true`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${NETLIFY_TOKEN}`,
                     'Content-Type': 'application/zip'
                 },
-                body: Buffer.from(event.body, 'base64')
+                body: zipBuffer
             });
 
             const data = await response.json();

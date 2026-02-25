@@ -11,15 +11,20 @@ export const ZipService = {
         const zip = new JSZip();
         const assetsFolder = zip.folder('assets');
 
+        // DEBUG: Check first part of HTML for data URIs
+        console.log('[ZipService] Packaging HTML (first 200 chars):', html.substring(0, 200));
+
         // 1. Process images (src="..." and url("..."))
         const imagePatterns = [
             {
                 regex: /src=["'](data:image\/(png|jpg|jpeg|webp);base64,([^"']+))["']/g,
-                template: (path) => `src="${path}"`
+                extIndex: 2,
+                dataIndex: 3
             },
             {
                 regex: /url\(["']?(data:image\/(png|jpg|jpeg|webp);base64,([^"'\)]+))["']?\)/g,
-                template: (path) => `url("${path}")`
+                extIndex: 2,
+                dataIndex: 3
             }
         ];
 
@@ -28,30 +33,21 @@ export const ZipService = {
 
         for (const pattern of imagePatterns) {
             let match;
-            // Reset regex state
-            pattern.regex.lastIndex = 0;
-
             while ((match = pattern.regex.exec(html)) !== null) {
                 imageCounter++;
-                const extension = match[2];
-                const base64Data = match[3];
+                const fullUri = match[1];
+                const extension = match[pattern.extIndex];
+                const base64Data = match[pattern.dataIndex];
                 const fileName = `asset_${imageCounter}.${extension}`;
                 const filePath = `assets/${fileName}`;
 
-                try {
-                    const binaryData = atob(base64Data);
-                    const uint8Array = new Uint8Array(binaryData.length);
-                    for (let i = 0; i < binaryData.length; i++) {
-                        uint8Array[i] = binaryData.charCodeAt(i);
-                    }
-                    assetsFolder.file(fileName, uint8Array);
+                console.log(`[ZipService] Localizing asset ${imageCounter}: ${fileName}`);
 
-                    // Replace the full match in the updated HTML
-                    // We need to be careful with the full match vs the template
-                    updatedHtml = updatedHtml.replace(match[1], filePath);
-                } catch (e) {
-                    console.warn(`[ZipService] Failed to process asset ${imageCounter}:`, e);
-                }
+                // Add to assets folder directly using base64 support
+                assetsFolder.file(fileName, base64Data, { base64: true });
+
+                // Update HTML to point to local path
+                updatedHtml = updatedHtml.replaceAll(fullUri, filePath);
             }
         }
 
