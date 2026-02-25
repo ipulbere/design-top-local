@@ -1,16 +1,15 @@
-const { NetlifyAPI } = require('netlify');
+// Native fetch is available in Node 18+ and Netlify Functions.
+// We avoid the SDK for this specific environment due to internal path resolution bugs.
 
 exports.handler = async (event, context) => {
     const headers = { 'Content-Type': 'application/json' };
     const action = event.headers['x-action'];
     const NETLIFY_TOKEN = process.env.VITE_NETLIFY_TOKEN;
+    const API_BASE = 'https://api.netlify.com/api/v1';
 
     if (!NETLIFY_TOKEN) {
         return { statusCode: 500, headers, body: JSON.stringify({ message: 'Server error: Netlify token not configured.' }) };
     }
-
-    const client = new NetlifyAPI(NETLIFY_TOKEN);
-    const API_BASE = 'https://api.netlify.com/api/v1';
 
     try {
         if (action === 'create-site') {
@@ -19,17 +18,31 @@ exports.handler = async (event, context) => {
 
             console.log(`[Function] Creating site: ${siteName}`);
 
-            try {
-                const site = await client.createSite({ body: { name: siteName } });
-                return { statusCode: 201, headers, body: JSON.stringify(site) };
-            } catch (createErr) {
-                if (createErr.status === 422) {
-                    const uniqueSiteName = `${siteName}-${Math.floor(Math.random() * 9000) + 1000}`;
-                    const site = await client.createSite({ body: { name: uniqueSiteName } });
-                    return { statusCode: 201, headers, body: JSON.stringify(site) };
-                }
-                throw createErr;
+            let response = await fetch(`${API_BASE}/sites`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${NETLIFY_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: siteName })
+            });
+
+            // If name is taken, retry with random suffix
+            if (response.status === 422) {
+                const uniqueSiteName = `${siteName}-${Math.floor(Math.random() * 9000) + 1000}`;
+                console.log(`[Function] Name taken, retrying: ${uniqueSiteName}`);
+                response = await fetch(`${API_BASE}/sites`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${NETLIFY_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: uniqueSiteName })
+                });
             }
+
+            const data = await response.json();
+            return { statusCode: response.status, headers, body: JSON.stringify(data) };
         }
 
         else if (action === 'upload-zip') {
@@ -59,24 +72,30 @@ exports.handler = async (event, context) => {
 
             console.log(`[Function] Updating site ${siteId}:`, body);
 
-            const site = await client.updateSite({
-                site_id: siteId,
-                body: body
+            const response = await fetch(`${API_BASE}/sites/${siteId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${NETLIFY_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
             });
 
-            return { statusCode: 200, headers, body: JSON.stringify(site) };
+            const data = await response.json();
+            return { statusCode: response.status, headers, body: JSON.stringify(data) };
         }
 
         else if (action === 'poll-status') {
             const siteId = event.headers['x-site-id'];
             const deployId = event.headers['x-deploy-id'];
 
-            const deploy = await client.getDeploy({
-                site_id: siteId,
-                deploy_id: deployId
+            const response = await fetch(`${API_BASE}/sites/${siteId}/deploys/${deployId}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${NETLIFY_TOKEN}` }
             });
 
-            return { statusCode: 200, headers, body: JSON.stringify(deploy) };
+            const data = await response.json();
+            return { statusCode: response.status, headers, body: JSON.stringify(data) };
         }
 
         return { statusCode: 400, headers, body: JSON.stringify({ message: 'Invalid action' }) };
