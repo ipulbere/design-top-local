@@ -42,9 +42,12 @@ exports.handler = async (event, context) => {
 
             console.log(`[Function] Uploading ZIP to site: ${siteId}`);
 
-            // STRATEGY: Always use base64 for binary transfer to functions to avoid encoding issues.
-            const zipBuffer = Buffer.from(event.body, 'base64');
-            console.log(`[Function] Final ZIP size: ${zipBuffer.length} bytes`);
+            // Parsing from JSON body for maximum character safety
+            const { zipData } = JSON.parse(event.body);
+            if (!zipData) throw new Error('Missing zipData in body');
+
+            const zipBuffer = Buffer.from(zipData, 'base64');
+            console.log(`[Function] Final ZIP buffer size: ${zipBuffer.length} bytes`);
 
             const response = await fetch(`${API_BASE}/sites/${siteId}/deploys?async=true`, {
                 method: 'POST',

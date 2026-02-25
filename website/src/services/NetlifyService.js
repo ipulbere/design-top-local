@@ -25,28 +25,19 @@ export const NetlifyService = {
 
     /**
      * Uploading the ZIP through the secure relay.
-     * Reverting to Base64 for 100% binary reliability in Function environments.
+     * Sending as Base64 string in JSON body for maximum reliability in Netlify Dev/Functions.
      */
-    async uploadDeployToNetlify(siteId, zipBlob) {
-        console.log(`[NetlifyService] Preparing Base64 ZIP upload for ${siteId}...`);
-
-        // Convert Blob to Base64 to send to Netlify Function
-        const reader = new FileReader();
-        const base64Promise = new Promise((resolve, reject) => {
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = reject;
-        });
-        reader.readAsDataURL(zipBlob);
-        const base64Data = await base64Promise;
+    async uploadDeployToNetlify(siteId, base64Zip) {
+        console.log(`[NetlifyService] Uploading Base64 ZIP (${base64Zip.length} chars) to relay for ${siteId}...`);
 
         const response = await fetch(FUNCTION_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/octet-stream',
+                'Content-Type': 'application/json',
                 'x-action': 'upload-zip',
                 'x-site-id': siteId
             },
-            body: base64Data
+            body: JSON.stringify({ zipData: base64Zip })
         });
 
         if (!response.ok) {

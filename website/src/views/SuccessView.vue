@@ -70,13 +70,13 @@ async function startDeployment() {
     try {
         deployStatus.value = 'packaging';
         const subdomain = store.companyInfo.name || 'my-business';
-        const zipBlob = await ZipService.packageWebsite(store.companyInfo.rawHTML, subdomain);
+        const base64Zip = await ZipService.packageWebsite(store.companyInfo.rawHTML, subdomain);
         
         deployStatus.value = 'creating_site';
         const site = await NetlifyService.getOrCreateNetlifySite(subdomain);
         
         deployStatus.value = 'deploying';
-        const deploy = await NetlifyService.uploadDeployToNetlify(site.id, zipBlob);
+        const deploy = await NetlifyService.uploadDeployToNetlify(site.id, base64Zip);
         
         deployStatus.value = 'polling';
         await NetlifyService.pollDeployStatus(site.id, deploy.id);
