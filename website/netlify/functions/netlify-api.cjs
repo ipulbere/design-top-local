@@ -82,18 +82,15 @@ exports.handler = async (event, context) => {
         return { statusCode: 400, headers, body: JSON.stringify({ message: 'Invalid action' }) };
 
     } catch (err) {
-        console.error('[Function Error Details]', {
-            message: err.message,
-            stack: err.stack,
-            status: err.status
-        });
+        console.error('[Function Error]', err);
         return {
-            statusCode: err.status || 500,
+            statusCode: 500,
             headers,
             body: JSON.stringify({
                 message: err.message,
+                stack: err.stack,
                 error: true,
-                errorType: 'FunctionCrash'
+                raw: err.toString()
             })
         };
     }

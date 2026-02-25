@@ -16,8 +16,14 @@ export const NetlifyService = {
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(`Netlify site creation failed: ${error.message || response.statusText}`);
+            const raw = await response.text();
+            console.error('[NetlifyService] getOrCreateNetlifySite Raw Error:', raw);
+            try {
+                const error = JSON.parse(raw);
+                throw new Error(`Netlify site creation failed: ${error.message || response.statusText}`);
+            } catch (e) {
+                throw new Error(`Netlify site creation crash: ${raw}`);
+            }
         }
 
         return await response.json();
@@ -41,8 +47,14 @@ export const NetlifyService = {
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(`Netlify upload failed: ${error.message || response.statusText}`);
+            const raw = await response.text();
+            console.error('[NetlifyService] uploadDeployToNetlify Raw Error:', raw);
+            try {
+                const error = JSON.parse(raw);
+                throw new Error(`Netlify upload failed: ${error.message || response.statusText}`);
+            } catch (parseErr) {
+                throw new Error(`Netlify upload crash: ${raw}`);
+            }
         }
 
         return await response.json();
@@ -65,10 +77,15 @@ export const NetlifyService = {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Failed to set custom domain: ${errorData.message}`);
+            const raw = await response.text();
+            console.error('[NetlifyService] setCustomDomain Raw Error:', raw);
+            try {
+                const error = JSON.parse(raw);
+                throw new Error(`Failed to set custom domain: ${error.message || response.statusText}`);
+            } catch (e) {
+                throw new Error(`Failed to set custom domain (crash): ${raw}`);
+            }
         }
-
         return await response.json();
     },
 
@@ -89,7 +106,11 @@ export const NetlifyService = {
                 }
             });
 
-            if (!response.ok) throw new Error('Deployment polling failed');
+            if (!response.ok) {
+                const raw = await response.text();
+                console.error('[NetlifyService] pollDeployStatus Raw Error:', raw);
+                throw new Error(`Deployment polling crash: ${raw}`);
+            }
 
             const deployData = await response.json();
             const state = deployData.state;
