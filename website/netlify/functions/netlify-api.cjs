@@ -14,7 +14,12 @@ exports.handler = async (event, context) => {
     try {
         if (action === 'create-site') {
             const { subdomain } = JSON.parse(event.body);
-            const siteName = subdomain.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            // Cleaner sanitization: remove suffixes and all non-alphanumeric chars
+            let siteName = subdomain.toLowerCase()
+                .replace(/\b(llc|inc|corp|ltd)\b/g, '') // strip common suffixes
+                .replace(/[^a-z0-9]/g, '');            // remove all non-alphanumeric (no hyphens)
+
+            if (siteName.length < 3) siteName = 'site-' + siteName; // Ensure minimum length
 
             console.log(`[Function] Creating site: ${siteName}`);
 
