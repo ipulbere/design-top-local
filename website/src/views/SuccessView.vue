@@ -81,8 +81,16 @@ async function startDeployment() {
         deployStatus.value = 'polling';
         await NetlifyService.pollDeployStatus(site.id, deploy.id);
         
+        // 3-second pause before setting custom domain as requested
+        console.log('[Success] Deployment ready. Waiting 3s before setting custom domain...');
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        
+        const customDomain = `${site.name}.top-local.net`;
+        deployStatus.value = 'finalizing';
+        await NetlifyService.setCustomDomain(site.id, customDomain);
+        
         deployStatus.value = 'ready';
-        deployUrl.value = `https://${site.name}.top-local.net`;
+        deployUrl.value = `https://${customDomain}`;
         
     } catch (err) {
         console.error('[Deployment Error]', err);

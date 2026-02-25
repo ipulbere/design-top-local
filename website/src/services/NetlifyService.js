@@ -24,25 +24,58 @@ export const NetlifyService = {
     },
 
     /**
-     * Uploading the ZIP to Netlify through the secure relay.
-     * Sending raw binary for maximum reliability.
+     * Uploading the ZIP through the secure relay.
+     * Reverting to Base64 for 100% binary reliability in Function environments.
      */
     async uploadDeployToNetlify(siteId, zipBlob) {
-        console.log(`[NetlifyService] Uploading binary ZIP to relay for ${siteId}...`);
+        console.log(`[NetlifyService] Preparing Base64 ZIP upload for ${siteId}...`);
+
+        // Convert Blob to Base64 to send to Netlify Function
+        const reader = new FileReader();
+        const base64Promise = new Promise((resolve, reject) => {
+            reader.onload = () => resolve(reader.result.split(',')[1]);
+            reader.onerror = reject;
+        });
+        reader.readAsDataURL(zipBlob);
+        const base64Data = await base64Promise;
 
         const response = await fetch(FUNCTION_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/zip',
+                'Content-Type': 'application/octet-stream',
                 'x-action': 'upload-zip',
                 'x-site-id': siteId
             },
-            body: zipBlob
+            body: base64Data
         });
 
         if (!response.ok) {
             const error = await response.json();
             throw new Error(`Netlify upload failed: ${error.message || response.statusText}`);
+        }
+
+        return await response.json();
+    },
+
+    /**
+     * Setting the custom domain after a successful deploy.
+     */
+    async setCustomDomain(siteId, domain) {
+        console.log(`[NetlifyService] Setting custom domain ${domain} for site ${siteId}...`);
+
+        const response = await fetch(FUNCTION_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-action': 'update-site',
+                'x-site-id': siteId
+            },
+            body: JSON.stringify({ custom_domain: domain })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Failed to set custom domain: ${errorData.message}`);
         }
 
         return await response.json();

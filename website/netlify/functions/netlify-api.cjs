@@ -42,12 +42,9 @@ exports.handler = async (event, context) => {
 
             console.log(`[Function] Uploading ZIP to site: ${siteId}`);
 
-            // Netlify Functions often base64-encode binary request bodies.
-            const zipBuffer = event.isBase64Encoded
-                ? Buffer.from(event.body, 'base64')
-                : Buffer.from(event.body);
-
-            console.log(`[Function] Buffered ZIP size: ${zipBuffer.length} bytes`);
+            // STRATEGY: Always use base64 for binary transfer to functions to avoid encoding issues.
+            const zipBuffer = Buffer.from(event.body, 'base64');
+            console.log(`[Function] Final ZIP size: ${zipBuffer.length} bytes`);
 
             const response = await fetch(`${API_BASE}/sites/${siteId}/deploys?async=true`, {
                 method: 'POST',
@@ -56,6 +53,25 @@ exports.handler = async (event, context) => {
                     'Content-Type': 'application/zip'
                 },
                 body: zipBuffer
+            });
+
+            const data = await response.json();
+            return { statusCode: response.status, headers, body: JSON.stringify(data) };
+        }
+
+        else if (action === 'update-site') {
+            const siteId = event.headers['x-site-id'];
+            const body = JSON.parse(event.body);
+
+            console.log(`[Function] Updating site ${siteId}:`, body);
+
+            const response = await fetch(`${API_BASE}/sites/${siteId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${NETLIFY_TOKEN}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
             });
 
             const data = await response.json();
