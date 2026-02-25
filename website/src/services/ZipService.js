@@ -11,34 +11,51 @@ export const ZipService = {
         const zip = new JSZip();
         const assetsFolder = zip.folder('assets');
 
-        // 1. Process images
-        // Regex to find base64 images in <img> tags or CSS
-        const base64Regex = /src="data:image\/(png|jpg|jpeg|webp);base64,([^"]+)"/g;
-        let updatedHtml = html;
-        let imageCounter = 1;
-
-        let match;
-        while ((match = base64Regex.exec(html)) !== null) {
-            const extension = match[1];
-            const base64Data = match[2];
-            const fileName = `asset_${imageCounter}.${extension}`;
-            const filePath = `assets/${fileName}`;
-
-            // Convert base64 to binary
-            const binaryData = atob(base64Data);
-            const arrayBuffer = new ArrayBuffer(binaryData.length);
-            const uint8Array = new Uint8Array(arrayBuffer);
-            for (let i = 0; i < binaryData.length; i++) {
-                uint8Array[i] = binaryData.charCodeAt(i);
+        // 1. Process images (src="..." and url("..."))
+        const imagePatterns = [
+            {
+                regex: /src=["'](data:image\/(png|jpg|jpeg|webp);base64,([^"']+))["']/g,
+                template: (path) => `src="${path}"`
+            },
+            {
+                regex: /url\(["']?(data:image\/(png|jpg|jpeg|webp);base64,([^"'\)]+))["']?\)/g,
+                template: (path) => `url("${path}")`
             }
+        ];
 
-            // Add to assets folder
-            assetsFolder.file(fileName, uint8Array);
+        let updatedHtml = html;
+        let imageCounter = 0;
 
-            // Update HTML to point to local path
-            updatedHtml = updatedHtml.replace(match[0], `src="${filePath}"`);
-            imageCounter++;
+        for (const pattern of imagePatterns) {
+            let match;
+            // Reset regex state
+            pattern.regex.lastIndex = 0;
+
+            while ((match = pattern.regex.exec(html)) !== null) {
+                imageCounter++;
+                const extension = match[2];
+                const base64Data = match[3];
+                const fileName = `asset_${imageCounter}.${extension}`;
+                const filePath = `assets/${fileName}`;
+
+                try {
+                    const binaryData = atob(base64Data);
+                    const uint8Array = new Uint8Array(binaryData.length);
+                    for (let i = 0; i < binaryData.length; i++) {
+                        uint8Array[i] = binaryData.charCodeAt(i);
+                    }
+                    assetsFolder.file(fileName, uint8Array);
+
+                    // Replace the full match in the updated HTML
+                    // We need to be careful with the full match vs the template
+                    updatedHtml = updatedHtml.replace(match[1], filePath);
+                } catch (e) {
+                    console.warn(`[ZipService] Failed to process asset ${imageCounter}:`, e);
+                }
+            }
         }
+
+        console.log(`[ZipService] Packaged ${imageCounter} assets.`);
 
         // 2. Add index.html
         zip.file('index.html', updatedHtml);

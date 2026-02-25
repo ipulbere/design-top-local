@@ -79,7 +79,10 @@ export const NetlifyService = {
             const state = deployData.state;
 
             if (state === 'ready') return deployData;
-            if (state === 'error') throw new Error('Netlify deployment entered error state during processing');
+            if (state === 'error') {
+                console.error('[NetlifyService] Deployment failed. Full error data:', deployData);
+                throw new Error(`Netlify deployment error: ${deployData.error_message || 'Processing failed'}`);
+            }
 
             console.log(`[NetlifyService] State: ${state}. Retrying in 2s...`);
             await new Promise(resolve => setTimeout(resolve, 2000));
