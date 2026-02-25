@@ -55,7 +55,11 @@ export const ZipService = {
         // 2. Add index.html
         zip.file('index.html', updatedHtml);
 
-        // 3. Generate ZIP as Base64 string
+        // 3. Add _headers file to force Netlify to serve as HTML
+        const headersContent = `/*\n  X-Frame-Options: DENY\n  X-XSS-Protection: 1; mode=block\n/index.html\n  Content-Type: text/html\n`;
+        zip.file('_headers', headersContent);
+
+        // 4. Generate ZIP as Base64 string
         const base64Zip = await zip.generateAsync({ type: 'base64' });
         console.log(`[ZipService] ZIP generated. Base64 length: ${base64Zip.length}`);
 

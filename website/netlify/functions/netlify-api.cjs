@@ -1,65 +1,55 @@
-// Node 18+ has global fetch available natively.
+const NetlifyAPI = require('netlify');
 
 exports.handler = async (event, context) => {
-    // Netlify Functions handle CORS automatically in local development.
-    // If we add them manually, they might duplicate (e.g., '*, *').
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-
+    const headers = { 'Content-Type': 'application/json' };
     const action = event.headers['x-action'];
     const NETLIFY_TOKEN = process.env.VITE_NETLIFY_TOKEN;
-    const API_BASE = 'https://api.netlify.com/api/v1';
 
     if (!NETLIFY_TOKEN) {
         return { statusCode: 500, headers, body: JSON.stringify({ message: 'Server error: Netlify token not configured.' }) };
     }
 
+    const client = new NetlifyAPI(NETLIFY_TOKEN);
+
     try {
         if (action === 'create-site') {
             const { subdomain } = JSON.parse(event.body);
-            const timestamp = Date.now().toString().slice(-4);
-            const siteName = `${subdomain.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${timestamp}`;
+            // Try to use the subdomain directly if possible, or append a small random string
+            const siteName = `${subdomain.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
 
             console.log(`[Function] Creating site: ${siteName}`);
 
-            const response = await fetch(`${API_BASE}/sites`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${NETLIFY_TOKEN}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name: siteName })
-            });
-
-            const data = await response.json();
-            return { statusCode: response.status, headers, body: JSON.stringify(data) };
+            try {
+                const site = await client.createSite({
+                    body: { name: siteName }
+                });
+                return { statusCode: 201, headers, body: JSON.stringify(site) };
+            } catch (createErr) {
+                // If name is taken, try with unique suffix
+                if (createErr.status === 422) {
+                    const uniqueSiteName = `${siteName}-${Math.floor(Math.random() * 9000) + 1000}`;
+                    console.log(`[Function] Name taken, trying unique: ${uniqueSiteName}`);
+                    const site = await client.createSite({
+                        body: { name: uniqueSiteName }
+                    });
+                    return { statusCode: 201, headers, body: JSON.stringify(site) };
+                }
+                throw createErr;
+            }
         }
 
         else if (action === 'upload-zip') {
             const siteId = event.headers['x-site-id'];
-            if (!siteId) throw new Error('Missing site ID');
-
-            console.log(`[Function] Uploading ZIP to site: ${siteId}`);
-
-            // Parsing from JSON body for maximum character safety
             const { zipData } = JSON.parse(event.body);
-            if (!zipData) throw new Error('Missing zipData in body');
+
+            console.log(`[Function] Official Deploy to site: ${siteId}`);
 
             const zipBuffer = Buffer.from(zipData, 'base64');
-            console.log(`[Function] Final ZIP buffer size: ${zipBuffer.length} bytes`);
 
-            const response = await fetch(`${API_BASE}/sites/${siteId}/deploys?async=true`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${NETLIFY_TOKEN}`,
-                    'Content-Type': 'application/zip'
-                },
-                body: zipBuffer
-            });
+            // Using the official netlify client deploy method
+            const deploy = await client.deploy(siteId, zipBuffer);
 
-            const data = await response.json();
-            return { statusCode: response.status, headers, body: JSON.stringify(data) };
+            return { statusCode: 200, headers, body: JSON.stringify(deploy) };
         }
 
         else if (action === 'update-site') {
@@ -68,35 +58,34 @@ exports.handler = async (event, context) => {
 
             console.log(`[Function] Updating site ${siteId}:`, body);
 
-            const response = await fetch(`${API_BASE}/sites/${siteId}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${NETLIFY_TOKEN}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(body)
+            const site = await client.updateSite({
+                site_id: siteId,
+                body: body
             });
 
-            const data = await response.json();
-            return { statusCode: response.status, headers, body: JSON.stringify(data) };
+            return { statusCode: 200, headers, body: JSON.stringify(site) };
         }
 
         else if (action === 'poll-status') {
             const siteId = event.headers['x-site-id'];
             const deployId = event.headers['x-deploy-id'];
 
-            const response = await fetch(`${API_BASE}/sites/${siteId}/deploys/${deployId}`, {
-                headers: { 'Authorization': `Bearer ${NETLIFY_TOKEN}` }
+            const deploy = await client.getDeploy({
+                site_id: siteId,
+                deploy_id: deployId
             });
 
-            const data = await response.json();
-            return { statusCode: response.status, headers, body: JSON.stringify(data) };
+            return { statusCode: 200, headers, body: JSON.stringify(deploy) };
         }
 
         return { statusCode: 400, headers, body: JSON.stringify({ message: 'Invalid action' }) };
 
     } catch (err) {
         console.error('[Function Error]', err);
-        return { statusCode: 500, headers, body: JSON.stringify({ message: err.message }) };
+        return {
+            statusCode: err.status || 500,
+            headers,
+            body: JSON.stringify({ message: err.message, status: err.status })
+        };
     }
 };
