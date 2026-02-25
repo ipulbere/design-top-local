@@ -47,8 +47,12 @@ out/
 .env.local
 .env.*.local
 
-# Local settings
-.claude/settings.local.json
+# Local settings & Tooling
+.claude/
+.gemini/
+.agent/
+npm_install_output.txt
+website/npm_install_output.txt
 ui-ux-pro-max-website/*
 # Local Netlify folder
 .netlify
