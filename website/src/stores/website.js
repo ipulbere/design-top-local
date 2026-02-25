@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { GeminiService } from '../services/GeminiService'
 import { ImageService } from '../services/ImageService'
 import categoriesData from '../data/categories.json'
@@ -126,15 +126,15 @@ export const useWebsiteStore = defineStore('website', () => {
         }
     }
 
-    // Input Data
-    const companyInfo = ref({
+    // Initial Load from localStorage
+    const savedInfo = localStorage.getItem('top-local-companyInfo');
+    const companyInfo = ref(savedInfo ? JSON.parse(savedInfo) : {
         name: 'Your Company',
         email: '',
         phone: '',
         address: '123 Main St, City, Country',
         category: 'General Service',
         description: 'We provide professional services for your needs. Quality guaranteed.',
-        // New Schema Fields
         services: [],
         certificates: '',
         offer: { text: '', subtext: '' },
@@ -142,12 +142,25 @@ export const useWebsiteStore = defineStore('website', () => {
         uniforms: false,
         hours: '',
         showBeforeAfter: true,
-        showBeforeAfter: true,
         raw_category_data: null,
-        subdomain: '', // Custom subdomain part
-        rawHTML: null, // Dynamic AI Template
-        templateSource: 'default' // 'default' or 'ai'
+        subdomain: '',
+        rawHTML: null,
+        templateSource: 'default'
     })
+
+    // Persistence Watcher
+    watch(companyInfo, (val) => {
+        localStorage.setItem('top-local-companyInfo', JSON.stringify(val));
+    }, { deep: true });
+
+    // Status
+    const isGenerated = ref(localStorage.getItem('top-local-isGenerated') === 'true')
+    const isApproved = ref(localStorage.getItem('top-local-isApproved') === 'true')
+    const isPaid = ref(localStorage.getItem('top-local-isPaid') === 'true')
+
+    watch(isGenerated, (val) => localStorage.setItem('top-local-isGenerated', val));
+    watch(isApproved, (val) => localStorage.setItem('top-local-isApproved', val));
+    watch(isPaid, (val) => localStorage.setItem('top-local-isPaid', val));
 
     // Content Generation Helper
     function generateContent(category, name, city) {
@@ -247,10 +260,6 @@ export const useWebsiteStore = defineStore('website', () => {
         };
     });
 
-    // Status
-    const isGenerated = ref(false)
-    const isApproved = ref(false)
-    const isPaid = ref(false)
 
     // Actions
     async function fetchAssets(category) {
@@ -393,6 +402,14 @@ export const useWebsiteStore = defineStore('website', () => {
         isPaid.value = true
     }
 
+    function clearSession() {
+        localStorage.removeItem('top-local-companyInfo');
+        localStorage.removeItem('top-local-isGenerated');
+        localStorage.removeItem('top-local-isApproved');
+        localStorage.removeItem('top-local-isPaid');
+        window.location.reload();
+    }
+
     // Legacy fetchTemplate was here. Using the one defined at the top.
 
     // Process raw HTML: Replace placeholders with Real Image requests (or placeholders for now)
@@ -442,6 +459,7 @@ export const useWebsiteStore = defineStore('website', () => {
         updateContent,
         updateContent,
         updateImage,
-        fetchTemplate
+        fetchTemplate,
+        clearSession
     }
 })

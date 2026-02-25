@@ -21,6 +21,15 @@ onMounted(async () => {
     sessionId.value = route.query.session_id;
 
     if (!sessionId.value) {
+        // ALLOW TEST MODE (From "Publish Website" button)
+        if (route.query.test === 'true') {
+            email.value = 'Test Deployment (No Payment)';
+            orderId.value = 'test_deployment_manual';
+            loading.value = false;
+            await startDeployment();
+            return;
+        }
+
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             email.value = 'client@example.com (Mock for Localhost)';
             orderId.value = route.query.order_id || 'demo_order_id';
