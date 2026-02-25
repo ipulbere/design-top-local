@@ -202,6 +202,7 @@ async function startDeployment() {
                       <span v-else-if="deployStatus === 'creating_site'">Provisioning Netlify production environment...</span>
                       <span v-else-if="deployStatus === 'deploying'">Uploading to CDN...</span>
                       <span v-else-if="deployStatus === 'polling'">Finalizing security certificates...</span>
+                      <span v-else-if="deployStatus === 'finalizing'">Setting up custom domain...</span>
                       <span v-else>Stand by...</span>
                   </p>
               </div>
