@@ -70,12 +70,27 @@ function handleApprove() {
   router.push({ path: '/lander', query: { id: route.params.id } })
 }
 
+function handlePublish() {
+  if (!store.companyInfo.rawHTML) {
+    alert("No website content to publish yet!");
+    return;
+  }
+  // Navigate to success page with a test flag
+  router.push({ path: '/success', query: { test: 'true' } })
+}
+
+function handleClearSession() {
+  if (confirm("Clear all current website data and start over?")) {
+    store.clearSession();
+  }
+}
+
 // Dynamic Theme Colors (fallbacks if category data missing)
 const themeColor = store.companyInfo.colors?.accent || 'text-blue-600'
 const btnColor = store.companyInfo.colors?.btn || 'bg-blue-600 hover:bg-blue-700'
 const bgColor = store.companyInfo.colors?.bg || 'bg-slate-50'
 
-const originUrl = ref(window.location.origin + '/Successpayment') // Redirect to existing success/payment view for demo purposes
+const originUrl = ref(window.location.origin + '/success') // Redirect to existing success/payment view for demo purposes
 // Or just window.location.href to stay on page. Let's use the 'Payment/Success' view for a "conversion" effect.
 // But the user specifically asked about "submitting an email".
 // I will set it to the current href.
@@ -267,8 +282,19 @@ const processedHTML = computed(() => {
 
       <div class="h-4 w-px bg-slate-600"></div>
       
-      <button @click="handleApprove" class="px-4 py-2 bg-green-500 hover:bg-green-600 rounded-full font-bold text-sm shadow-lg shadow-green-500/30 transition-all">
+      <button @click="handleApprove" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-full font-bold text-sm shadow-lg shadow-green-600/30 transition-all">
         Approve
+      </button>
+
+      <div class="h-4 w-px bg-slate-600"></div>
+
+      <button @click="handlePublish" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-full font-bold text-sm shadow-lg shadow-indigo-500/30 transition-all flex items-center gap-2">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+        Publish Website
+      </button>
+
+      <button @click="handleClearSession" title="Clear current session and start over" class="w-8 h-8 flex items-center justify-center bg-red-500/20 hover:bg-red-500/40 text-red-500 rounded-full transition-colors text-xs ml-2">
+        <i class="fa-solid fa-trash-can"></i>
       </button>
     </div>
 
