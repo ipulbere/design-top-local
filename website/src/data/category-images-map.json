@@ -1,0 +1,563 @@
+{
+    "pest_control": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pest_control_Hero_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pest_control_Hero_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pest_control_team_at_work_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pest_control_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pest_control_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pest_control_before_and_after_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pest_control_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pest_control_before_and_after_4.jpg"
+        ]
+    },
+    "optometry_practices": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/optometry_practices_Hero_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/optometry_practices_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/optometry_practices_before_and_after_2.jpg"
+        ]
+    },
+    "windows": {
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/windows_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/windows_before_and_after_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/windows_team_at_work_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/windows_team_at_work_2.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/windows_Hero_1.jpg"
+        ]
+    },
+    "social_workers": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/social_workers_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/social_workers_before_and_after_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/social_workers_team_at_work_2.jpg"
+        ]
+    },
+    "independent_consultants": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/independent_consultants_Hero_3.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/independent_consultants_team_at_work_3.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/independent_consultants_before_and_after_3.jpg"
+        ]
+    },
+    "accounting": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/accounting_Hero_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/accounting_Hero_3.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/accounting_team_at_work_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/accounting_team_at_work_3.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/accounting_before_and_after_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/accounting_before_and_after_3.jpg"
+        ]
+    },
+    "tax_preparation": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/tax_preparation_Hero_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/tax_preparation_Hero_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/tax_preparation_Hero_4.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/tax_preparation_team_at_work_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/tax_preparation_team_at_work_3.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/tax_preparation_before_and_after_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/tax_preparation_before_and_after_3.jpg"
+        ]
+    },
+    "plumbers": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/plumbers_Hero_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/plumbers_Hero_3.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/plumbers_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/plumbers_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/plumbers_before_and_after_4.jpg"
+        ]
+    },
+    "electrician": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/electrician_Hero_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/electrician_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/electrician_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/electrician_before_and_after_4.jpg"
+        ]
+    },
+    "painters": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/painters_Hero_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/painters_Hero_3.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/painters_team_at_work_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/painters_team_at_work_3.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/painters_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/painters_before_and_after_4.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/painters_before_and_after_5.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/painters_before_and_after_6.jpg"
+        ]
+    },
+    "family_counselors": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/family_counselors_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/family_counselors_before_and_after_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/family_counselors_team_at_work_2.jpg"
+        ]
+    },
+    "hvac_installers_contractors": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hvac_installers_contractors_Hero_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hvac_installers_contractors_Hero_3.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hvac_installers_contractors_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hvac_installers_contractors_before_and_after_4.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hvac_installers_contractors_before_and_after_5.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hvac_installers_contractors_before_and_after_6.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hvac_installers_contractors_team_at_work_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hvac_installers_contractors_team_at_work_3.jpg"
+        ]
+    },
+    "glass": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/glass_Hero_1.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/glass_team_at_work_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/glass_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/glass_before_and_after_2.jpg"
+        ]
+    },
+    "roofers": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/roofers_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/roofers_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/roofers_before_and_after_4.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/roofers_Hero_2.jpg"
+        ]
+    },
+    "child_day-care_services": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/child_day-care_services_Hero_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/child_day-care_services_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/child_day-care_services_before_and_after_2.jpg"
+        ]
+    },
+    "residential_remodelers": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/residential_remodelers_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/residential_remodelers_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/residential_remodelers_before_and_after_4.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/residential_remodelers_Hero_2.jpg"
+        ]
+    },
+    "builders": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/builders_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/builders_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/builders_before_and_after_4.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/builders_team_at_work_2.jpg"
+        ]
+    },
+    "local_moving_services": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/local_moving_services_Hero_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/local_moving_services_Hero_3.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/local_moving_services_before_and_after_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/local_moving_services_team_at_work_2.jpg"
+        ]
+    },
+    "barber_shops": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/barber_shops_team_at_work_2.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/barber_shops_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/barber_shops_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/barber_shops_before_and_after_4.jpg"
+        ]
+    },
+    "hair_salons": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hair_salons_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hair_salons_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hair_salons_before_and_after_4.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/hair_salons_Hero_2.jpg"
+        ]
+    },
+    "dentist_offices": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/dentist_offices_Hero_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/dentist_offices_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/dentist_offices_before_and_after_4.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/dentist_offices_before_and_after_5.jpg"
+        ]
+    },
+    "physical_therapy_clinics": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/physical_therapy_clinics_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/physical_therapy_clinics_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/physical_therapy_clinics_before_and_after_4.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/physical_therapy_clinics_Hero_2.jpg"
+        ]
+    },
+    "appliance_repair": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/appliance_repair_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/appliance_repair_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/appliance_repair_before_and_after_4.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/appliance_repair_Hero_2.jpg"
+        ]
+    },
+    "pool_cleaning": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pool_cleaning_team_at_work_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pool_cleaning_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pool_cleaning_before_and_after_2.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pool_cleaning_Hero_1.jpg"
+        ]
+    },
+    "cleaning": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/cleaning_team_at_work_1.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/cleaning_Hero_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/cleaning_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/cleaning_before_and_after_2.jpg"
+        ]
+    },
+    "dry_cleaning": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/dry_cleaning_Hero_1.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/dry_cleaning_team_at_work_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/dry_cleaning_before_and_after_1.jpg"
+        ]
+    },
+    "real_estate_agent": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/real_estate_agent_Hero_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/real_estate_agent_team_at_work_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/real_estate_agent_before_and_after_3.jpg"
+        ]
+    },
+    "security_systems_installation": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/security_systems_installation_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/security_systems_installation_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/security_systems_installation_before_and_after_4.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/security_systems_installation_team_at_work_2.jpg"
+        ]
+    },
+    "pet_training_services": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_training_services_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_training_services_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_training_services_before_and_after_4.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_training_services_team_at_work_2.jpg"
+        ]
+    },
+    "pet_boarding": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_boarding_team_at_work_2.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_boarding_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_boarding_before_and_after_2.jpg"
+        ]
+    },
+    "air_conditioning": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/air_conditioning_team_at_work_1.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/air_conditioning_Hero_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/air_conditioning_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/air_conditioning_before_and_after_2.jpg"
+        ]
+    },
+    "pet_grooming": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_grooming_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_grooming_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_grooming_before_and_after_4.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/pet_grooming_team_at_work_2.jpg"
+        ]
+    },
+    "equipment_repair": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/equipment_repair_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/equipment_repair_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/equipment_repair_before_and_after_4.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/equipment_repair_team_at_work_2.jpg"
+        ]
+    },
+    "automotive_repair_shops": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/automotive_repair_shops_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/automotive_repair_shops_before_and_after_4.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/automotive_repair_shops_before_and_after_5.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/automotive_repair_shops_team_at_work_2.jpg"
+        ]
+    },
+    "t_shirt_design": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/t_shirt_design_team_at_work_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/t_shirt_design_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/t_shirt_design_before_and_after_2.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/t_shirt_design_Hero_1.jpg"
+        ]
+    },
+    "graphic_design": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/graphic_design_team_at_work_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/graphic_design_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/graphic_design_before_and_after_2.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/graphic_design_Hero_1.jpg"
+        ]
+    },
+    "business_analysts": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/business_analysts_team_at_work_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/business_analysts_team_at_work_4.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/business_analysts_Hero_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/business_analysts_Hero_5.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/business_analysts_before_and_after_4.jpg"
+        ]
+    },
+    "management_advisors": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/management_advisors_team_at_work_1.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/management_advisors_Hero_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/management_advisors_before_and_after_1.jpg"
+        ]
+    },
+    "bookkeeping": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/bookkeeping_Hero_2.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/bookkeeping_Hero_3.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/bookkeeping_before_and_after_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/bookkeeping_team_at_work_2.jpg"
+        ]
+    },
+    "engineering_consultants": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/engineering_consultants_Hero_1.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/engineering_consultants_team_at_work_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/engineering_consultants_before_and_after_1.jpg"
+        ]
+    },
+    "independent_fitness_trainers": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/independent_fitness_trainers_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/independent_fitness_trainers_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/independent_fitness_trainers_before_and_after_4.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/independent_fitness_trainers_before_and_after_5.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/independent_fitness_trainers_team_at_work_2.jpg"
+        ]
+    },
+    "nail_salons": {
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/nail_salons_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/nail_salons_before_and_after_4.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/nail_salons_Hero_2.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/nail_salons_team_at_work_2.jpg"
+        ]
+    },
+    "social_services": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/social_services_team_at_work_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/social_services_before_and_after_1.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/social_services_Hero_1.jpg"
+        ]
+    },
+    "landscaping": {
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/landscaping_team_at_work_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/landscaping_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/landscaping_before_and_after_2.jpg"
+        ],
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/landscaping_Hero_1.jpg"
+        ]
+    },
+    "electrical_services": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/electrical_services_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/electrical_services_before_and_after_3.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/electrical_services_before_and_after_4.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/electrical_services_team_at_work_2.jpg"
+        ]
+    },
+    "design_studios": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/design_studios_Hero_2.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/design_studios_before_and_after_3.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/design_studios_team_at_work_2.jpg"
+        ]
+    }
+}

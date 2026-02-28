@@ -19,8 +19,6 @@ export const GeminiService = {
     async generateWebsiteHtml(categoryData, formData) {
         if (!API_KEY) throw new Error("Missing Gemini API Key");
 
-        const model = GEN_AI.getGenerativeModel({ model: MODEL_NAME });
-
         const {
             Category,
             "Website Style": style,
@@ -53,17 +51,19 @@ export const GeminiService = {
         } // User rule: ONE happy customer picture if not Before/After
 
         const currentYear = new Date().getFullYear();
-        const city = formData.address ? formData.address.split(',')[1] || 'Your Area' : 'Your Area';
+        const city = formData.city || 'Your Area';
+        const zip = formData.zip || '';
 
         const prompt = `
         You are an elite Web Designer and Lead Architect.
         Your task is to generate a **PREMIUM**, **MODERN**, and **Pixel-Perfect** single-page website.
         
-        **CRITICAL REQUIREMENT 1: STYLING**
+        **CRITICAL REQUIREMENT 1: STYLING & SEO**
         - You MUST use **Tailwind CSS**.
         - You MUST include the Tailwind CDN link in the <head>: <script src="https://cdn.tailwindcss.com"></script>
         - Do NOT use internal <style> blocks or inline CSS. Use Tailwind classes for EVERYTHING.
-        - Design should be "High-End", using correct spacing (p-*, m-*), shadows (shadow-lg), rounded corners (rounded-xl), and gradients.
+        - You MUST include a <meta name="description" content="Professional ${Category} in ${city}, ${zip}. Top-rated local services.">
+        - You MUST include a JSON-LD schema for LocalBusiness in the <head>.
         
         **CRITICAL REQUIREMENT 2: IMAGES**
         - You must strictly use the following placeholder format for images.
@@ -71,44 +71,54 @@ export const GeminiService = {
         - Do NOT use random Unsplash URLs.
         - ONLY use these exact tags where appropriate:
         ${imageInstructions}
-
+ 
         **CRITICAL REQUIREMENT 3: FUNCTIONALITY & ACCURACY**
         - **Copyright**: You MUST use the current year: "© ${currentYear} ${formData.companyName}".
+        - **Branding**: Every website MUST have a small, elegant footer at the very bottom that says: "Built with <a href='https://design.top-local.net/' class='underline hover:text-blue-400 transition-colors'>top-local.net</a>".
         - **Contact Form**: You MUST include a functional contact form using FormSubmit.
           - Action: "https://formsubmit.co/${formData.email || 'yourname@email.com'}"
           - Method: "POST"
           - Inputs: Name, Email, Phone, Message.
           - Button: "Send Message" type="submit".
-        - **Location**: You MUST mention "${city}" and surrounding areas in the Hero, Services, and Footer text to improve local SEO perception.
+        - **Location**: You MUST mention "${city}${zip ? ' ' + zip : ''}" and surrounding areas in the Hero, Services, and Footer text to improve local SEO.
         - **Links**: Ensure Navigation links (Services, About, Contact) work by adding id="services", id="about", id="contact" to the respective sections.
-
+ 
         **Business Details:**
         - Name: "${formData.companyName || 'Business Name'}"
         - Category: "${Category}"
-        - Style: "${style}"
-        - Primary Colors: "${bgColors}"
-        - Accent Colors: "${accentColors}"
-        - Services: "${services}"
+        - Address: "${formData.address}, ${city}, ${zip}"
         - Description: "${formData.description || 'We provide professional services.'}"
         
         **Structure:**
         1. **Header**: Sticky nav with Logo and Book/Call CTA. Internal links to #services, #about, #contact.
         2. **Hero Section**: Full width, impactful headline (mentioning ${city}), subheadline, CTA, and the **[DESC_PHOTO: Hero]** image.
         3. **Features/Services** (id="services"): Grid layout with icons (SVG) + titles + descriptions.
-        4. **About/Team** (id="about"): Text about serving ${city}, **[DESC_PHOTO: Team]** image.
+        4. **About/Team** (id="about"): Text about serving ${city} and the ${zip} area, **[DESC_PHOTO: Team]** image.
         5. **Start/Result Section**: 
            ${hasBeforeAfter ? 'Showcase "Our Work" with **[DESC_PHOTO: BeforeAndAfter]** images.' : 'Showcase "Happy Clients" with **[DESC_PHOTO: HappyCustomer]** image.'}
         6. **Contact Section** (id="contact"): The FormSubmit form and business info.
-        7. **Footer**: Logo, internal links, "© ${currentYear} ${formData.companyName} - Serving ${city}".
+        7. **Footer**: Logo, internal links, "© ${currentYear} ${formData.companyName} - Serving ${city}, ${zip}".
+           AND the branding link: "Built with <a href='https://design.top-local.net/'>top-local.net</a>".
         
         **Output Format:**
         - Return ONLY the raw valid HTML5 code.
         - Start with <!DOCTYPE html>.
         `;
 
+        let response;
         try {
-            const result = await model.generateContent(prompt);
-            const response = await result.response;
+            // Attempt primary model (3.1)
+            const primaryModel = GEN_AI.getGenerativeModel({ model: "models/gemini-3.1-pro-preview" });
+            const result = await primaryModel.generateContent(prompt);
+            response = await result.response;
+        } catch (e) {
+            console.warn("Primary 3.1 model failed or is unavailable. Falling back to gemini-3-flash-preview...", e);
+            const fallbackModel = GEN_AI.getGenerativeModel({ model: MODEL_NAME });
+            const result = await fallbackModel.generateContent(prompt);
+            response = await result.response;
+        }
+
+        try {
             let html = response.text();
 
             // Extract HTML if wrapped in markdown

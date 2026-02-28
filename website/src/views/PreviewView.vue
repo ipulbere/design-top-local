@@ -5,6 +5,7 @@ import { useWebsiteStore } from '../stores/website'
 
 import { db } from '../services/db'
 import EditorPanel from '../components/EditorPanel.vue'
+import { EditModeScript } from '../services/EditModeScript'
 
 const router = useRouter()
 const route = useRoute()
@@ -48,11 +49,16 @@ onMounted(async () => {
 const isEditing = ref(false)
 const notFound = ref(false)
 
-function toggleEdit() {
-  if (isEditing.value) {
-      saveChanges(); // Save when turning off
+function syncEditModeWithIframe() {
+  const frame = document.querySelector('.dynamic-template-frame');
+  if (frame && frame.contentWindow) {
+      frame.contentWindow.postMessage({ type: 'toggle-edit', enabled: isEditing.value }, '*');
   }
+}
+
+function toggleEdit() {
   isEditing.value = !isEditing.value
+  syncEditModeWithIframe()
 }
 
 function handleContentUpdate(key, event) {
@@ -75,8 +81,14 @@ function handlePublish() {
     alert("No website content to publish yet!");
     return;
   }
-  // Navigate to success page with a test flag
-  router.push({ path: '/success', query: { test: 'true' } })
+  // Navigate to success page with a test flag and the chosen subdomain
+  router.push({ 
+    path: '/success', 
+    query: { 
+      test: 'true',
+      subdomain: store.companyInfo.subdomain || store.companyInfo.name.toLowerCase().replace(/[^a-z0-9]/g, '')
+    } 
+  })
 }
 
 function handleClearSession() {
@@ -145,15 +157,32 @@ function handleFormUpdate(updates) {
 const showImageModal = ref(false)
 const pendingImagePath = ref('')
 const imagePrompt = ref('')
+const suggestedImages = ref([])
 const showSuccessToast = ref(false)
 
-// URL for FormSubmit to redirect back to, with a success flag
-const successRedirectUrl = ref(window.location.origin + window.location.pathname + '?success=true')
-
-function openImageUpdate(path) {
+function openImageUpdate(pathOrSrc) {
     if (!isEditing.value) return;
-    pendingImagePath.value = path;
-    imagePrompt.value = ''; 
+    
+    // determine section from path or src keywords
+    let section = 'hero';
+    const lower = pathOrSrc.toLowerCase();
+    
+    if (lower.includes('team') || lower.includes('staff') || lower.includes('work')) section = 'team_at_work';
+    else if (lower.includes('before') || lower.includes('after') || lower.includes('project')) section = 'before_and_after';
+    else if (lower.includes('customer') || lower.includes('testimonial') || lower.includes('happy')) section = 'before_and_after'; // fallback map
+    else if (lower.includes('hero') || lower.includes('main')) section = 'hero';
+
+    pendingImagePath.value = pathOrSrc;
+    
+    // Get alternative images from store library
+    const library = store.companyInfo.images?.library || {};
+    
+    // Exact match for library keys (Hero, team_at_work, before_and_after)
+    let libraryKey = section; 
+    if (section === 'hero') libraryKey = 'Hero'; // Match JSON key case
+    
+    suggestedImages.value = library[libraryKey] || [];
+    
     showImageModal.value = true;
 }
 
@@ -164,19 +193,19 @@ async function saveChanges() {
         isSaving.value = true;
         const result = await db.updateSite(route.params.id, store.companyInfo);
         isSaving.value = false;
-        
-        if (!result.success) {
-            console.error("Save failed:", result.error);
-            alert("Error saving changes: " + (result.error?.message || "Unknown error"));
-        }
     }
+}
+
+function handleImageSelect(url) {
+    store.updateImage(pendingImagePath.value, url, true); // true = direct URL
+    showImageModal.value = false;
+    setTimeout(saveChanges, 100);
 }
 
 function handleImageUpdate() {
    if (!imagePrompt.value) return;
    store.updateImage(pendingImagePath.value, imagePrompt.value);
    showImageModal.value = false;
-   // Small delay to ensure store updates
    setTimeout(saveChanges, 100);
 }
 
@@ -253,49 +282,89 @@ const processedHTML = computed(() => {
         console.warn('[Preview] </form> tag not found. FormSubmit injection failed.');
     }
 
+    // 3. Inject Edit Mode Script
+    const scriptTag = `<script>${EditModeScript}<\/script>`;
+    html = html.replace('</body>', `${scriptTag}</body>`);
+
     return html;
+});
+
+// Message Listener from Iframe
+onMounted(() => {
+    window.addEventListener('message', (event) => {
+        if (event.data.type === 'text-updated') {
+            console.log('[Preview] Text update received:', event.data.data);
+            // We could try to map this back to store, but for now simple innerText update is hard 
+            // without unique IDs. We'll rely on the user manually saving or visual feedback.
+        }
+        if (event.data.type === 'image-click') {
+            openImageUpdate(event.data.data.src);
+        }
+    });
 });
 </script>
 
 <template>
   <div class="min-h-screen relative pb-20">
-    <!-- Toolbar -->
-    <div class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900/90 backdrop-blur text-white px-2 py-2 rounded-full shadow-2xl flex items-center gap-2 transition-all hover:scale-105">
-      <button @click="showEditorPanel = true" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-        Edit Design
+    <!-- NEW Unified Toolbar -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 backdrop-blur-xl text-white px-3 py-3 rounded-2xl shadow-2xl flex items-center gap-4 transition-all hover:shadow-blue-500/20 border border-white/10">
+      
+      <div class="flex items-center gap-2 px-2">
+        <div :class="isEditing ? 'bg-green-500' : 'bg-slate-600'" class="w-2 h-2 rounded-full animate-pulse"></div>
+        <span class="text-xs font-bold uppercase tracking-wider opacity-70">{{ isEditing ? 'Edit Mode' : 'Preview' }}</span>
+      </div>
+
+      <div class="h-6 w-px bg-white/10"></div>
+
+      <button @click="toggleEdit" :class="isEditing ? 'bg-blue-600 shadow-lg shadow-blue-600/40 text-white' : 'hover:bg-white/10 text-slate-300'" class="px-6 py-2.5 rounded-xl font-bold transition-all text-sm flex items-center gap-3">
+        <svg v-if="!isEditing" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+        <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        {{ isEditing ? 'Exit & Save' : 'Edit Website' }}
       </button>
       
-      <div class="h-4 w-px bg-slate-600"></div>
+      <div class="h-6 w-px bg-white/10"></div>
 
-      <button @click="toggleEdit" :class="isEditing ? 'bg-yellow-500 text-black' : 'bg-slate-700'" class="px-4 py-2 rounded-full font-medium transition-colors text-sm flex items-center gap-2">
-        <span v-if="isSaving" class="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full"></span>
-        {{ isSaving ? 'Saving...' : (isEditing ? 'Done Visual Edit' : 'Edit Description') }}
+      <button @click="handleShare" class="p-2.5 hover:bg-white/10 rounded-xl transition-all group" title="Share Preview">
+         <svg class="w-5 h-5 text-slate-300 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
       </button>
-
-      <div class="h-4 w-px bg-slate-600"></div>
-
-      <button @click="handleShare" class="px-4 py-2 bg-indigo-600 hover:bg-slate-700 rounded-full font-bold text-sm shadow-lg transition-all flex items-center gap-2">
-         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
-         Share
-      </button>
-
-      <div class="h-4 w-px bg-slate-600"></div>
       
-      <button @click="handleApprove" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-full font-bold text-sm shadow-lg shadow-green-600/30 transition-all">
-        Approve
+      <button @click="handleApprove" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-600/30 transition-all">
+        Next: Finalize
       </button>
 
-      <div class="h-4 w-px bg-slate-600"></div>
+      <div class="h-6 w-px bg-white/10"></div>
 
-      <button @click="handlePublish" class="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-full font-bold text-sm shadow-lg shadow-indigo-500/30 transition-all flex items-center gap-2">
-        <i class="fa-solid fa-cloud-arrow-up"></i>
-        Publish Website
+      <button @click="handlePublish" class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:scale-105 active:scale-95 rounded-xl font-bold text-sm shadow-xl shadow-blue-500/20 transition-all flex items-center gap-2">
+        <i class="fa-solid fa-rocket"></i>
+        Go Live
       </button>
 
-      <button @click="handleClearSession" title="Clear current session and start over" class="w-8 h-8 flex items-center justify-center bg-red-500/20 hover:bg-red-500/40 text-red-500 rounded-full transition-colors text-xs ml-2">
-        <i class="fa-solid fa-trash-can"></i>
+      <button @click="handleClearSession" title="Delete & Reset" class="p-2.5 hover:bg-red-500/20 text-red-500 rounded-xl transition-all">
+        <i class="fa-solid fa-trash"></i>
       </button>
+    </div>
+
+    <!-- Browser Style Domain Bar -->
+    <div class="bg-slate-100 border-b border-slate-200 p-3 flex items-center gap-4 shadow-sm relative z-40">
+        <div class="flex gap-1.5 ml-2">
+            <div class="w-3 h-3 rounded-full bg-slate-300"></div>
+            <div class="w-3 h-3 rounded-full bg-slate-300"></div>
+            <div class="w-3 h-3 rounded-full bg-slate-300"></div>
+        </div>
+        <div class="flex-1 max-w-2xl mx-auto flex items-center bg-white border border-slate-300 rounded-lg px-4 py-1.5 gap-3 group">
+            <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+            <span class="text-slate-400 text-sm select-none">https://</span>
+            <input 
+                v-model="store.companyInfo.subdomain" 
+                class="flex-1 bg-transparent border-none outline-none text-slate-700 text-sm font-medium"
+                placeholder="choose-your-address"
+            />
+            <span class="text-slate-400 text-sm">.top-local.net</span>
+            <div class="w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <svg class="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            </div>
+        </div>
+        <div class="w-20"></div> <!-- spacer -->
     </div>
 
     <EditorPanel 
@@ -306,22 +375,35 @@ const processedHTML = computed(() => {
 
     <!-- Image Update Modal -->
     <div v-if="showImageModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-2xl p-8 max-w-lg w-full shadow-2xl">
-            <h3 class="text-2xl font-bold mb-4">Update Image</h3>
-            <p class="text-slate-600 mb-6">Describe how you want this picture to be updated. Pass a prompt for our "Gemini Nano" generator.</p>
-            <textarea 
-                v-model="imagePrompt"
-                rows="3" 
-                class="w-full border-2 border-slate-200 rounded-xl p-4 mb-6 focus:border-blue-500 outline-none text-lg" 
-                placeholder="E.g. 'A modern team of roofers smiling in front of a house'"
-                autofocus
-            ></textarea>
-            <div class="flex gap-4 justify-end">
-                <button @click="showImageModal = false" class="px-6 py-2 rounded-lg font-bold text-slate-500 hover:bg-slate-100">Cancel</button>
-                <button @click="handleImageUpdate" class="px-6 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 shadow-lg">Generate Update</button>
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h3 class="text-2xl font-bold">Swap Image</h3>
+                    <p class="text-slate-500">Pick from our library or generate a new one.</p>
+                </div>
+                <button @click="showImageModal = false" class="text-slate-400 hover:text-slate-600"><svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+
+            <!-- Library Suggestions -->
+            <div v-if="suggestedImages.length > 0" class="mb-8">
+                <h4 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">From Library</h4>
+                <div class="grid grid-cols-3 gap-3 overflow-y-auto max-h-64 pr-2">
+                    <div 
+                        v-for="url in suggestedImages" 
+                        :key="url"
+                        @click="handleImageSelect(url)"
+                        class="aspect-square rounded-xl overflow-hidden cursor-pointer hover:ring-4 ring-blue-500 transition-all relative group"
+                    >
+                        <img :src="url" class="w-full h-full object-cover" />
+                        <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <span class="bg-white text-blue-600 px-3 py-1 rounded-full text-xs font-bold shadow-lg">Select</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             </div>
         </div>
-    </div>
 
     <!-- Success Toast -->
     <div v-if="showSuccessToast" class="fixed bottom-8 right-8 z-[100] bg-green-600 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-4 animate-bounce-in">
@@ -353,6 +435,7 @@ const processedHTML = computed(() => {
            class="w-full h-screen border-0 dynamic-template-frame"
            sandbox="allow-scripts allow-same-origin allow-modals allow-forms allow-top-navigation allow-popups"
            title="Website Preview"
+           @load="syncEditModeWithIframe"
       ></iframe>
 
       <!-- ERROR STATE -->

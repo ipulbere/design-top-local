@@ -44,6 +44,8 @@ export const useWebsiteStore = defineStore('website', () => {
                 companyName: companyInfo.value.name,
                 phone: companyInfo.value.phone,
                 address: companyInfo.value.address,
+                city: companyInfo.value.city,
+                zip: companyInfo.value.zip,
                 email: companyInfo.value.email,
                 description: companyInfo.value.description,
                 category: categoryName
@@ -57,6 +59,9 @@ export const useWebsiteStore = defineStore('website', () => {
                 GeminiService.generateWebsiteHtml(categoryData, formData)
             ]);
 
+            // Save images to state for the image picker
+            companyInfo.value.images = images;
+
             // 4. Verify Syntax
             console.log('[Store] Verifying HTML...');
             let html = await GeminiService.verifyAndFixWebsite(rawHtml);
@@ -68,6 +73,7 @@ export const useWebsiteStore = defineStore('website', () => {
                 const isArray = Array.isArray(sectionImages);
 
                 let placeholderKey = '';
+                // The keys in 'images' are now normalized to lowercase by ImageService
                 if (sectionKey === 'hero') placeholderKey = 'Hero';
                 else if (sectionKey === 'team' || sectionKey === 'team_at_work') placeholderKey = 'Team';
                 else if (sectionKey === 'before_and_after') placeholderKey = 'BeforeAndAfter';
@@ -132,7 +138,9 @@ export const useWebsiteStore = defineStore('website', () => {
         name: 'Your Company',
         email: '',
         phone: '',
-        address: '123 Main St, City, Country',
+        address: '123 Main St',
+        city: 'New York',
+        zip: '10001',
         category: 'General Service',
         description: 'We provide professional services for your needs. Quality guaranteed.',
         services: [],
@@ -145,7 +153,8 @@ export const useWebsiteStore = defineStore('website', () => {
         raw_category_data: null,
         subdomain: '',
         rawHTML: null,
-        templateSource: 'default'
+        templateSource: 'default',
+        images: {} // Store mapped image URLs
     })
 
     // Persistence Watcher
@@ -345,6 +354,19 @@ export const useWebsiteStore = defineStore('website', () => {
             companyInfo.value.rawHTML = null;
         }
 
+        // Subdomain Sync: Update if it's empty, default, or we are on a new name
+        const isDefault = !companyInfo.value.subdomain ||
+            companyInfo.value.subdomain === 'your-company' ||
+            companyInfo.value.subdomain === 'taxpros' ||
+            companyInfo.value.subdomain === 'choose-your-address';
+
+        if (info.name && info.name !== 'Your Company' && isDefault) {
+            const suggested = info.name.toLowerCase()
+                .replace(/[^a-z0-9]/g, '')
+                .substring(0, 30);
+            if (suggested) companyInfo.value.subdomain = suggested;
+        }
+
         companyInfo.value = { ...companyInfo.value, ...info, content }
         isGenerated.value = true
 
@@ -378,20 +400,19 @@ export const useWebsiteStore = defineStore('website', () => {
         current[keys[keys.length - 1]] = value;
     }
 
-    function updateImage(path, prompt) {
-        // Regenerate image URL based on prompt (simulated with placehold.co)
-        // path could be 'assets.hero' or a service index 'services[0].image' logic
-
-        // For strictly "assets" defined in computed, we might need to override them.
-        // However, the current 'assets' is a computed property derived from companyInfo.
-        // To persist changes, we should store custom asset overrides in companyInfo.
-
+    function updateImage(path, promptOrUrl, isDirect = false) {
         if (!companyInfo.value.customImages) companyInfo.value.customImages = {};
 
-        // Generate new URL "Gemini nano banana style" (Mock)
-        const newUrl = `https://placehold.co/800x600/2563eb/ffffff?text=${encodeURIComponent(prompt)}`;
+        const newUrl = isDirect
+            ? promptOrUrl
+            : `https://placehold.co/800x600/2563eb/ffffff?text=${encodeURIComponent(promptOrUrl)}`;
 
-        companyInfo.value.customImages[path] = newUrl;
+        // If path is a full URL (src), find it in the rawHTML and replace it
+        if (path.startsWith('http')) {
+            companyInfo.value.rawHTML = companyInfo.value.rawHTML.split(path).join(newUrl);
+        } else {
+            companyInfo.value.customImages[path] = newUrl;
+        }
     }
 
     function approveWebsite() {
@@ -402,11 +423,41 @@ export const useWebsiteStore = defineStore('website', () => {
         isPaid.value = true
     }
 
-    function clearSession() {
+    function resetForNewSite() {
+        companyInfo.value = {
+            name: 'Your Company',
+            email: '',
+            phone: '',
+            address: '123 Main St',
+            city: 'New York',
+            zip: '10001',
+            category: 'General Service',
+            description: 'We provide professional services for your needs. Quality guaranteed.',
+            services: [],
+            certificates: '',
+            offer: { text: '', subtext: '' },
+            equipment: '',
+            uniforms: false,
+            hours: '',
+            showBeforeAfter: true,
+            raw_category_data: null,
+            subdomain: '',
+            rawHTML: null,
+            templateSource: 'default',
+            images: {},
+            id: null // CRITICAL: Reset the ID
+        };
+        isGenerated.value = false;
+        isApproved.value = false;
+        isPaid.value = false;
         localStorage.removeItem('top-local-companyInfo');
         localStorage.removeItem('top-local-isGenerated');
         localStorage.removeItem('top-local-isApproved');
         localStorage.removeItem('top-local-isPaid');
+    }
+
+    function clearSession() {
+        resetForNewSite();
         window.location.reload();
     }
 
@@ -457,9 +508,9 @@ export const useWebsiteStore = defineStore('website', () => {
         offer,
         getServiceImage,
         updateContent,
-        updateContent,
         updateImage,
         fetchTemplate,
+        resetForNewSite,
         clearSession
     }
 })

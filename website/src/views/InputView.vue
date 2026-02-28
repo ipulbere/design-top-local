@@ -12,7 +12,9 @@ const form = ref({
   name: store.companyInfo.name === 'Your Company' ? '' : store.companyInfo.name,
   email: store.companyInfo.email,
   phone: store.companyInfo.phone,
-  address: store.companyInfo.address === '123 Main St, City, Country' ? '' : store.companyInfo.address,
+  address: store.companyInfo.address === '123 Main St' ? '' : store.companyInfo.address,
+  city: store.companyInfo.city === 'New York' ? '' : store.companyInfo.city,
+  zip: store.companyInfo.zip === '10001' ? '' : store.companyInfo.zip,
   category: store.companyInfo.category || categoriesData[0].Category,
   description: store.companyInfo.description === 'We provide professional services for your needs. Quality guaranteed.' ? '' : store.companyInfo.description,
 })
@@ -82,9 +84,13 @@ async function handleSubmit() {
   isSubmitting.value = true
   
   try {
+    // 0. Reset store to ensure a fresh ID and state
+    store.resetForNewSite();
+
     const selectedCat = categoriesData.find(c => c.Category === form.value.category)
     const serviceList = selectedCat ? selectedCat['List of Services'].split(', ') : []
 
+    // 1. Update store with basic info
     store.updateCompanyInfo({
       ...form.value,
       category: selectedCat.Category.replace(/^\d+\.\s+/, ''), 
@@ -104,10 +110,14 @@ async function handleSubmit() {
       hours: selectedCat['Working Hours'],
       showBeforeAfter: selectedCat['Before and After Pictures'] !== 'No',
       content: selectedCat.content
-    }, true) 
+    }, false) // false = not from DB load, trigger generation
 
+    // 2. Fetch template (populates store.companyInfo.rawHTML)
     await store.fetchTemplate(selectedCat.Category.replace(/^\d+\.\s+/, ''));
-    const siteId = await db.saveSite(store.companyInfo)
+    
+    // 3. Save to Supabase to get unique ID
+    const siteId = await db.saveSite(store.companyInfo.value || store.companyInfo)
+    console.log('[InputView] Site saved with ID:', siteId);
     
     await new Promise(resolve => setTimeout(resolve, 800))
     router.push(`/site/${siteId}`)
@@ -275,8 +285,30 @@ const selectCategory = (cat) => {
                                     v-model="form.address" 
                                     type="text" 
                                     class="w-full px-6 py-5 bg-white/5 border border-white/5 focus:border-blue-500/50 focus:bg-blue-500/5 rounded-2xl outline-none transition-all duration-300 font-semibold text-white placeholder:text-slate-600" 
-                                    placeholder="123 Success Ave, New York" 
+                                    placeholder="123 Success Ave" 
                                 />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-3">
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">City</label>
+                                    <input 
+                                        v-model="form.city" 
+                                        type="text" 
+                                        required
+                                        class="w-full px-6 py-5 bg-white/5 border border-white/5 focus:border-blue-500/50 focus:bg-blue-500/5 rounded-2xl outline-none transition-all duration-300 font-semibold text-white placeholder:text-slate-600" 
+                                        placeholder="New York" 
+                                    />
+                                </div>
+                                <div class="space-y-3">
+                                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Zip Code</label>
+                                    <input 
+                                        v-model="form.zip" 
+                                        type="text" 
+                                        required
+                                        class="w-full px-6 py-5 bg-white/5 border border-white/5 focus:border-blue-500/50 focus:bg-blue-500/5 rounded-2xl outline-none transition-all duration-300 font-semibold text-white placeholder:text-slate-600" 
+                                        placeholder="10001" 
+                                    />
+                                </div>
                             </div>
                         </div>
 
