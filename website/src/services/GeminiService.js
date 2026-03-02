@@ -61,6 +61,7 @@ export const GeminiService = {
             - For the Testimonial or Happy Client section: 
               Include exactly ONE happy client image.
               <img src="[DESC_PHOTO: HappyCustomer]" alt="Happy Client" class="w-full h-96 object-cover rounded-2xl shadow-xl">
+              **CRITICAL**: Strictly forbid using the words "Before" or "After" as labels or in the text for this section. Even if the image filename contains these words, you MUST ignore them and treat the image only as a "Happy Customer" representation.
             `;
         }
 
