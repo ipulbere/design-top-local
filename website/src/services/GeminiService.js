@@ -30,25 +30,39 @@ export const GeminiService = {
         } = categoryData;
 
         // Determine image requirements
-        const hasBeforeAfter = beforeAfterRaw && beforeAfterRaw.includes("Yes");
+        const beforeAfterValue = (beforeAfterRaw || "").toLowerCase();
+        const hasBeforeAfter = beforeAfterValue.includes("yes") || beforeAfterValue.includes("sometimes");
 
         let imageInstructions = `
         You must strictly use the following placeholder format for images: <img src="[DESC_PHOTO: Type]" alt="Type">
-        - For the Hero section: <img src="[DESC_PHOTO: Hero]" alt="Hero Image" ...>
-        - For the Team/About section: <img src="[DESC_PHOTO: Team]" alt="Team Image" ...>
+        - For the Hero section: <img src="[DESC_PHOTO: Hero]" alt="Hero Image" class="w-full h-full object-cover rounded-2xl shadow-2xl">
+        - For the Team/About section: <img src="[DESC_PHOTO: Team]" alt="Team Image" class="w-full h-80 object-cover rounded-2xl shadow-xl">
         `;
 
         if (hasBeforeAfter) {
             imageInstructions += `
-            - For the 'Before and After' or 'Work' section: You MUST include exactly 2 images.
-              1. <img src="[DESC_PHOTO: BeforeAndAfter]" alt="Before" ...>
-              2. <img src="[DESC_PHOTO: BeforeAndAfter]" alt="After" ...>
+            - For the 'Our Work / Projects' section (Before and After): 
+              You MUST include exactly 2 images side-by-side. 
+              Each image MUST have a clear label/inscription: "Before" and "After".
+              Example:
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="relative">
+                  <img src="[DESC_PHOTO: BeforeAndAfter]" alt="Before" class="w-full h-64 object-cover rounded-xl shadow-lg">
+                  <span class="absolute top-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-bold uppercase backdrop-blur-sm">Before</span>
+                </div>
+                <div class="relative">
+                  <img src="[DESC_PHOTO: BeforeAndAfter]" alt="After" class="w-full h-64 object-cover rounded-xl shadow-lg">
+                  <span class="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase shadow-lg">After</span>
+                </div>
+              </div>
             `;
         } else {
             imageInstructions += `
-            - For the Testimonial or Happy Client section: <img src="[DESC_PHOTO: HappyCustomer]" alt="Happy Client" ...>
+            - For the Testimonial or Happy Client section: 
+              Include exactly ONE happy client image.
+              <img src="[DESC_PHOTO: HappyCustomer]" alt="Happy Client" class="w-full h-96 object-cover rounded-2xl shadow-xl">
             `;
-        } // User rule: ONE happy customer picture if not Before/After
+        }
 
         const currentYear = new Date().getFullYear();
         const city = formData.city || 'Your Area';

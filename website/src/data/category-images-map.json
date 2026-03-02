@@ -559,5 +559,17 @@
         "team_at_work": [
             "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/design_studios_team_at_work_2.jpg"
         ]
+    },
+    "vending": {
+        "Hero": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/vending_machines_Hero_1.jpg"
+        ],
+        "team_at_work": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/vending_machines_team_at_work_1.jpg"
+        ],
+        "before_and_after": [
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/vending_machines_before_and_after_1.jpg",
+            "https://sfprlxnbahkkpvodjewd.supabase.co/storage/v1/object/public/category-pictures/vending_machines_before_and_after_2.jpg"
+        ]
     }
 }

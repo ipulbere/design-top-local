@@ -157,33 +157,35 @@ const testimonials = [
                     <div class="bg-slate-100 rounded-b-3xl p-4 shadow-inner relative overflow-hidden group border-x border-b border-slate-300">
                         <div class="aspect-video bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200 relative">
                             <!-- Simulated Website Header -->
-                            <div class="p-4 border-b border-slate-50 flex justify-between items-center bg-white/50 backdrop-blur">
-                                <span class="font-bold text-slate-400 text-xs">{{ store.companyInfo.name }}</span>
+                            <div class="p-4 border-b border-slate-50 flex justify-end items-center bg-white">
                                 <div class="flex gap-2">
                                     <div class="w-8 h-1 bg-slate-100 rounded"></div>
                                     <div class="w-8 h-1 bg-slate-100 rounded"></div>
                                 </div>
                             </div>
-                            <!-- Hero Mockup -->
-                            <div class="p-8 text-center pt-12">
-                                <div class="w-16 h-16 bg-blue-50 rounded-full mx-auto mb-4 flex items-center justify-center text-blue-300">
-                                    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <!-- Hero Mockup (Text Based Preview per User Request) -->
+                            <div class="px-6 pt-0 pb-8 -mt-5 h-full flex flex-col justify-start text-left relative z-10">
+                                <!-- Minipill -->
+                                <div class="inline-block px-3 py-1 mb-4 rounded-full bg-blue-50 text-blue-600 text-[8px] font-bold border border-blue-100 w-fit">
+                                    Top-Rated {{ store.companyInfo.category || 'Services' }} in {{ store.companyInfo.city || 'Willowbrook' }}, {{ store.companyInfo.zip || '60527' }}
                                 </div>
-                                <div class="h-4 bg-slate-100 rounded w-3/4 mx-auto mb-2"></div>
-                                <div class="h-3 bg-slate-50 rounded w-1/2 mx-auto"></div>
+                                <!-- Heading -->
+                                <h1 class="text-2xl font-black text-slate-900 leading-tight mb-4 tracking-tight">
+                                    Expert {{ store.companyInfo.category || 'Professional' }} Services <br>
+                                    for <span class="text-blue-600">Peace of Mind</span>
+                                </h1>
+                                <!-- Subtext -->
+                                <p class="text-[9px] text-slate-500 leading-relaxed max-w-[280px]">
+                                    Licensed {{ store.companyInfo.category?.toLowerCase() || 'professional' }} services for your area. Whether you're in {{ store.companyInfo.city || 'your local community' }} or anywhere across the US remotely, we handle everything with precision and care.
+                                </p>
                             </div>
                             
-                            <!-- Approved Stamp -->
-                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none rotate-12 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                <div class="border-8 border-green-500/30 text-green-500 text-5xl md:text-7xl font-black px-8 py-2 rounded-2xl uppercase tracking-tighter scale-110">
-                                    Approved
-                                </div>
-                            </div>
                             
                             <!-- Static Stamp -->
-                            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-12 pointer-events-none">
-                                <div class="border-4 border-green-500 text-green-500 text-2xl md:text-4xl font-black px-4 py-1 rounded-lg uppercase tracking-wider opacity-80 shadow-lg bg-white/80 backdrop-blur-sm">
-                                    Design Complete ✓
+                            <div class="absolute top-[calc(60%+30px)] right-4 -translate-y-1/2 -rotate-6 pointer-events-none z-30">
+                                <div class="border-2 border-green-500 text-green-500 text-lg font-black px-3 py-1 rounded-lg uppercase tracking-wider opacity-90 shadow-xl bg-white/90 backdrop-blur-sm flex items-center gap-2">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+                                    Design Complete
                                 </div>
                             </div>
                         </div>
@@ -277,7 +279,7 @@ const testimonials = [
                             @click="billingCycle = 'annual'" 
                             :class="billingCycle === 'annual' ? 'bg-[#10b981] text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'"
                             class="flex-1 py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1"
-                        >Annual <span class="bg-white/20 text-white text-[9px] px-1 rounded">-19%</span></button>
+                        >Annual <span :class="billingCycle === 'monthly' ? 'bg-[#39FF14] text-slate-900 animate-pulse' : 'bg-white/20 text-white'" class="text-[9px] px-1 rounded">-19%</span></button>
                     </div>
 
                     <div class="text-center mb-8">

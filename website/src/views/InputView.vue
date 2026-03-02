@@ -69,7 +69,8 @@ function getCategoryIcon(category) {
         'Glass': 'fa-solid fa-window-maximize',
         'Windows': 'fa-solid fa-window-restore',
         'Landscaping': 'fa-solid fa-leaf',
-        'Social services': 'fa-solid fa-people-carry-box'
+        'Social services': 'fa-solid fa-people-carry-box',
+        'Vending': 'fa-solid fa-box'
     };
     const cleanName = category.replace(/^\d+\.\s+/, '');
     return icons[cleanName] || 'fa-solid fa-briefcase';
