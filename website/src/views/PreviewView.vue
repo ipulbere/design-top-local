@@ -316,7 +316,7 @@ onMounted(() => {
 
       <div class="h-6 w-px bg-white/10"></div>
 
-      <button @click="toggleEdit" :class="isEditing ? 'bg-blue-600 shadow-lg shadow-blue-600/40 text-white' : 'hover:bg-white/10 text-slate-300'" class="px-6 py-2.5 rounded-xl font-bold transition-all text-sm flex items-center gap-3">
+      <button @click="toggleEdit" :class="isEditing ? 'bg-blue-600 shadow-lg shadow-blue-600/40 text-white' : 'bg-green-600 hover:bg-green-500 text-white'" class="px-6 py-2.5 rounded-xl font-bold transition-all text-sm flex items-center gap-3">
         <svg v-if="!isEditing" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
         <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
         {{ isEditing ? 'Exit & Save' : 'Edit Website' }}
@@ -324,19 +324,14 @@ onMounted(() => {
       
       <div class="h-6 w-px bg-white/10"></div>
 
-      <button @click="handleShare" class="p-2.5 hover:bg-white/10 rounded-xl transition-all group" title="Share Preview">
-         <svg class="w-5 h-5 text-slate-300 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+      <button @click="handleShare" class="px-4 py-2.5 bg-yellow-500 hover:bg-yellow-400 text-slate-900 rounded-xl transition-all group flex items-center gap-2" title="Share Preview">
+         <svg class="w-5 h-5 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+         <span class="font-bold text-sm">Share</span>
       </button>
       
-      <button @click="handleApprove" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-indigo-600/30 transition-all">
-        Next: Finalize
-      </button>
-
-      <div class="h-6 w-px bg-white/10"></div>
-
-      <button @click="handlePublish" class="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:scale-105 active:scale-95 rounded-xl font-bold text-sm shadow-xl shadow-blue-500/20 transition-all flex items-center gap-2">
-        <i class="fa-solid fa-rocket"></i>
-        Go Live
+      <button @click="handleApprove" class="magic-glow text-white px-8 py-3 rounded-2xl font-black text-sm shadow-2xl transition-all hover:scale-105 active:scale-95 flex items-center gap-2 border border-white/20">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        Approve and go live
       </button>
 
       <button @click="handleClearSession" title="Delete & Reset" class="p-2.5 hover:bg-red-500/20 text-red-500 rounded-xl transition-all">
@@ -475,3 +470,15 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+@keyframes electric-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.6), 0 0 30px rgba(37, 99, 235, 0.3); }
+  50% { box-shadow: 0 0 25px rgba(37, 99, 235, 0.9), 0 0 50px rgba(37, 99, 235, 0.5); }
+}
+.magic-glow {
+  animation: electric-glow 2s infinite alternate;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+</style>

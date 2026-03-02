@@ -94,10 +94,11 @@ export const GeminiService = {
         2. **Hero Section**: Full width, impactful headline (mentioning ${city}), subheadline, CTA, and the **[DESC_PHOTO: Hero]** image.
         3. **Features/Services** (id="services"): Grid layout with icons (SVG) + titles + descriptions.
         4. **About/Team** (id="about"): Text about serving ${city} and the ${zip} area, **[DESC_PHOTO: Team]** image.
-        5. **Start/Result Section**: 
+        5. **CTA Section**: A high-impact, visual section for a "Free Service" or "Special Offer" depending on the business nature (e.g., Free Estimate, Free Consultation, Free Inspection, Free Pickup). Use bold typography and a clear CTA button.
+        6. **Start/Result Section**: 
            ${hasBeforeAfter ? 'Showcase "Our Work" with **[DESC_PHOTO: BeforeAndAfter]** images.' : 'Showcase "Happy Clients" with **[DESC_PHOTO: HappyCustomer]** image.'}
-        6. **Contact Section** (id="contact"): The FormSubmit form and business info.
-        7. **Footer**: Logo, internal links, "© ${currentYear} ${formData.companyName} - Serving ${city}, ${zip}".
+        7. **Contact Section** (id="contact"): The FormSubmit form and business info.
+        8. **Footer**: Logo, internal links, "© ${currentYear} ${formData.companyName} - Serving ${city}, ${zip}".
            AND the branding link: "Built with <a href='https://design.top-local.net/'>top-local.net</a>".
         
         **Output Format:**

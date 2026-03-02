@@ -90,9 +90,38 @@ async function handleSubmit() {
     const selectedCat = categoriesData.find(c => c.Category === form.value.category)
     const serviceList = selectedCat ? selectedCat['List of Services'].split(', ') : []
 
-    // 1. Update store with basic info
+    // 1. Generate Site ID from Phone Number
+    const rawPhone = form.value.phone.replace(/\D/g, ''); // Strip all non-digits
+    const phone10 = rawPhone.slice(-10); // Take last 10 digits
+    
+    if (phone10.length < 10) {
+        alert('Please enter a valid 10-digit phone number.');
+        isSubmitting.value = false;
+        return;
+    }
+
+    let siteId = phone10;
+    const suffixes = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g'];
+    let foundUnique = false;
+
+    for (const suffix of suffixes) {
+        const potentialId = phone10 + suffix;
+        const exists = await db.checkIdExists(potentialId);
+        if (!exists) {
+            siteId = potentialId;
+            foundUnique = true;
+            break;
+        }
+    }
+
+    if (!foundUnique) {
+        siteId = phone10 + Math.random().toString(36).substring(2, 5);
+    }
+
+    // 2. Update store with basic info and generated ID
     store.updateCompanyInfo({
       ...form.value,
+      id: siteId, // Set the ID explicitly
       category: selectedCat.Category.replace(/^\d+\.\s+/, ''), 
       style: selectedCat['Website Style'],
       colors: {
@@ -116,7 +145,7 @@ async function handleSubmit() {
     await store.fetchTemplate(selectedCat.Category.replace(/^\d+\.\s+/, ''));
     
     // 3. Save to Supabase to get unique ID
-    const siteId = await db.saveSite(store.companyInfo.value || store.companyInfo)
+    await db.saveSite(store.companyInfo.value || store.companyInfo);
     console.log('[InputView] Site saved with ID:', siteId);
     
     await new Promise(resolve => setTimeout(resolve, 800))

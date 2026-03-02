@@ -63,6 +63,25 @@ export const db = {
         return this.getLocal(id);
     },
 
+    // Check if ID exists (Cloud + Local)
+    async checkIdExists(id) {
+        try {
+            const { data, error } = await supabase
+                .from('websites')
+                .select('id')
+                .eq('id', id)
+                .maybeSingle();
+
+            if (error) throw error;
+            if (data) return true;
+        } catch (e) {
+            console.warn('Cloud ID check failed, checking local:', e);
+        }
+
+        const localSites = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        return !!localSites[id];
+    },
+
     // Update existing site
     async updateSite(id, data) {
         try {

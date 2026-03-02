@@ -15,6 +15,9 @@ exports.handler = async function (event, context) {
 
         return {
             statusCode: 200,
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({
                 email: session.customer_details?.email || session.customer_email,
                 order_id: session.client_reference_id,

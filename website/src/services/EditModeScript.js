@@ -12,27 +12,34 @@ export const EditModeScript = `
     // Initialize ContentEditable
     const toggleEditable = (enabled) => {
         isEditMode = enabled;
-        document.querySelectorAll('h1, h2, h3, p, span, a, li, button, img, section, header, .bg-cover').forEach(el => {
-            // Only apply to leaf nodes OR specific tags
+        // Text tags and card containers
+        const textSelectors = 'h1, h2, h3, h4, h5, h6, p, span, a, li, button, img, section, header, .bg-cover, [class*="title"], [class*="heading"]';
+        const cardSelectors = '.grid > div, section div.grid > div, .service-card, .feature-item, [class*="card"], [class*="item"]';
+
+        document.querySelectorAll(\`\${textSelectors}, \${cardSelectors}\`).forEach(el => {
+            const isTextTag = /^(H[1-6]|P|SPAN|LI|A|BUTTON)$/.test(el.tagName) || el.classList.contains('text-') || el.classList.contains('font-');
             const isControl = ['A', 'BUTTON', 'IMG', 'SECTION', 'HEADER'].includes(el.tagName) || el.classList.contains('bg-cover');
-            if (el.children.length > 0 && !isControl) return; 
+            const isCard = el.classList.contains('service-card') || el.classList.contains('feature-item') || /card|item/.test(el.className) || (el.parentElement?.classList.contains('grid') && el.tagName === 'DIV');
+
+            // Logic to determine if we should add an outline/editable state
+            if (el.children.length > 0 && !isTextTag && !isControl && !isCard) return; 
             
-            if (!isControl || ['A', 'BUTTON'].includes(el.tagName)) el.contentEditable = enabled;
+            if (isTextTag || ['A', 'BUTTON'].includes(el.tagName)) {
+                el.contentEditable = enabled;
+            }
             
             if (enabled) {
                 el.classList.add('edit-outline');
+                if (isCard) el.tabIndex = 0; // Make cards focusable to show controls
                 el.addEventListener('blur', handleBlur);
                 el.addEventListener('click', handleClick);
             } else {
                 el.classList.remove('edit-outline');
+                el.removeAttribute('tabindex');
                 el.removeEventListener('blur', handleBlur);
                 el.removeEventListener('click', handleClick);
+                el.contentEditable = false;
             }
-        });
-
-        // Toggle Section Controls
-        document.querySelectorAll('.edit-section-controls').forEach(el => {
-            el.style.display = enabled ? 'flex' : 'none';
         });
     };
 
@@ -113,6 +120,13 @@ export const EditModeScript = `
         .edit-btn-add { background: #10b981; }
         .edit-btn-remove { background: #ef4444; }
 
+        /* Show controls only when parent is focused/hovered in edit mode */
+        .edit-outline .edit-section-controls { display: none !important; }
+        .edit-outline:focus .edit-section-controls,
+        .edit-outline:hover .edit-section-controls { 
+            display: flex !important; 
+        }
+
         /* Target Specific Centering for Service/Feature Sections */
         section#services .grid, 
         section#features .grid,
@@ -122,9 +136,6 @@ export const EditModeScript = `
             flex-wrap: wrap !important;
             justify-content: center !important; 
             gap: 2rem !important;
-            margin-left: auto !important;
-            margin-right: auto !important;
-            width: 100% !important;
         }
 
         /* Ensure service cards stay centered and don't stretch excessively */
@@ -132,8 +143,7 @@ export const EditModeScript = `
         section#features .grid > div,
         .services-grid > div, 
         .features-grid > div { 
-            margin: 0 !important;
-            flex: 0 1 350px !important; /* Fixed base width for cards */
+            flex: 0 1 350px !important;
             min-width: 300px !important;
         }
 
@@ -144,17 +154,35 @@ export const EditModeScript = `
 
     // Inject Section Controls
     const addControls = () => {
-        // Find potential "repeatable" items (cards, list items)
-        const selectors = [
-            'section div.grid > div', // Grid items (services)
-            'ul > li',                // List items
-            '.service-card',          // Named classes
+        const cardSelectors = [
+            'section div.grid > div', 
+            'section .grid > div',
+            '.services-grid > div',
+            '.features-grid > div',
+            '.service-card',
             '.feature-item'
         ];
         
-        document.querySelectorAll(selectors.join(', ')).forEach(el => {
+        document.querySelectorAll(cardSelectors.join(', ')).forEach(el => {
             if (el.querySelector('.edit-section-controls')) return;
             
+            // Skip icons and tiny elements
+            if (['I', 'SVG', 'PATH', 'IMG', 'BUTTON'].includes(el.tagName)) return;
+            if (el.offsetWidth < 120 || el.offsetHeight < 60) return;
+            
+            // PREVENT NESTED CONTROLS: 
+            // If any parent already matches a card selector, this is likely an icon box or something inside the card.
+            let parent = el.parentElement;
+            let isNested = false;
+            while (parent && parent !== document.body) {
+                if (cardSelectors.some(s => parent.matches(s))) {
+                    isNested = true;
+                    break;
+                }
+                parent = parent.parentElement;
+            }
+            if (isNested) return;
+
             const controls = document.createElement('div');
             controls.className = 'edit-section-controls';
             controls.innerHTML = \`
@@ -162,23 +190,24 @@ export const EditModeScript = `
                 <div class="edit-btn edit-btn-remove" title="Remove Item">&times;</div>
             \`;
             
-            // Positioning helper
-            if (getComputedStyle(el).position === 'static') {
+            if (!['relative', 'absolute', 'fixed'].includes(getComputedStyle(el).position)) {
                 el.style.position = 'relative';
             }
             
             controls.querySelector('.edit-btn-add').addEventListener('click', (e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 const clone = el.cloneNode(true);
                 clone.querySelectorAll('.edit-section-controls').forEach(c => c.remove());
+                clone.querySelectorAll('[id]').forEach(withRef => withRef.removeAttribute('id'));
                 el.parentNode.insertBefore(clone, el.nextSibling);
-                // Re-init for clones
                 setTimeout(addControls, 10);
             });
 
             controls.querySelector('.edit-btn-remove').addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (confirm('Remove this item?')) el.remove();
+                e.preventDefault();
+                el.parentNode.removeChild(el);
             });
 
             el.appendChild(controls);

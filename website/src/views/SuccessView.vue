@@ -23,10 +23,10 @@ onMounted(async () => {
     if (!sessionId.value) {
         // ALLOW TEST MODE (From "Publish Website" button)
         if (route.query.test === 'true') {
-            email.value = 'Test Deployment (No Payment)';
+            email.value = store.companyInfo.email || 'Test Deployment (No Payment)';
             orderId.value = 'test_deployment_manual';
             loading.value = false;
-            await startDeployment();
+            await startDeployment(store.companyInfo.email);
             return;
         }
 
@@ -34,7 +34,8 @@ onMounted(async () => {
             email.value = 'client@example.com (Mock for Localhost)';
             orderId.value = route.query.order_id || 'demo_order_id';
             loading.value = false;
-            await startDeployment();
+            store.markPaid();
+            await startDeployment('client@example.com');
         } else {
             email.value = 'No session ID provided';
             loading.value = false;
@@ -44,33 +45,65 @@ onMounted(async () => {
 
     try {
         const res = await fetch(`/.netlify/functions/verify-payment?session_id=${sessionId.value}`);
-        if (!res.ok) throw new Error('Verification failed');
+        
+        // Handle non-OK responses or non-JSON (like HTML error pages)
+        const contentType = res.headers.get("content-type") || "";
+        const isJson = contentType.includes("application/json");
+        
+        // Even if header is missing, if it's 200 and looks like JSON, we try to parse
+        if (!res.ok) {
+            const text = await res.text();
+            console.error('[Success] Error response:', text);
+            throw new Error(`Server returned ${res.status}: ${res.statusText}`);
+        }
         
         const data = await res.json();
         email.value = data.email;
         orderId.value = data.order_id;
         
-        await startDeployment();
+        store.markPaid();
+        await startDeployment(data.email);
         
     } catch (e) {
-        console.error(e);
+        console.error('[Success Error]', e);
         email.value = `Error: ${e.message}`; 
         loading.value = false;
+        deployStatus.value = 'error';
+        deployError.value = e.message;
     } finally {
         loading.value = false;
     }
 })
 
-async function startDeployment() {
+async function startDeployment(stripeEmail = null) {
     if (!store.companyInfo.rawHTML) {
         console.warn('[Success] No HTML found to deploy.');
         return;
     }
 
+    let htmlToDeploy = store.companyInfo.rawHTML;
+
+    // 0. Update FormSubmit Email following Priority Rules
+    if (stripeEmail) {
+        // User requirements: Stripe email always takes precedence
+        if (store.companyInfo.email && store.companyInfo.email === stripeEmail) {
+            console.log(`[Success] Option 1: Emails match. Using confirmed email: ${stripeEmail}`);
+        } else if (store.companyInfo.email && store.companyInfo.email !== stripeEmail) {
+            console.log(`[Success] Option 2: Emails differ. Overriding with Stripe email: ${stripeEmail} (Builder was: ${store.companyInfo.email})`);
+        } else {
+            console.log(`[Success] Option 3: No builder email. Using Stripe email: ${stripeEmail}`);
+        }
+
+        const formSubmitRegex = /https:\/\/formsubmit\.co\/[^"'\s]+/g;
+        htmlToDeploy = htmlToDeploy.replace(formSubmitRegex, `https://formsubmit.co/${stripeEmail}`);
+    } else {
+        console.log(`[Success] No Stripe email verified. Using builder fallback if it exists.`);
+    }
+
     try {
         deployStatus.value = 'packaging';
         const subdomain = store.companyInfo.name || 'my-business';
-        const base64Zip = await ZipService.packageWebsite(store.companyInfo.rawHTML, subdomain);
+        const base64Zip = await ZipService.packageWebsite(htmlToDeploy, subdomain);
         
         deployStatus.value = 'creating_site';
         const site = await NetlifyService.getOrCreateNetlifySite(subdomain);
