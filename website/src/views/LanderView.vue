@@ -52,8 +52,8 @@ onUnmounted(() => {
 
 const isProcessing = ref(false);
 const PAYMENT_LINKS = {
-    monthly: 'https://buy.stripe.com/test_5kQ4gt4O83I3grE35adQQ05',
-    annual: 'https://buy.stripe.com/test_fZubIV94o4M7a3g6hmdQQ04'
+    monthly: 'https://buy.stripe.com/aFa7sE9uK5DiarTb6OeME00',
+    annual: 'https://buy.stripe.com/14AeV622i0iY1VndeWeME01'
 };
 
 function handleStripeCheckout() {
